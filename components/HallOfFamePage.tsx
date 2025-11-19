@@ -16,8 +16,28 @@ const resolvePublicAsset = (path: string) => {
 };
 
 const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
+  // Staff
   '대쉬': 'dash.png',
-  // Add more overrides here. Example: '루나': 'luna.png'
+  '루나': 'luna.png',
+  '빡스냥': 'ppaksnyang.png',
+  '진실': 'jinsil.png',
+  '우나': 'una.png',
+  '복숭아': 'boksunga.png',
+  '칠지도': 'chiljido.png',
+  '유미캣': 'yumicat.png',
+  '성녀': 'seongnyeo.png',
+
+  // Supporters
+  '루비': 'ruby.png',
+  '세라핀': 'seraphine.png',
+  '효륵사마': 'hyoruksama.png',
+  '거북': 'geobuk.png',
+  '별': 'byeol.png',
+  '카모': 'kamo.png',
+  '틀랩퍼': 'tlepper.png',
+  '원탑': 'wontap.png',
+  '융하': 'yungha.png',
+  'Sia': 'sia.png',
 };
 
 const getProfileImageUrl = (name: string, fallback?: string) => {
