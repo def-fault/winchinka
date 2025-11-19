@@ -92,33 +92,38 @@ const HallOfFamePage: React.FC = () => {
     <div className="animate-fade-in max-w-6xl mx-auto pb-20 space-y-20 relative">
       
       {/* Floating Profile Card */}
-      {hoverState && (
-        <div 
-          className="fixed pointer-events-none z-50 transition-opacity duration-200"
-          style={{ 
-            left: `${hoverState.x + 20}px`, 
-            top: `${hoverState.y + 20}px` 
-          }}
-        >
-          <div className="glass-panel bg-slate-900/90 p-3 rounded-xl border-2 border-game-primary shadow-[0_0_20px_rgba(59,130,246,0.5)] flex flex-col items-center gap-2 min-w-[150px]">
-             <div className="w-24 h-24 rounded-lg overflow-hidden border-2 border-white/20 bg-slate-800">
-               {hoverState.imageUrl && (
-                 <img 
-                   src={hoverState.imageUrl} 
-                   alt={hoverState.name} 
-                   className="w-full h-full object-cover"
-                 />
-               )}
-             </div>
-             <div className="text-center">
-               <div className="font-display font-bold text-white text-lg">{hoverState.name}</div>
-               {hoverState.role && (
-                 <div className="text-xs text-game-accent font-bold">{hoverState.role}</div>
-               )}
-             </div>
-          </div>
+{hoverState && (
+  <div 
+    className="fixed pointer-events-none z-50 transition-opacity duration-200"
+    style={{ 
+      left: `${hoverState.x + 20}px`, 
+      top: `${hoverState.y + 20}px` 
+    }}
+  >
+    <div className="glass-panel bg-slate-900/90 p-4 rounded-2xl border-2 border-game-primary shadow-[0_0_24px_rgba(59,130,246,0.6)] flex flex-col items-center gap-3 min-w-[190px]">
+      {/* 🔥 여기만 수정 */}
+      <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border-2 border-white/40 bg-slate-800">
+        {hoverState.imageUrl && (
+          <img 
+            src={hoverState.imageUrl} 
+            alt={hoverState.name} 
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
+      <div className="text-center">
+        <div className="font-display font-bold text-white text-lg md:text-xl">
+          {hoverState.name}
         </div>
-      )}
+        {hoverState.role && (
+          <div className="text-xs md:text-sm text-game-accent font-bold mt-1">
+            {hoverState.role}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
 
       {/* Header */}
       <div className="text-center mb-12">
