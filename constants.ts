@@ -1,6 +1,13 @@
 
 import { Tournament, HallOfFameSponsor, StaffMember, BGMTrack, GalleryItem } from './types';
 
+const BASE_PATH = import.meta.env.BASE_URL || '/';
+const resolvePublicAsset = (path: string) => {
+  const normalizedBase = BASE_PATH.endsWith('/') ? BASE_PATH : `${BASE_PATH}/`;
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${normalizedBase}${normalizedPath}`;
+};
+
 export const TOURNAMENTS: Tournament[] = [
   {
     id: 'season-3',
@@ -9,7 +16,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "크레센도 매치",
     status: 'upcoming',
     date: "2026년 예정",
-    posterUrl: "season3.png",
+    posterUrl: resolvePublicAsset('season3.png'),
     format: "1:1 → 2:2 → 3:3 (순차 진행)",
     prizePool: "미정",
     sponsors: [],
@@ -22,7 +29,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "트리플 아레나",
     status: 'active',
     date: "2025년 11월 29일 ~ 2025년 11월 30일",
-    posterUrl: "season2.png", 
+    posterUrl: resolvePublicAsset('season2.png'),
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
     sponsors: [
@@ -46,7 +53,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "최강의 듀오 (2차 전직)",
     status: 'completed',
     date: "2025년 9월 27일 ~ 2025년 9월 28일",
-    posterUrl: "season1-2.png", 
+    posterUrl: resolvePublicAsset('season1-2.png'),
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
     winner: {
@@ -79,7 +86,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "최강의 듀오 (1차 전직)",
     status: 'completed',
     date: "2025년 9월 20일 ~ 2025년 9월 21일",
-    posterUrl: "season1-1.png", 
+    posterUrl: resolvePublicAsset('season1-1.png'),
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
     winner: {
@@ -141,19 +148,19 @@ export const STAFF_MEMBERS: StaffMember[] = [
 export const BGM_PLAYLIST: BGMTrack[] = [
   {
     title: "포폴라",
-    url: "bgm1.mp3" 
+    url: resolvePublicAsset('bgm1.mp3')
   },
   {
     title: "오행산",
-    url: "bgm2.mp3" 
+    url: resolvePublicAsset('bgm2.mp3')
   },
   {
     title: "발데란",
-    url: "bgm3.mp3" 
+    url: resolvePublicAsset('bgm3.mp3')
   },
   {
     title: "아마쿠사",
-    url: "bgm4.mp3"
+    url: resolvePublicAsset('bgm4.mp3')
   }
 ];
 
