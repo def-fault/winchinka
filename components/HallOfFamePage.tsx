@@ -3,6 +3,51 @@ import React, { useState } from 'react';
 import { TOURNAMENTS, HALL_OF_FAME_SUPPORTERS, STAFF_MEMBERS } from '../constants';
 import { CrownIcon, HeartIcon, ShieldIcon, MedalIcon } from './Icons';
 
+const BASE_PATH = import.meta.env.BASE_URL || '/';
+
+const resolvePublicAsset = (path: string) => {
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+
+  const baseUrl = typeof document !== 'undefined'
+    ? new URL(BASE_PATH, document.baseURI)
+    : new URL(BASE_PATH, 'http://localhost/');
+
+  return new URL(normalizedPath, baseUrl).href;
+};
+
+const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
+  // Staff
+  '대쉬': 'dash.png',
+  '루나': 'luna.png',
+  '빡스냥': 'ppaksnyang.png',
+  '진실': 'jinsil.png',
+  '우나': 'una.png',
+  '복숭아': 'boksunga.png',
+  '칠지도': 'chiljido.png',
+  '유미캣': 'yumicat.png',
+  '성녀': 'seongnyeo.png',
+
+  // Supporters
+  '루비': 'ruby.png',
+  '세라핀': 'seraphine.png',
+  '효륵사마': 'hyoruksama.png',
+  '거북': 'geobuk.png',
+  '별': 'byeol.png',
+  '카모': 'kamo.png',
+  '틀랩퍼': 'tlepper.png',
+  '원탑': 'wontap.png',
+  '융하': 'yungha.png',
+  'Sia': 'sia.png',
+};
+
+const getProfileImageUrl = (name: string, fallback?: string) => {
+  const override = PROFILE_IMAGE_OVERRIDES[name];
+  if (override) {
+    return resolvePublicAsset(override);
+  }
+  return fallback;
+};
+
 interface HoverState {
   name: string;
   imageUrl: string;
@@ -147,25 +192,29 @@ const HallOfFamePage: React.FC = () => {
         </p>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {HALL_OF_FAME_SUPPORTERS.map((s, idx) => (
-            <div 
-              key={idx} 
-              className="glass-panel p-4 rounded-lg flex flex-col items-center text-center hover:bg-pink-500/10 transition-colors border border-white/5 hover:border-pink-500/30 cursor-help"
-              onMouseEnter={(e) => handleMouseEnter(e, s.name, s.imageUrl || '', s.title)}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-            >
-               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mb-3 shadow-lg overflow-hidden">
-                 {s.imageUrl ? (
-                    <img src={s.imageUrl} alt={s.name} className="w-full h-full object-cover opacity-90" />
-                 ) : (
-                    <span>{s.name[0]}</span>
-                 )}
-               </div>
-               <div className="font-bold text-white">{s.name}</div>
-               <div className="text-xs text-pink-400 mt-1 font-bold">{s.title}</div>
-            </div>
-          ))}
+          {HALL_OF_FAME_SUPPORTERS.map((s, idx) => {
+            const supporterImage = getProfileImageUrl(s.name, s.imageUrl);
+
+            return (
+              <div
+                key={idx}
+                className="glass-panel p-4 rounded-lg flex flex-col items-center text-center hover:bg-pink-500/10 transition-colors border border-white/5 hover:border-pink-500/30 cursor-help"
+                onMouseEnter={(e) => handleMouseEnter(e, s.name, supporterImage || '', s.title)}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
+                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mb-3 shadow-lg overflow-hidden">
+                   {supporterImage ? (
+                      <img src={supporterImage} alt={s.name} className="w-full h-full object-cover opacity-90" />
+                   ) : (
+                      <span>{s.name[0]}</span>
+                   )}
+                 </div>
+                 <div className="font-bold text-white">{s.name}</div>
+                 <div className="text-xs text-pink-400 mt-1 font-bold">{s.title}</div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -179,27 +228,31 @@ const HallOfFamePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {STAFF_MEMBERS.map((staff, idx) => (
-            <div 
-              key={idx} 
-              className="glass-panel p-6 rounded-xl flex items-center gap-4 border border-blue-500/10 hover:border-blue-500/40 transition-colors cursor-help"
-              onMouseEnter={(e) => handleMouseEnter(e, staff.name, staff.imageUrl || '', staff.role)}
-              onMouseMove={handleMouseMove}
-              onMouseLeave={handleMouseLeave}
-            >
-              <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl text-gray-400 font-display border-2 border-slate-600 overflow-hidden">
-                 {staff.imageUrl ? (
-                    <img src={staff.imageUrl} alt={staff.name} className="w-full h-full object-cover" />
-                 ) : (
-                    <span>{staff.name[0]}</span>
-                 )}
+          {STAFF_MEMBERS.map((staff, idx) => {
+            const staffImage = getProfileImageUrl(staff.name, staff.imageUrl);
+
+            return (
+              <div
+                key={idx}
+                className="glass-panel p-6 rounded-xl flex items-center gap-4 border border-blue-500/10 hover:border-blue-500/40 transition-colors cursor-help"
+                onMouseEnter={(e) => handleMouseEnter(e, staff.name, staffImage || '', staff.role)}
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+              >
+                <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center text-2xl text-gray-400 font-display border-2 border-slate-600 overflow-hidden">
+                   {staffImage ? (
+                      <img src={staffImage} alt={staff.name} className="w-full h-full object-cover" />
+                   ) : (
+                      <span>{staff.name[0]}</span>
+                   )}
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-white">{staff.name}</div>
+                  <div className="text-sm text-blue-400 font-bold uppercase tracking-wider">{staff.role}</div>
+                </div>
               </div>
-              <div>
-                <div className="text-lg font-bold text-white">{staff.name}</div>
-                <div className="text-sm text-blue-400 font-bold uppercase tracking-wider">{staff.role}</div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
