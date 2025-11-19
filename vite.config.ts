@@ -1,8 +1,12 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/winchinka/',   // 🔥 GitHub Pages 배포 시 필수!
-})
+  // 🔥 커스텀 도메인(windslayer.online)을 쓰니까
+  // 더 이상 '/winchinka/' 같은 하위 경로를 쓰면 안 됩니다.
+  // base를 '/'로 두거나, 이 줄 자체를 없애도 됩니다.
+  base: '/',
+});
