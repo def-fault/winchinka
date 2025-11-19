@@ -169,7 +169,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     title: "최강의 듀오 우승 축전 1차",
     author: "효륵사마",
     imageUrl: "art1.png",
-    description: "햄토리 1팀의 우승을 축하하며 그린 팬아트입니다.",
+    description: "1회차 1차 부문 축전이에요 ㅎㅎ\n전직 전 1차 스킬로만 승부를 겨뤄야 해서 완전 근본 싸움이었죠..!\n보면서 심장이 쫄리고 진짜 재밌어서, 웅장하게 그렸던 기억이 나요!",
     date: "2025.09.29"
   },
   {
@@ -177,7 +177,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     title: "최강의 듀오 우승 축전 2차",
     author: "효륵사마",
     imageUrl: "art2.png",
-    description: "아킬레우스 1팀의 우승을 축하하며 그린 팬아트입니다.",
+    description: "1회차 2차 부문 축전이에요…!\n다양한 2차 전직으로 이루어져 있어서, 엄청난 조합을 보는 재미가 쏠쏠했답니다 ㅎㅎ\n게다가 다들 캐릭터가 귀엽고 개성 넘쳐서 그리는동안 너무 재밋었습니다!",
     date: "2025.09.29"
   },
   {
