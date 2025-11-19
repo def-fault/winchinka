@@ -1,10 +1,22 @@
 import { Tournament, HallOfFameSponsor, StaffMember, BGMTrack, GalleryItem } from './types';
 
 const BASE_PATH = import.meta.env.BASE_URL || '/';
+
+/**
+ * Builds a URL to a file that lives inside Vite's `public/` folder.
+ *
+ * Using the document's base URI keeps the path working regardless of whether the
+ * app is served from a traditional server (https://example.com) or opened via
+ * the file protocol after running `npm run build` (file:///path/to/dist).
+ */
 const resolvePublicAsset = (path: string) => {
-  const normalizedBase = BASE_PATH.endsWith('/') ? BASE_PATH : `${BASE_PATH}/`;
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
-  return `${normalizedBase}${normalizedPath}`;
+
+  const baseUrl = typeof document !== 'undefined'
+    ? new URL(BASE_PATH, document.baseURI)
+    : new URL(BASE_PATH, 'http://localhost/');
+
+  return new URL(normalizedPath, baseUrl).href;
 };
 
 export const TOURNAMENTS: Tournament[] = [
