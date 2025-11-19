@@ -166,27 +166,27 @@ export const BGM_PLAYLIST: BGMTrack[] = [
 export const GALLERY_ITEMS: GalleryItem[] = [
   {
     id: 'art-1',
-    title: "제1회 대회 우승 축전",
-    author: "금손유저1",
-    imageUrl: "art1.jpg",
-    description: "아킬레우스 팀의 우승을 축하하며 그린 팬아트입니다.",
-    date: "2025.09.28"
+    title: "최강의 듀오 우승 축전 1차",
+    author: "효륵사마",
+    imageUrl: "art1.png",
+    description: "햄토리 1팀의 우승을 축하하며 그린 팬아트입니다.",
+    date: "2025.09.29"
   },
   {
     id: 'art-2',
-    title: "윈친카 화이팅",
-    author: "그림쟁이",
-    imageUrl: "art2.jpg",
-    description: "모든 참가자분들 고생 많으셨습니다!",
-    date: "2025.10.01"
+    title: "최강의 듀오 우승 축전 2차",
+    author: "효륵사마",
+    imageUrl: "art2.png",
+    description: "아킬레우스 1팀의 우승을 축하하며 그린 팬아트입니다.",
+    date: "2025.09.29"
   },
   {
     id: 'art-3',
-    title: "결승전 명장면",
-    author: "팬아트장인",
+    title: "null",
+    author: "null",
     imageUrl: "art3.jpg",
-    description: "결승전 마지막 한타 장면을 그려봤어요.",
-    date: "2025.09.21"
+    description: "null.",
+    date: "null"
   }
 ];
 

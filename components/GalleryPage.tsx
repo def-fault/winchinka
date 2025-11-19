@@ -117,7 +117,7 @@ const GalleryPage: React.FC = () => {
         <p className="text-gray-300 mb-2">여러분의 작품을 기다립니다!</p>
         <p className="text-sm text-gray-500">
           팬아트나 축전을 보내주시면 갤러리에 등록해드립니다.<br/>
-          보내실 곳: 윈친카 카페 '대회 팬아트' 게시판
+          보내실 곳: 윈친카 카페 '팬아트 게시판'
         </p>
       </div>
     </div>
