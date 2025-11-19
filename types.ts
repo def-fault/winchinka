@@ -38,6 +38,7 @@ export enum ViewState {
   DETAIL = 'DETAIL',
   ABOUT = 'ABOUT',
   HALL_OF_FAME = 'HALL_OF_FAME',
+  GALLERY = 'GALLERY',
 }
 
 export interface HallOfFameSponsor {
@@ -55,4 +56,13 @@ export interface StaffMember {
 export interface BGMTrack {
   title: string;
   url: string;
+}
+
+export interface GalleryItem {
+  id: string;
+  title: string;
+  author: string;
+  imageUrl: string;
+  description?: string;
+  date?: string;
 }

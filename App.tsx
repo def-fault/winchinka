@@ -8,6 +8,7 @@ import ChatWidget from './components/ChatWidget';
 import MusicPlayer from './components/MusicPlayer';
 import AboutPage from './components/AboutPage';
 import HallOfFamePage from './components/HallOfFamePage';
+import GalleryPage from './components/GalleryPage';
 import { TrophyIcon } from './components/Icons';
 
 const CAFE_URL = "https://cafe.naver.com/windslayerschin";
@@ -62,6 +63,12 @@ const App: React.FC = () => {
               className={`transition-colors ${view === ViewState.HALL_OF_FAME ? 'text-white font-bold' : 'hover:text-white'}`}
             >
               명예의 전당
+            </button>
+             <button 
+              onClick={() => navigateTo(ViewState.GALLERY)}
+              className={`transition-colors ${view === ViewState.GALLERY ? 'text-white font-bold' : 'hover:text-white'}`}
+            >
+              갤러리
             </button>
             <a 
               href={CAFE_URL}
@@ -125,6 +132,8 @@ const App: React.FC = () => {
         {view === ViewState.ABOUT && <AboutPage />}
         
         {view === ViewState.HALL_OF_FAME && <HallOfFamePage />}
+        
+        {view === ViewState.GALLERY && <GalleryPage />}
 
       </main>
 

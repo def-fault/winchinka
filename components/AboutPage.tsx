@@ -4,7 +4,7 @@ import { InfoIcon, UsersIcon, SwordsIcon } from './Icons';
 
 const AboutPage: React.FC = () => {
   return (
-    <div className="animate-fade-in max-w-4xl mx-auto space-y-12 pb-40">
+    <div className="animate-fade-in max-w-4xl mx-auto space-y-12 pb-20">
       {/* Hero / Slogan */}
       <section className="text-center py-12 relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-game-accent/20 blur-[100px] rounded-full pointer-events-none" />
