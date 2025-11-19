@@ -9,7 +9,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "크레센도 매치",
     status: 'upcoming',
     date: "2026년 예정",
-    posterUrl: "/season3.png",
+    posterUrl: "season3.png",
     format: "1:1 → 2:2 → 3:3 (순차 진행)",
     prizePool: "미정",
     sponsors: [],
@@ -22,7 +22,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "트리플 아레나",
     status: 'active',
     date: "2025년 11월 29일 ~ 2025년 11월 30일",
-    posterUrl: "/season2.png", 
+    posterUrl: "season2.png", 
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
     sponsors: [
@@ -46,7 +46,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "최강의 듀오 (2차 전직)",
     status: 'completed',
     date: "2025년 9월 27일 ~ 2025년 9월 28일",
-    posterUrl: "/season1-2.png", 
+    posterUrl: "season1-2.png", 
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
     winner: {
@@ -79,7 +79,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "최강의 듀오 (1차 전직)",
     status: 'completed',
     date: "2025년 9월 20일 ~ 2025년 9월 21일",
-    posterUrl: "/season1-1.png", 
+    posterUrl: "season1-1.png", 
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
     winner: {
@@ -141,19 +141,19 @@ export const STAFF_MEMBERS: StaffMember[] = [
 export const BGM_PLAYLIST: BGMTrack[] = [
   {
     title: "포폴라",
-    url: "/bgm1.mp3" 
+    url: "bgm1.mp3" 
   },
   {
     title: "오행산",
-    url: "/bgm2.mp3" 
+    url: "bgm2.mp3" 
   },
   {
     title: "발데란",
-    url: "/bgm3.mp3" 
+    url: "bgm3.mp3" 
   },
   {
     title: "아마쿠사",
-    url: "/bgm4.mp3"
+    url: "bgm4.mp3"
   }
 ];
 
@@ -162,7 +162,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     id: 'art-1',
     title: "제1회 대회 우승 축전",
     author: "금손유저1",
-    imageUrl: "/art1.jpg",
+    imageUrl: "art1.jpg",
     description: "아킬레우스 팀의 우승을 축하하며 그린 팬아트입니다.",
     date: "2025.09.28"
   },
@@ -170,7 +170,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     id: 'art-2',
     title: "윈친카 화이팅",
     author: "그림쟁이",
-    imageUrl: "/art2.jpg",
+    imageUrl: "art2.jpg",
     description: "모든 참가자분들 고생 많으셨습니다!",
     date: "2025.10.01"
   },
@@ -178,7 +178,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     id: 'art-3',
     title: "결승전 명장면",
     author: "팬아트장인",
-    imageUrl: "/art3.jpg",
+    imageUrl: "art3.jpg",
     description: "결승전 마지막 한타 장면을 그려봤어요.",
     date: "2025.09.21"
   }
