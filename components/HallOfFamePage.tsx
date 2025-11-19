@@ -44,7 +44,7 @@ const HallOfFamePage: React.FC = () => {
   };
 
   return (
-    <div className="animate-fade-in max-w-6xl mx-auto pb-40 space-y-20 relative">
+    <div className="animate-fade-in max-w-6xl mx-auto pb-20 space-y-20 relative">
       
       {/* Floating Profile Card */}
       {hoverState && (

@@ -51,7 +51,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
   };
 
   return (
-    <div className="animate-fade-in w-full pb-40">
+    <div className="animate-fade-in w-full">
       {/* Header Navigation */}
       <button 
         onClick={onBack}
@@ -189,8 +189,8 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
              </div>
           )}
 
-          {/* Fallback for upcoming */}
-          {tournament.status === 'upcoming' && (
+          {/* Fallback for upcoming or active */}
+          {(tournament.status === 'upcoming' || tournament.status === 'active') && (
             <div className="flex flex-col items-center justify-center py-20 glass-panel rounded-xl border-dashed border-2 border-slate-600">
               <div className="text-6xl mb-4">🚧</div>
               <h3 className="text-2xl font-bold text-white mb-2">대회 준비 중</h3>
@@ -199,6 +199,9 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
           )}
         </div>
       </div>
+      
+      {/* Explicit Bottom Spacer for Safety */}
+      <div className="h-32 w-full"></div>
     </div>
   );
 };
