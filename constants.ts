@@ -1,4 +1,3 @@
-
 import { Tournament, HallOfFameSponsor, StaffMember, BGMTrack, GalleryItem } from './types';
 
 const BASE_PATH = import.meta.env.BASE_URL || '/';
@@ -115,8 +114,8 @@ export const TOURNAMENTS: Tournament[] = [
   }
 ];
 
-// Helper to generate placeholder avatar URLs
-const getAvatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200&font-size=0.4&bold=true`;
+const getAvatarUrl = (name: string) =>
+  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200&font-size=0.4&bold=true`;
 
 export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "루비", title: "노바스텔라", imageUrl: getAvatarUrl("루비") },
@@ -130,7 +129,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "틀랩퍼", title: "투신", imageUrl: getAvatarUrl("틀랩") },
   { name: "원탑", title: "우주", imageUrl: getAvatarUrl("원탑") },
   { name: "융하", title: "낭만", imageUrl: getAvatarUrl("융하") },
-  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") },
+  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") }
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
@@ -142,26 +141,14 @@ export const STAFF_MEMBERS: StaffMember[] = [
   { name: "복숭아", role: "소통 담당", imageUrl: getAvatarUrl("복숭") },
   { name: "칠지도", role: "보조 지원", imageUrl: getAvatarUrl("칠지") },
   { name: "유미캣", role: "보조 지원", imageUrl: getAvatarUrl("유미") },
-  { name: "성녀", role: "보조 지원", imageUrl: getAvatarUrl("성녀") },
+  { name: "성녀", role: "보조 지원", imageUrl: getAvatarUrl("성녀") }
 ];
 
 export const BGM_PLAYLIST: BGMTrack[] = [
-  {
-    title: "포폴라",
-    url: resolvePublicAsset('bgm1.mp3')
-  },
-  {
-    title: "오행산",
-    url: resolvePublicAsset('bgm2.mp3')
-  },
-  {
-    title: "발데란",
-    url: resolvePublicAsset('bgm3.mp3')
-  },
-  {
-    title: "아마쿠사",
-    url: resolvePublicAsset('bgm4.mp3')
-  }
+  { title: "포폴라", url: resolvePublicAsset('bgm1.mp3') },
+  { title: "오행산", url: resolvePublicAsset('bgm2.mp3') },
+  { title: "발데란", url: resolvePublicAsset('bgm3.mp3') },
+  { title: "아마쿠사", url: resolvePublicAsset('bgm4.mp3') }
 ];
 
 export const GALLERY_ITEMS: GalleryItem[] = [
