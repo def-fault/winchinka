@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>윈친카 무투대회 아카이브</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Noto Sans KR"', 'sans-serif'],
+              display: ['"Black Han Sans"', 'sans-serif'],
+            },
+            colors: {
+              game: {
+                dark: '#0f172a',
+                card: '#1e293b',
+                primary: '#3b82f6',
+                accent: '#8b5cf6',
+                win: '#eab308',
+                fire: '#ef4444',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #050b14;
+        color: #ffffff;
+        overflow-x: hidden;
+      }
+      .glass-panel {
+        background: rgba(30, 41, 59, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .neon-text {
+        text-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3);
+      }
+      .neon-border {
+        box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+      }
+      /* Custom Scrollbar */
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(30, 41, 59, 0.5);
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #64748b;
+      }
+      /* Animations */
+      @keyframes fade-in {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .animate-fade-in {
+        animation: fade-in 0.5s ease-out forwards;
+      }
+      @keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in-up {
+        animation: fade-in-up 0.5s ease-out forwards;
+      }
+    </style>
+
+  <script type="importmap">
+{
+  "imports": {
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "vite": "https://aistudiocdn.com/vite@^7.2.2"
+  }
+}
+</script>
+  <script type="module" crossorigin src="./assets/index-Bd38eiVJ.js"></script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
