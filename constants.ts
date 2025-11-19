@@ -1,5 +1,11 @@
-
 import { Tournament, HallOfFameSponsor, StaffMember, BGMTrack, GalleryItem } from './types';
+
+const BASE_PATH = import.meta.env.BASE_URL || '/';
+const resolvePublicAsset = (path: string) => {
+  const normalizedBase = BASE_PATH.endsWith('/') ? BASE_PATH : `${BASE_PATH}/`;
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+  return `${normalizedBase}${normalizedPath}`;
+};
 
 export const TOURNAMENTS: Tournament[] = [
   {
@@ -9,7 +15,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "크레센도 매치",
     status: 'upcoming',
     date: "2026년 예정",
-    posterUrl: "/season3.png",
+    posterUrl: resolvePublicAsset('season3.png'),
     format: "1:1 → 2:2 → 3:3 (순차 진행)",
     prizePool: "미정",
     sponsors: [],
@@ -22,7 +28,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "트리플 아레나",
     status: 'active',
     date: "2025년 11월 29일 ~ 2025년 11월 30일",
-    posterUrl: "/season2.png",
+    posterUrl: resolvePublicAsset('season2.png'),
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
     sponsors: [
@@ -46,7 +52,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "최강의 듀오 (2차 전직)",
     status: 'completed',
     date: "2025년 9월 27일 ~ 2025년 9월 28일",
-    posterUrl: "/season1-2.png",
+    posterUrl: resolvePublicAsset('season1-2.png'),
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
     winner: {
@@ -79,7 +85,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "최강의 듀오 (1차 전직)",
     status: 'completed',
     date: "2025년 9월 20일 ~ 2025년 9월 21일",
-    posterUrl: "/season1-1.png",
+    posterUrl: resolvePublicAsset('season1-1.png'),
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
     winner: {
@@ -108,8 +114,8 @@ export const TOURNAMENTS: Tournament[] = [
   }
 ];
 
-// Helper to generate placeholder avatar URLs
-const getAvatarUrl = (name: string) => `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200&font-size=0.4&bold=true`;
+const getAvatarUrl = (name: string) =>
+  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200&font-size=0.4&bold=true`;
 
 export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "루비", title: "노바스텔라", imageUrl: getAvatarUrl("루비") },
@@ -123,7 +129,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "틀랩퍼", title: "투신", imageUrl: getAvatarUrl("틀랩") },
   { name: "원탑", title: "우주", imageUrl: getAvatarUrl("원탑") },
   { name: "융하", title: "낭만", imageUrl: getAvatarUrl("융하") },
-  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") },
+  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") }
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
@@ -135,26 +141,14 @@ export const STAFF_MEMBERS: StaffMember[] = [
   { name: "복숭아", role: "소통 담당", imageUrl: getAvatarUrl("복숭") },
   { name: "칠지도", role: "보조 지원", imageUrl: getAvatarUrl("칠지") },
   { name: "유미캣", role: "보조 지원", imageUrl: getAvatarUrl("유미") },
-  { name: "성녀", role: "보조 지원", imageUrl: getAvatarUrl("성녀") },
+  { name: "성녀", role: "보조 지원", imageUrl: getAvatarUrl("성녀") }
 ];
 
 export const BGM_PLAYLIST: BGMTrack[] = [
-  {
-    title: "포폴라",
-    url: "/bgm1.mp3"
-  },
-  {
-    title: "오행산",
-    url: "/bgm2.mp3"
-  },
-  {
-    title: "발데란",
-    url: "/bgm3.mp3"
-  },
-  {
-    title: "아마쿠사",
-    url: "/bgm4.mp3"
-  }
+  { title: "포폴라", url: resolvePublicAsset('bgm1.mp3') },
+  { title: "오행산", url: resolvePublicAsset('bgm2.mp3') },
+  { title: "발데란", url: resolvePublicAsset('bgm3.mp3') },
+  { title: "아마쿠사", url: resolvePublicAsset('bgm4.mp3') }
 ];
 
 export const GALLERY_ITEMS: GalleryItem[] = [
