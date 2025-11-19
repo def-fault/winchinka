@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { BGM_PLAYLIST } from '../constants';
 import { PlayIcon, PauseIcon, SkipForwardIcon, SkipBackIcon, VolumeIcon, VolumeXIcon, MusicNoteIcon } from './Icons';
@@ -8,46 +9,85 @@ const MusicPlayer: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(0.5);
+  const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const currentTrack = BGM_PLAYLIST[currentTrackIndex];
+
+  // Reset error state when track changes
+  useEffect(() => {
+    setHasError(false);
+  }, [currentTrackIndex]);
 
   // Effect to handle audio source changes and playing state
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume;
       
-      // Only attempt play if we are supposed to be playing
-      if (isPlaying) {
+      if (isPlaying && !hasError) {
         const playPromise = audioRef.current.play();
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
-            console.log("Auto-play prevented:", error);
-            setIsPlaying(false);
-          });
+          playPromise
+            .catch(error => {
+              console.warn("Playback prevented:", error);
+              // Don't set error state here for simple autoplay blocks, only actual load errors
+            });
         }
       } else {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, currentTrackIndex, isMuted, volume]);
+  }, [isPlaying, currentTrackIndex, isMuted, volume, hasError]);
 
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    // If we are in error state and user clicks play, try to play again or next
+    if (hasError) {
+       handleNext();
+    } else {
+       setIsPlaying(!isPlaying);
+    }
   };
 
   const handleNext = () => {
+    setHasError(false);
+    // Reset retry count on manual navigation
+    setRetryCount(0);
     setCurrentTrackIndex((prev) => (prev + 1) % BGM_PLAYLIST.length);
     setIsPlaying(true);
   };
 
   const handlePrev = () => {
+    setHasError(false);
+    setRetryCount(0);
     setCurrentTrackIndex((prev) => (prev - 1 + BGM_PLAYLIST.length) % BGM_PLAYLIST.length);
     setIsPlaying(true);
   };
 
   const handleEnded = () => {
     handleNext();
+  };
+
+  const handleError = () => {
+    console.error(`[MusicPlayer] Failed to load track: ${currentTrack.url}`);
+    // Avoid logging the event object 'e' directly to prevent circular reference errors
+    setHasError(true);
+    
+    // Stop attempting if we've tried every song in the playlist once
+    if (retryCount >= BGM_PLAYLIST.length) {
+        setIsPlaying(false);
+        setRetryCount(0);
+        return;
+    }
+
+    // Auto-skip to next track if current fails
+    if (isPlaying) {
+        setRetryCount(prev => prev + 1);
+        // Brief timeout to prevent rapid-fire skipping loops
+        setTimeout(() => {
+            setCurrentTrackIndex((prev) => (prev + 1) % BGM_PLAYLIST.length);
+        }, 1000);
+    }
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +103,7 @@ const MusicPlayer: React.FC = () => {
         ref={audioRef}
         src={currentTrack.url}
         onEnded={handleEnded}
+        onError={handleError}
       />
 
       {/* Main Player UI */}
@@ -87,12 +128,13 @@ const MusicPlayer: React.FC = () => {
 
             {/* Track Info */}
             <div className="py-2">
-              <div className="text-white font-bold text-sm truncate mb-1">
-                {currentTrack.title}
+              <div className={`font-bold text-sm truncate mb-1 ${hasError ? 'text-red-400' : 'text-white'}`}>
+                {hasError ? "재생 불가 (파일 없음)" : currentTrack.title}
               </div>
               <div className="text-xs text-gray-400 flex justify-between">
                 <span>{currentTrackIndex + 1} / {BGM_PLAYLIST.length}</span>
-                {isPlaying && <span className="text-green-400 animate-pulse">Playing...</span>}
+                {isPlaying && !hasError && <span className="text-green-400 animate-pulse">Playing...</span>}
+                {hasError && <span className="text-red-400">Error</span>}
               </div>
             </div>
 
@@ -104,9 +146,11 @@ const MusicPlayer: React.FC = () => {
               
               <button 
                 onClick={handlePlayPause} 
-                className="p-3 bg-gradient-to-tr from-game-primary to-game-accent text-white rounded-full shadow-lg hover:scale-105 transition-transform"
+                className={`p-3 text-white rounded-full shadow-lg hover:scale-105 transition-transform ${
+                    hasError ? 'bg-gray-600' : 'bg-gradient-to-tr from-game-primary to-game-accent'
+                }`}
               >
-                {isPlaying ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6 pl-0.5" />}
+                {isPlaying && !hasError ? <PauseIcon className="w-6 h-6" /> : <PlayIcon className="w-6 h-6 pl-0.5" />}
               </button>
               
               <button onClick={handleNext} className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors">
@@ -137,16 +181,24 @@ const MusicPlayer: React.FC = () => {
         ) : (
           <button 
             onClick={() => setIsExpanded(true)}
-            className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
-              isPlaying 
+            className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-300 shadow-lg relative ${
+              isPlaying && !hasError
                 ? 'bg-gradient-to-tr from-game-primary to-purple-600 animate-[spin_4s_linear_infinite]' 
-                : 'bg-slate-800 border border-slate-600 hover:bg-slate-700'
+                : hasError 
+                    ? 'bg-red-900/50 border border-red-500'
+                    : 'bg-slate-800 border border-slate-600 hover:bg-slate-700'
             }`}
           >
-            {isPlaying ? (
+            {isPlaying && !hasError ? (
               <MusicNoteIcon className="w-6 h-6 text-white" />
+            ) : hasError ? (
+              <VolumeXIcon className="w-6 h-6 text-red-400" />
             ) : (
               <PlayIcon className="w-6 h-6 text-gray-300 ml-1" />
+            )}
+            
+            {hasError && (
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-ping" />
             )}
           </button>
         )}
@@ -156,3 +208,4 @@ const MusicPlayer: React.FC = () => {
 };
 
 export default MusicPlayer;
+    

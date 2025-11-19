@@ -200,8 +200,8 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
         </div>
       </div>
       
-      {/* Explicit Bottom Spacer for Safety */}
-      <div className="h-32 w-full"></div>
+      {/* Explicit Bottom Spacer for Safety (Increased to 48 ~ 192px) */}
+      <div className="h-48 w-full"></div>
     </div>
   );
 };

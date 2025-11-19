@@ -49,15 +49,18 @@ const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
             src={tournament.posterUrl} 
             alt={tournament.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-            onError={() => setImgError(true)}
+            onError={(e) => {
+              // Quietly handle error without spamming console
+              setImgError(true);
+            }}
           />
         ) : (
           /* Fallback placeholder if image is missing */
-          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-700">
+          <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-slate-700 to-slate-900 group-hover:scale-110 transition-transform duration-700 p-4 text-center">
             <SwordsIcon className="w-16 h-16 text-slate-600 mb-2" />
-            <span className="text-slate-500 text-sm font-bold">NO IMAGE</span>
-            <span className="text-slate-600 text-xs">
-              upload {tournament.posterUrl.replace('./', '')}
+            <span className="text-slate-500 text-sm font-bold mb-1">이미지 준비중</span>
+            <span className="text-slate-600 text-xs break-all">
+              SEASON {tournament.season}
             </span>
           </div>
         )}
