@@ -184,11 +184,11 @@ export const GALLERY_ITEMS: GalleryItem[] = [
   },
   {
     id: 'art-3',
-    title: "null",
-    author: "null",
-    imageUrl: "art3.jpg",
-    description: "null.",
-    date: "null"
+    title: "최강의 듀오 기념사진",
+    author: "루나",
+    imageUrl: "art3.png",
+    description: "윈친카 무투대회 첫 무대의 중계를 맡아 현장의 열기를 전달할 수 있어 뜻깊었습니다. 모두 함께 의미있는 대회를 만들고자 준비하던 과정과, 출전한 선수분들의 열기가 벌써부터 그립습니다. 앞으로의 대회에서도 신뢰받는 중계로 보답하겠습니다. 윈드슬레이어 화이팅! 윈친카 화이팅!",
+    date: "2025.09.30"
   }
 ];
 
