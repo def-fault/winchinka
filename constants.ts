@@ -160,7 +160,9 @@ export const BGM_PLAYLIST: BGMTrack[] = [
   { title: "포폴라", url: resolvePublicAsset('bgm1.mp3') },
   { title: "오행산", url: resolvePublicAsset('bgm2.mp3') },
   { title: "발데란", url: resolvePublicAsset('bgm3.mp3') },
-  { title: "아마쿠사", url: resolvePublicAsset('bgm4.mp3') }
+  { title: "아마쿠사", url: resolvePublicAsset('bgm4.mp3') },
+  { title: "세렌초원", url: resolvePublicAsset('bgm5.mp3') },
+  { title: "세리엔", url: resolvePublicAsset('bgm6.mp3') }
 ];
 
 export const GALLERY_ITEMS: GalleryItem[] = [
