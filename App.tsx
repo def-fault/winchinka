@@ -16,6 +16,7 @@ const CAFE_URL = "https://cafe.naver.com/windslayerschin";
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.LIST);
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleTournamentClick = (tournament: Tournament) => {
     setSelectedTournament(tournament);
@@ -32,11 +33,12 @@ const App: React.FC = () => {
   const navigateTo = (targetView: ViewState) => {
     setView(targetView);
     setSelectedTournament(null);
+    setIsMobileMenuOpen(false);
     window.scrollTo(0, 0);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#050b14] relative selection:bg-game-primary selection:text-white">
+    <div className="min-h-screen flex flex-col bg-[#050b14] relative selection:bg-game-primary selection:text-white overflow-x-hidden">
       {/* Clean background with subtle gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,_#1e293b_0%,_#050b14_60%)] pointer-events-none" />
       
@@ -80,6 +82,65 @@ const App: React.FC = () => {
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             </a>
           </nav>
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="p-2 rounded-md border border-white/10 text-white hover:bg-white/10 transition-colors"
+              aria-expanded={isMobileMenuOpen}
+              aria-label="메뉴 열기"
+            >
+              <svg
+                className="w-6 h-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                {isMobileMenuOpen ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16h16" />
+                  </>
+                )}
+              </svg>
+            </button>
+          </div>
+          {isMobileMenuOpen && (
+            <div className="absolute top-16 left-4 right-4 bg-black/80 border border-white/10 rounded-lg shadow-lg md:hidden">
+              <div className="flex flex-col divide-y divide-white/10 text-sm text-gray-200">
+                <button
+                  onClick={() => navigateTo(ViewState.ABOUT)}
+                  className={`px-4 py-3 text-left ${view === ViewState.ABOUT ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
+                >
+                  대회 소개
+                </button>
+                <button
+                  onClick={() => navigateTo(ViewState.HALL_OF_FAME)}
+                  className={`px-4 py-3 text-left ${view === ViewState.HALL_OF_FAME ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
+                >
+                  명예의 전당
+                </button>
+                <button
+                  onClick={() => navigateTo(ViewState.GALLERY)}
+                  className={`px-4 py-3 text-left ${view === ViewState.GALLERY ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
+                >
+                  갤러리
+                </button>
+                <a
+                  href={CAFE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-3 text-left text-white hover:bg-white/5 flex items-center justify-between"
+                >
+                  <span>윈친카 바로가기</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
