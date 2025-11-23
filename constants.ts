@@ -19,6 +19,137 @@ const resolvePublicAsset = (path: string) => {
   return new URL(normalizedPath, baseUrl).href;
 };
 
+export const season2Participants = [
+  {
+    name: '제발1승만요',
+    members: [
+      { name: '킬러', class: '트랩퍼' },
+      { name: '거북', class: '버서커' },
+      { name: '꽃화', class: '다크프리스트' },
+    ],
+  },
+  {
+    name: '랭커',
+    members: [
+      { name: '진리', class: '버서커' },
+      { name: '순애킬러금태양', class: '카운터' },
+      { name: 'Blsee_you', class: '성기사' },
+    ],
+  },
+  {
+    name: '초보들의반란',
+    members: [
+      { name: '왕초보슬레이어', class: '버서커' },
+      { name: '이냥 (변경예정)', class: '비숍' },
+      { name: '짱군', class: '트랩퍼' },
+    ],
+  },
+  {
+    name: '알고보니훈훈해',
+    members: [
+      { name: '보스', class: '성기사' },
+      { name: '알러뷰', class: '비숍' },
+      { name: '추성훈', class: '카운터' },
+    ],
+  },
+  {
+    name: 'king',
+    members: [
+      { name: '영민', class: '버서커' },
+      { name: '카모', class: '카운터' },
+      { name: '에이바', class: '서모너' },
+    ],
+  },
+  {
+    name: '양가비',
+    members: [
+      { name: '비에고', class: '버서커' },
+      { name: '양', class: '서모너' },
+      { name: '가령', class: '트랩퍼' },
+    ],
+  },
+  {
+    name: '날먹',
+    members: [
+      { name: '증명', class: '비숍' },
+      { name: '절단', class: '어쌔신' },
+      { name: 'Time', class: '성기사' },
+    ],
+  },
+  {
+    name: '씌꾸륏',
+    members: [
+      { name: '키보드부순침착맨', class: '비스트마스터' },
+      { name: '.노메아.', class: '버서커' },
+      { name: '◈かげ.', class: '다크프리스트' },
+    ],
+  },
+  {
+    name: '어쌔신에게 꽃을주러갈래',
+    members: [
+      { name: '어쌔신', class: '어쌔신' },
+      { name: '갈래', class: '버서커' },
+      { name: '당신에게꽃을', class: '엘리멘탈리스트' },
+    ],
+  },
+  {
+    name: '승재와 아이들',
+    members: [
+      { name: '승재', class: '카운터' },
+      { name: '지구인', class: '비숍' },
+      { name: '난도', class: '트랩퍼' },
+    ],
+  },
+  {
+    name: '비밀결사대',
+    members: [
+      { name: '이해', class: '비숍' },
+      { name: '나딘', class: '카운터' },
+      { name: 'Okinawa', class: '서모너' },
+    ],
+  },
+  {
+    name: 'SCP',
+    members: [
+      { name: 'Summon', class: '서모너' },
+      { name: '乃', class: '파이터' },
+      { name: '태세', class: '버서커' },
+    ],
+  },
+  {
+    name: '아오지들판',
+    members: [
+      { name: '별', class: '다크프리스트' },
+      { name: '탈모인판별가', class: '트랩퍼' },
+      { name: '버논', class: '파이터' },
+    ],
+  },
+  {
+    name: '살군대',
+    members: [
+      { name: '^^', class: '파이터' },
+      { name: '프레디머큐리', class: '서모너' },
+      { name: '별히', class: '비숍' },
+    ],
+  },
+  {
+    name: '세상은 잔혹하다',
+    members: [
+      { name: '일월', class: '성기사' },
+      { name: '잔혹', class: '서모너' },
+      { name: '청도', class: '파이터' },
+    ],
+  },
+  {
+    name: '나얼빵',
+    members: [
+      { name: '나태함', class: '버서커' },
+      { name: '얼그레이', class: '엘리멘탈리스트' },
+      { name: '크림빵', class: '서모너' },
+    ],
+  },
+] as const;
+
 export const TOURNAMENTS: Tournament[] = [
   {
     id: 'season-3',
@@ -55,7 +186,8 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "융하 (낭만)" },
       { name: "Sia (투신)" }
     ],
-    description: "제2회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 겨울의 전설에 도전하세요."
+    participants: season2Participants,
+    description: "제2회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 겨울의 전설에 도전하세요.",
   },
   {
     id: 'season-1-2',

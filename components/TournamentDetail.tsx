@@ -10,7 +10,7 @@ interface Props {
 
 const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 }> = ({ team, rank }) => {
   const isFirst = rank === 1;
-  
+
   return (
     <div className={`relative p-6 rounded-2xl border flex flex-col items-center text-center overflow-hidden ${
       isFirst 
@@ -43,7 +43,10 @@ const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 }> = ({ team, rank }) => {
 };
 
 const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
-  
+
+  const participants = tournament.participants ?? [];
+  const hasParticipants = participants.length > 0;
+
   const getYoutubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
@@ -189,12 +192,59 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
              </div>
           )}
 
-          {/* Fallback for upcoming or active */}
-          {(tournament.status === 'upcoming' || tournament.status === 'active') && (
+          {/* Fallback for upcoming or active (only when no roster to show) */}
+          {(tournament.status === 'upcoming' || tournament.status === 'active') && !hasParticipants && (
             <div className="flex flex-col items-center justify-center py-20 glass-panel rounded-xl border-dashed border-2 border-slate-600">
               <div className="text-6xl mb-4">🚧</div>
               <h3 className="text-2xl font-bold text-white mb-2">대회 준비 중</h3>
               <p className="text-gray-400">상세 정보가 곧 공개될 예정입니다.</p>
+            </div>
+          )}
+
+          {hasParticipants && (
+            <div className="glass-panel p-8 rounded-xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-1.5 h-8 rounded-full bg-game-primary shadow-[0_0_20px_rgba(94,234,212,0.7)]" />
+                <div>
+                  <p className="text-sm uppercase tracking-[0.2em] text-game-primary font-bold">참가팀 명단</p>
+                  <h4 className="text-2xl font-display text-white font-black">TEAM ROSTER</h4>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <div className="min-w-[720px] rounded-xl border border-slate-700 bg-slate-900/60 backdrop-blur divide-y divide-slate-800">
+                  <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] px-4 py-3 text-sm font-bold text-gray-300 bg-slate-800/70">
+                    <span className="pl-2">팀명</span>
+                    <span>팀대표</span>
+                    <span>팀원 1</span>
+                    <span>팀원 2</span>
+                  </div>
+
+                  {participants.map((team) => (
+                    <div key={team.name} className="grid grid-cols-[1.2fr_1fr_1fr_1fr] px-4 py-4 gap-2 text-sm text-gray-200">
+                      <div className="pl-2 font-semibold text-white">{team.name}</div>
+                      {team.members.map((member, idx) => (
+                        <div key={idx} className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            {member.role && (
+                              <span className="text-[10px] uppercase tracking-widest text-game-primary border border-game-primary/60 rounded px-1 py-0.5">
+                                {member.role}
+                              </span>
+                            )}
+                            <span className="font-medium text-white">{member.name}</span>
+                          </div>
+                          {member.class && (
+                            <div className="inline-flex items-center gap-1 text-[11px] text-gray-400 bg-black/40 px-2 py-1 rounded-md border border-slate-700">
+                              <span className="w-1.5 h-1.5 rounded-full bg-game-primary" />
+                              <span className="font-mono">{member.class}</span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
