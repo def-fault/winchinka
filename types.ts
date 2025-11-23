@@ -5,6 +5,11 @@ export interface Player {
   avatarUrl?: string;
 }
 
+export interface TournamentParticipantTeam {
+  name: string;
+  members: (Player & { role?: string })[];
+}
+
 export interface Team {
   name: string;
   players: Player[];
@@ -29,6 +34,7 @@ export interface Tournament {
   winner?: Team;
   runnerUp?: Team;
   sponsors: Sponsor[];
+  participants?: TournamentParticipantTeam[];
   description: string;
   videoUrls?: string[];
 }
