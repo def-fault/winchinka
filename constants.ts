@@ -86,7 +86,10 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "우나 (윈친카)" }
     ],
     videoUrls: [
-      "https://www.youtube.com/watch?v=ypWTx7l2Jvw"
+      "https://www.youtube.com/watch?v=ypWTx7l2Jvw",
+      "https://www.youtube.com/watch?v=6HqQbzxeLZU",
+      "https://www.youtube.com/watch?v=2Zmqo9YrYaI",
+      "https://www.youtube.com/watch?v=i7DMsLwhz_E"
     ],
     description: "역사적인 첫 번째 윈친카 무투대회의 2부 리그. 2차 전직 캐릭터들 간의 화려한 스킬 연계가 돋보였던 듀오 토너먼트입니다."
   },
