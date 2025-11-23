@@ -174,6 +174,7 @@ export const TOURNAMENTS: Tournament[] = [
     posterUrl: resolvePublicAsset('season2.png'),
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
+    participants: season2Participants,
     sponsors: [
       { name: "진실 (투신)" },
       { name: "세라핀 (투신)" },
