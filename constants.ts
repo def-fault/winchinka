@@ -55,7 +55,113 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "융하 (낭만)" },
       { name: "Sia (투신)" }
     ],
-    description: "제2회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 겨울의 전설에 도전하세요."
+    participants: [
+      {
+        name: "제발1승만요",
+        members: [
+          { name: "길면", class: "검투", role: "팀대표" },
+          { name: "단지", class: "다크로드", role: "팀원" },
+          { name: "호찬", class: "호한", role: "팀원" }
+        ]
+      },
+      {
+        name: "랭커로가는길",
+        members: [
+          { name: "k1t", class: "버서커", role: "팀대표" },
+          { name: "초현태일태양", class: "성기사", role: "팀원" },
+          { name: "Blesoe you", role: "팀원" }
+        ]
+      },
+      {
+        name: "알고보니흙흙해",
+        members: [
+          { name: "성기사", role: "팀대표" },
+          { name: "판넬", role: "팀원" },
+          { name: "Time", role: "팀원" }
+        ]
+      },
+      {
+        name: "king",
+        members: [
+          { name: "원더걸", class: "정신수", role: "팀대표" },
+          { name: "사신수아강", class: "네메시스", role: "팀원" },
+          { name: "오진숙", role: "팀원" }
+        ]
+      },
+      {
+        name: "없는삶",
+        members: [
+          { name: "성기사", role: "팀대표" },
+          { name: "Ming", class: "버서커", role: "팀원" },
+          { name: "무직노마드", role: "팀원" }
+        ]
+      },
+      {
+        name: "싸이버",
+        members: [
+          { name: "겜부심", class: "로드나이트", role: "팀대표" },
+          { name: "오징어누나", role: "팀원" },
+          { name: "당신꿈꾸세요", role: "팀원" }
+        ]
+      },
+      {
+        name: "오리지널떡상각",
+        members: [
+          { name: "Gonnnnnnng", class: "정신수", role: "팀대표" },
+          { name: "시원잉", role: "팀원" },
+          { name: "감자댁", role: "팀원" }
+        ]
+      },
+      {
+        name: "누리끼리",
+        members: [
+          { name: "한무소", role: "팀대표" },
+          { name: "우주징징징", role: "팀원" },
+          { name: "Okinawa", role: "팀원" }
+        ]
+      },
+      {
+        name: "SCP",
+        members: [
+          { name: "Sumon", class: "우주매지션", role: "팀대표" },
+          { name: "따라하지마", role: "팀원" },
+          { name: "손오공", role: "팀원" }
+        ]
+      },
+      {
+        name: "서강준 죽었음",
+        members: [
+          { name: "다크헌터", role: "팀대표" },
+          { name: "파이팅", role: "팀원" },
+          { name: "메르슈아", role: "팀원" }
+        ]
+      },
+      {
+        name: "나앤빵",
+        members: [
+          { name: "트윈제이", class: "성검수라", role: "팀대표" },
+          { name: "벨리니", class: "나이트워커", role: "팀원" },
+          { name: "나앤빵", class: "나뱀탐정", role: "팀원" }
+        ]
+      },
+      {
+        name: "뱀을삼키다",
+        members: [
+          { name: "아킬레우스", class: "아머드뱅가드", role: "팀대표" },
+          { name: "니케", class: "프리스트", role: "팀원" },
+          { name: "하리마", class: "서모너", role: "팀원" }
+        ]
+      },
+      {
+        name: "나비티스",
+        members: [
+          { name: "까마귀88", class: "나비티스", role: "팀대표" },
+          { name: "포뇨", class: "나이트워커", role: "팀원" },
+          { name: "서모너", class: "서모너", role: "팀원" }
+        ]
+      }
+    ],
+    description: "제2회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 겨울의 전설에 도전하세요.",
   },
   {
     id: 'season-1-2',
