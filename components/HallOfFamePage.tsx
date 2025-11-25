@@ -29,6 +29,7 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
 
   // Supporters
   '루비': 'ruby.png',
+  'DOS': 'dos.png',
   '세라핀': 'seraphine.png',
   '효륵사마': 'hyoruksama.png',
   '거북': 'geobuk.png',

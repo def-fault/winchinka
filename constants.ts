@@ -216,6 +216,7 @@ export const TOURNAMENTS: Tournament[] = [
     },
     sponsors: [
       { name: "루비 (노바스텔라)" },
+      { name: "DOS (놀이터)" },
       { name: "우나 (윈친카)" }
     ],
     videoUrls: [
@@ -252,6 +253,7 @@ export const TOURNAMENTS: Tournament[] = [
     },
     sponsors: [
       { name: "루비 (노바스텔라)" },
+      { name: "DOS (놀이터)" },
       { name: "우나 (윈친카)" }
     ],
     videoUrls: [
@@ -268,6 +270,7 @@ const getAvatarUrl = (name: string) =>
 export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "루비", title: "노바스텔라", imageUrl: getAvatarUrl("루비") },
   { name: "우나", title: "윈친카", imageUrl: getAvatarUrl("우나") },
+  { name: "DOS", title: "놀이터", imageUrl: getAvatarUrl("DOS") },
   { name: "진실", title: "투신", imageUrl: getAvatarUrl("진실") },
   { name: "세라핀", title: "투신", imageUrl: getAvatarUrl("세라핀") },
   { name: "효륵사마", title: "투신", imageUrl: getAvatarUrl("효륵") },
