@@ -33,14 +33,14 @@ export const season2Participants = [
     members: [
       { name: '진리', class: '버서커' },
       { name: '순애킬러금태양', class: '카운터' },
-      { name: 'Blsee_you', class: '성기사' },
+      { name: 'Bless_you', class: '성기사' },
     ],
   },
   {
     name: '초보들의반란',
     members: [
       { name: '왕초보슬레이어', class: '버서커' },
-      { name: '이냥 (변경예정)', class: '비숍' },
+      { name: '데스나이트', class: '성기사' },
       { name: '짱군', class: '트랩퍼' },
     ],
   },
