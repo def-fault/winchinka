@@ -97,7 +97,7 @@ export const season2Participants = [
     members: [
       { name: '승재', class: '카운터' },
       { name: '지구인', class: '비숍' },
-      { name: '난도', class: '트랩퍼' },
+      { name: '에녹', class: '엘리멘탈리스트' },
     ],
   },
   {
