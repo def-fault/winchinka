@@ -1,10 +1,36 @@
-
 import React from 'react';
 import { InfoIcon, UsersIcon, SwordsIcon } from './Icons';
 
 const AboutPage: React.FC = () => {
+  const qnaList = [
+    {
+      q: "대회 참가 신청은 어디에서 하나요?",
+      a: "매 대회마다 공지되는 구글폼을 작성해서 제출해주세요."
+    },
+    {
+      q: "기본적인 규칙을 알고 싶어요!",
+      a: "공통 규칙으로는 악세서리 착용 금지이며, 대회 10분 전까지 대기 장소에 모여주세요. 대회마다 진행 방식의 차이가 조금씩 있기 때문에 대회 참가자 톡방에 입장하여 공지를 읽고 스탭 분들의 지시를 잘 따라주세요."
+    },
+    {
+      q: "대회 중 버그가 발생하면 재경기를 하나요?",
+      a: "잡기 버그 발생 시에는 바로 적팀이 풀어줘야하고, 그 과정을 방해하면 안됩니다. 의도하지 않게 발생하는 버그들에 대해서는 재경기 조건으로 충족되지 않습니다. (예: 위치 버그, 포탈 버그, 근성의 파이터 피격 버그 등)"
+    },
+    {
+      q: "제한시간 종료 시 승패 판정은 어떻게 하나요?",
+      a: "인원 수가 같을 경우, 피 색상(녹색 3점, 황색 2점, 적색 1점)에 따라 점수를 부여하여 판정승이 결정됩니다. (예: 2:2 상황, 적색-녹색 vs 황색-황색 = 4:4 무승부)"
+    },
+    {
+      q: "팀원을 교체하고 싶어요",
+      a: "사유와 함께, 본인 증빙 자료를 준비하여 대회 시작 1시간 전까지 스탭분들에게 문의 부탁드립니다."
+    },
+    {
+      q: "기타 문의 사항이 있어요",
+      a: "윈친카 디스코드 (윈디) 문의하기 기능을 이용해서 문의 부탁드립니다."
+    }
+  ];
+
   return (
-    <div className="animate-fade-in max-w-4xl mx-auto space-y-12 pb-20">
+    <div className="animate-fade-in max-w-4xl mx-auto space-y-16 pb-24">
       {/* Hero / Slogan */}
       <section className="text-center py-12 relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-game-accent/20 blur-[100px] rounded-full pointer-events-none" />
@@ -74,6 +100,48 @@ const AboutPage: React.FC = () => {
           <p className="font-bold text-white">
             여러분이 있는 한, 윈드슬레이어의 전설은 계속됩니다.
           </p>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section>
+        <div className="flex items-center gap-4 mb-8">
+           <div className="h-10 w-2 bg-game-primary rounded-full shadow-[0_0_15px_rgba(var(--game-primary-rgb),0.8)]" />
+           {/* 타이틀 크기 확대: text-3xl -> text-4xl md:text-5xl */}
+           <h2 className="text-4xl md:text-5xl font-display font-bold text-white">
+             자주 묻는 질문
+           </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4">
+          {qnaList.map((item, index) => (
+            <div 
+              key={index}
+              className="glass-panel rounded-xl overflow-hidden border border-white/10 hover:border-game-primary/40 transition-all duration-300 group"
+            >
+              {/* Question Header: 패딩 축소 (py-4)로 얇게 만듦 */}
+              <div className="bg-white/5 py-4 px-6 flex items-center gap-3 border-b border-white/5">
+                <span className="text-game-primary font-black text-xl leading-none shrink-0 drop-shadow-md">
+                  Q.
+                </span>
+                {/* 질문 폰트 사이즈 축소: text-lg */}
+                <h3 className="text-lg font-bold text-white leading-snug">
+                  {item.q}
+                </h3>
+              </div>
+              
+              {/* Answer Body */}
+              <div className="bg-black/20 p-6 flex items-start gap-3">
+                <span className="text-gray-500 font-black text-lg leading-none mt-1 shrink-0 select-none opacity-50">
+                  A.
+                </span>
+                {/* 답변 폰트 사이즈 축소: text-base */}
+                <p className="text-gray-300 text-base leading-relaxed">
+                  {item.a}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
     </div>

@@ -19,13 +19,15 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
   // Staff
   '대쉬': 'dash.png',
   '루나': 'luna.png',
+  '우나': 'una.png',
   '빡스냥': 'ppaksnyang.png',
   '진실': 'jinsil.png',
-  '우나': 'una.png',
+  '원탑': 'onetop.png',
   '복숭아': 'boksunga.png',
   '칠지도': 'chiljido.png',
   '유미캣': 'yumicat.png',
   '성녀': 'seongnyeo.png',
+
 
   // Supporters
   '루비': 'ruby.png',

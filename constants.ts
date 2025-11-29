@@ -285,10 +285,11 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
 
 export const STAFF_MEMBERS: StaffMember[] = [
   { name: "대쉬", role: "총괄 기획 / 기술 담당", imageUrl: getAvatarUrl("대쉬") },
-  { name: "루나", role: "중계 / 방송 담당", imageUrl: getAvatarUrl("루나") },
-  { name: "빡스냥", role: "최강의 듀오 1차 해설진", imageUrl: getAvatarUrl("빡스") },
-  { name: "진실", role: "최강의 듀오 2차 해설진", imageUrl: getAvatarUrl("진실") },
-  { name: "우나", role: "카페 매니저 / 운영 지원", imageUrl: getAvatarUrl("우나") },
+  { name: "루나", role: "대회 중계 / 방송 담당", imageUrl: getAvatarUrl("루나") },
+  { name: "우나", role: "커뮤니티 매니저 / 운영 지원", imageUrl: getAvatarUrl("우나") },
+  { name: "빡스냥", role: "[최강의 듀오] 1차 해설진", imageUrl: getAvatarUrl("빡스") },
+  { name: "진실", role: "[최강의 듀오] 2차 해설진", imageUrl: getAvatarUrl("진실") },
+  { name: "원탑", role: "[트리플 아레나] 해설진", imageUrl: getAvatarUrl("원탑") },
   { name: "복숭아", role: "소통 담당", imageUrl: getAvatarUrl("복숭") },
   { name: "칠지도", role: "보조 지원", imageUrl: getAvatarUrl("칠지") },
   { name: "유미캣", role: "보조 지원", imageUrl: getAvatarUrl("유미") },
