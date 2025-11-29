@@ -22,7 +22,7 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
   '우나': 'una.png',
   '빡스냥': 'ppaksnyang.png',
   '진실': 'jinsil.png',
-  '원탑': 'onetop.png',
+  '원탑': 'wontap.png',
   '복숭아': 'boksunga.png',
   '칠지도': 'chiljido.png',
   '유미캣': 'yumicat.png',
@@ -38,7 +38,7 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
   '별': 'byeol.png',
   '카모': 'kamo.png',
   '틀랩퍼': 'tlepper.png',
-  '원탑': 'wontap.png',
+  '원탑 ': 'onetop.png',
   '융하': 'yungha.png',
   'Sia': 'sia.png',
 };
