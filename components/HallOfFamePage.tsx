@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { TOURNAMENTS, HALL_OF_FAME_SUPPORTERS, STAFF_MEMBERS } from '../constants';
 import { CrownIcon, HeartIcon, ShieldIcon, MedalIcon } from './Icons';
@@ -27,7 +26,6 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
   '칠지도': 'chiljido.png',
   '유미캣': 'yumicat.png',
   '성녀': 'seongnyeo.png',
-
 
   // Supporters
   '루비': 'ruby.png',
@@ -62,7 +60,7 @@ interface HoverState {
 const HallOfFamePage: React.FC = () => {
   const [hoverState, setHoverState] = useState<HoverState | null>(null);
 
-  // Extract completed tournaments with winners
+  // 완료된 대회 중 우승자가 있는 대회만 가져오기
   const completedTournaments = TOURNAMENTS.filter(
     t => t.status === 'completed' && t.winner
   );
@@ -95,38 +93,37 @@ const HallOfFamePage: React.FC = () => {
     <div className="animate-fade-in max-w-6xl mx-auto pb-20 space-y-20 relative">
       
       {/* Floating Profile Card */}
-{hoverState && (
-  <div 
-    className="fixed pointer-events-none z-50 transition-opacity duration-200"
-    style={{ 
-      left: `${hoverState.x + 20}px`, 
-      top: `${hoverState.y + 20}px` 
-    }}
-  >
-    <div className="glass-panel bg-slate-900/90 p-4 rounded-2xl border-2 border-game-primary shadow-[0_0_24px_rgba(59,130,246,0.6)] flex flex-col items-center gap-3 min-w-[190px]">
-      {/* 🔥 여기만 수정 */}
-      <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border-2 border-white/40 bg-slate-800">
-        {hoverState.imageUrl && (
-          <img 
-            src={hoverState.imageUrl} 
-            alt={hoverState.name} 
-            className="w-full h-full object-cover"
-          />
-        )}
-      </div>
-      <div className="text-center">
-        <div className="font-display font-bold text-white text-lg md:text-xl">
-          {hoverState.name}
-        </div>
-        {hoverState.role && (
-          <div className="text-xs md:text-sm text-game-accent font-bold mt-1">
-            {hoverState.role}
+      {hoverState && (
+        <div 
+          className="fixed pointer-events-none z-50 transition-opacity duration-200"
+          style={{ 
+            left: `${hoverState.x + 20}px`, 
+            top: `${hoverState.y + 20}px` 
+          }}
+        >
+          <div className="glass-panel bg-slate-900/90 p-4 rounded-2xl border-2 border-game-primary shadow-[0_0_24px_rgba(59,130,246,0.6)] flex flex-col items-center gap-3 min-w-[190px]">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border-2 border-white/40 bg-slate-800">
+              {hoverState.imageUrl && (
+                <img 
+                  src={hoverState.imageUrl} 
+                  alt={hoverState.name} 
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+            <div className="text-center">
+              <div className="font-display font-bold text-white text-lg md:text-xl">
+                {hoverState.name}
+              </div>
+              {hoverState.role && (
+                <div className="text-xs md:text-sm text-game-accent font-bold mt-1">
+                  {hoverState.role}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </div>
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
       {/* Header */}
       <div className="text-center mb-12">
@@ -148,42 +145,90 @@ const HallOfFamePage: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {completedTournaments.map((t) => (
-            <div key={t.id} className="glass-panel p-6 rounded-xl border border-yellow-500/20 relative overflow-hidden group hover:border-yellow-500/50 transition-colors">
-              <div className="absolute top-0 right-0 bg-yellow-500 text-black font-bold text-xs px-3 py-1 rounded-bl-lg">
-                SEASON {t.season}
-              </div>
-              
-              <h3 className="text-xl font-display text-white mb-1">{t.subtitle}</h3>
-              <p className="text-sm text-gray-500 mb-6">{t.format} | {t.date}</p>
+          {completedTournaments.map((t) => {
+            // 시즌 2인지 확인 (가로 배치를 위해)
+            const isFeatured = t.season === '2';
 
-              <div className="flex flex-col gap-4">
-                {/* Winner */}
-                <div className="bg-gradient-to-r from-yellow-900/40 to-transparent p-4 rounded-lg border-l-4 border-yellow-500">
-                  <div className="flex items-center gap-2 mb-2">
-                    <MedalIcon className="w-5 h-5 text-yellow-400" />
-                    <span className="font-bold text-yellow-400">WINNER</span>
-                  </div>
-                  <div className="text-2xl font-bold text-white mb-1">{t.winner?.name}</div>
-                  <div className="text-sm text-gray-400">
-                    {t.winner?.players.map(p => p.name).join(', ')}
-                  </div>
+            return (
+              <div 
+                key={t.id} 
+                className={`glass-panel p-6 rounded-xl border border-yellow-500/20 relative overflow-hidden group hover:border-yellow-500/50 transition-colors ${
+                  isFeatured ? 'md:col-span-2' : ''
+                }`}
+              >
+                <div className="absolute top-0 right-0 bg-yellow-500 text-black font-bold text-xs px-3 py-1 rounded-bl-lg">
+                  SEASON {t.season}
                 </div>
+                
+                <h3 className="text-xl font-display text-white mb-1">{t.subtitle}</h3>
+                <p className="text-sm text-gray-500 mb-6">{t.format} | {t.date}</p>
 
-                {/* Runner Up */}
-                <div className="bg-white/5 p-4 rounded-lg border-l-4 border-gray-400">
-                  <div className="flex items-center gap-2 mb-2">
-                    <MedalIcon className="w-5 h-5 text-gray-400" />
-                    <span className="font-bold text-gray-400">RUNNER UP</span>
+                {/* 시즌 2일 때는 가로 배치(grid), 그 외에는 세로 배치(flex) */}
+                <div className={isFeatured ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "flex flex-col gap-4"}>
+                  
+                  {/* Winner (골드 스타일 유지) */}
+                  <div className="bg-gradient-to-r from-yellow-900/40 to-transparent p-4 rounded-lg border-l-4 border-yellow-500 h-full">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MedalIcon className="w-5 h-5 text-yellow-400" />
+                      <span className="font-bold text-yellow-400">WINNER</span>
+                    </div>
+                    <div className="text-2xl font-bold text-white mb-1">{t.winner?.name}</div>
+                    <div className="text-sm text-gray-400">
+                      {t.winner?.players.map(p => p.name).join(', ')}
+                    </div>
                   </div>
-                  <div className="text-xl font-bold text-white mb-1">{t.runnerUp?.name}</div>
-                  <div className="text-sm text-gray-500">
-                    {t.runnerUp?.players.map(p => p.name).join(', ')}
-                  </div>
+
+                  {/* Runner Up (은색 그라디언트로 변경!) */}
+                  {t.runnerUp && (
+                    <div className="bg-gradient-to-r from-slate-700/50 to-transparent p-4 rounded-lg border-l-4 border-slate-300 h-full">
+                      <div className="flex items-center gap-2 mb-2">
+                        <MedalIcon className="w-5 h-5 text-slate-300" />
+                        <span className="font-bold text-slate-300">RUNNER UP</span>
+                      </div>
+                      <div className="text-xl font-bold text-white mb-1">{t.runnerUp.name}</div>
+                      <div className="text-sm text-gray-400">
+                        {t.runnerUp.players.map(p => p.name).join(', ')}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 3rd & 4th Place */}
+                  {(t.thirdPlace || t.fourthPlace) && (
+                    <div className={`grid grid-cols-2 gap-4 ${isFeatured ? 'md:col-span-2 mt-2' : ''}`}>
+                      
+                      {/* 3rd Place (무색으로 변경!) */}
+                      {t.thirdPlace && (
+                        <div className="bg-white/5 p-3 rounded-lg border-l-4 border-slate-700">
+                           <div className="flex items-center gap-1.5 mb-1.5">
+                             <MedalIcon className="w-4 h-4 text-slate-500" />
+                             <span className="font-bold text-slate-500 text-xs tracking-wider">3rd PLACE</span>
+                           </div>
+                           <div className="font-bold text-white mb-0.5 text-sm">{t.thirdPlace.name}</div>
+                           <div className="text-xs text-gray-500 truncate">
+                             {t.thirdPlace.players.map(p => p.name).join(', ')}
+                           </div>
+                        </div>
+                      )}
+
+                      {/* 4th Place (무색 유지) */}
+                      {t.fourthPlace && (
+                        <div className="bg-white/5 p-3 rounded-lg border-l-4 border-slate-700">
+                           <div className="flex items-center gap-1.5 mb-1.5">
+                             <MedalIcon className="w-4 h-4 text-slate-500" />
+                             <span className="font-bold text-slate-500 text-xs tracking-wider">4th PLACE</span>
+                           </div>
+                           <div className="font-bold text-white mb-0.5 text-sm">{t.fourthPlace.name}</div>
+                           <div className="text-xs text-gray-500 truncate">
+                             {t.fourthPlace.players.map(p => p.name).join(', ')}
+                           </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 

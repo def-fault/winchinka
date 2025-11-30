@@ -169,12 +169,48 @@ export const TOURNAMENTS: Tournament[] = [
     season: '2',
     title: "제2회 윈터시즌 윈친카 무투대회",
     subtitle: "트리플 아레나",
-    status: 'active',
+    status: 'completed',
     date: "2025년 11월 29일 ~ 2025년 11월 30일",
     posterUrl: resolvePublicAsset('season2.png'),
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
     participants: season2Participants,
+    winner: {
+      name: "날먹",
+      players: [
+        { name: "증명" },
+        { name: "절단" },
+        { name: "Time" }
+      ]
+    },
+    runnerUp: {
+      name: "SCP",
+      players: [
+        { name: "Summon" },
+        { name: "乃" },
+        { name: "태세" }
+      ]
+    },
+    thirdPlace: {
+      name: "양가비",
+      players: [
+        { name: "비에고" },
+        { name: "양" },
+        { name: "가령" }
+      ]
+    },
+    fourthPlace: {
+      name: "king",
+      players: [
+        { name: "영민" },
+        { name: "카모" },
+        { name: "에이바" }
+      ]
+    },
+    videoUrls: [
+      "https://www.youtube.com/watch?v=wZSFieB26YE",
+      "https://www.youtube.com/watch?v=ZPOVs5VECN8"
+    ],
     sponsors: [
       { name: "진실 (투신)" },
       { name: "세라핀 (투신)" },

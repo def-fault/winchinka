@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tournament, Team } from '../types';
 import { ArrowLeftIcon, TrophyIcon, SwordsIcon, CoinsIcon, CrownIcon, VideoIcon } from './Icons';
@@ -8,33 +7,96 @@ interface Props {
   onBack: () => void;
 }
 
-const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 }> = ({ team, rank }) => {
+// 리스트 아이콘 컴포넌트 추가
+const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <line x1="8" y1="6" x2="21" y2="6" />
+    <line x1="8" y1="12" x2="21" y2="12" />
+    <line x1="8" y1="18" x2="21" y2="18" />
+    <line x1="3" y1="6" x2="3.01" y2="6" />
+    <line x1="3" y1="12" x2="3.01" y2="12" />
+    <line x1="3" y1="18" x2="3.01" y2="18" />
+  </svg>
+);
+
+const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 | 3 | 4 }> = ({ team, rank }) => {
   const isFirst = rank === 1;
 
-  return (
-    <div className={`relative p-6 rounded-2xl border flex flex-col items-center text-center overflow-hidden ${
-      isFirst 
-        ? 'bg-gradient-to-br from-yellow-900/40 to-slate-900 border-yellow-500/50 neon-border shadow-[0_0_30px_rgba(234,179,8,0.2)]' 
-        : 'bg-gradient-to-br from-slate-800 to-slate-900 border-slate-600'
-    }`}>
-      {isFirst && (
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+  let title = '';
+  let titleColorClass = '';
+  let cardStyleClass = '';
+  let icon = null;
+
+  switch(rank) {
+    case 1:
+      title = 'WINNER';
+      // Gold Style
+      titleColorClass = 'text-game-win drop-shadow-[0_0_5px_rgba(234,179,8,0.5)]';
+      cardStyleClass = 'bg-gradient-to-br from-yellow-900/40 to-slate-900 border-yellow-500/50 neon-border shadow-[0_0_30px_rgba(234,179,8,0.2)]';
+      icon = (
+         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
            <div className="bg-game-win p-3 rounded-full shadow-lg">
              <CrownIcon className="w-6 h-6 text-black" />
            </div>
         </div>
-      )}
+      );
+      break;
+
+    case 2:
+      title = 'RUNNER UP';
+      // Silver Style
+      titleColorClass = 'text-gray-100 drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]';
+      cardStyleClass = 'bg-gradient-to-br from-slate-500/40 via-slate-700/30 to-slate-900 border-slate-300/60 shadow-[0_0_25px_rgba(203,213,225,0.25)]';
+      break;
+
+    case 3:
+      title = '3rd PLACE';
+      // Colorless
+      titleColorClass = 'text-slate-500';
+      cardStyleClass = 'bg-gradient-to-br from-slate-800 to-slate-950 border-slate-700/60';
+      break;
+
+    case 4:
+      title = '4th PLACE';
+      // Colorless
+      titleColorClass = 'text-slate-600';
+      cardStyleClass = 'bg-gradient-to-br from-slate-800 to-slate-950 border-slate-700/60';
+      break;
+
+    default:
+      title = 'RANKER';
+      titleColorClass = 'text-gray-500';
+      cardStyleClass = 'border-slate-700';
+  }
+
+  return (
+    <div className={`relative p-6 rounded-2xl border flex flex-col items-center text-center overflow-hidden transition-transform duration-300 hover:scale-[1.02] ${cardStyleClass}`}>
+      {icon}
       
-      <h4 className={`font-display text-3xl font-black mt-4 mb-2 ${isFirst ? 'text-game-win' : 'text-gray-300'}`}>
-        {isFirst ? 'WINNER' : 'RUNNER UP'}
+      <h4 className={`font-display text-3xl font-black mt-4 mb-2 ${titleColorClass}`}>
+        {title}
       </h4>
-      <div className="text-xl font-bold text-white mb-6">{team.name}</div>
+
+      <div className="text-xl font-bold text-white mb-6">
+        {team.name}
+      </div>
       
       <div className="w-full space-y-2">
         {team.players.map((player, idx) => (
-          <div key={idx} className="flex justify-between items-center bg-black/30 px-4 py-2 rounded">
+          <div key={idx} className={`flex justify-between items-center px-4 py-2 rounded ${rank <= 2 ? 'bg-black/30' : 'bg-black/20'}`}>
             <span className="text-gray-200">{player.name}</span>
-            <span className="text-xs text-gray-500 font-mono border border-gray-700 px-1 rounded">{player.class}</span>
+            <span className={`text-xs font-mono border px-1 rounded ${rank <= 2 ? 'text-gray-500 border-gray-700' : 'text-gray-500 border-slate-800'}`}>
+              {player.class}
+            </span>
           </div>
         ))}
       </div>
@@ -136,7 +198,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
              </p>
           </div>
 
-          {/* Winners Section - Only if completed */}
+          {/* Winners Section */}
           {tournament.status === 'completed' && tournament.winner && (
             <div className="space-y-6">
                <div className="flex items-center gap-3 mb-2">
@@ -147,6 +209,8 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <WinnerCard team={tournament.winner} rank={1} />
                  {tournament.runnerUp && <WinnerCard team={tournament.runnerUp} rank={2} />}
+                 {tournament.thirdPlace && <WinnerCard team={tournament.thirdPlace} rank={3} />}
+                 {tournament.fourthPlace && <WinnerCard team={tournament.fourthPlace} rank={4} />}
                </div>
             </div>
           )}
@@ -191,7 +255,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
              </div>
           )}
 
-          {/* Fallback for upcoming or active (only when no roster to show) */}
+          {/* Fallback for upcoming or active */}
           {(tournament.status === 'upcoming' || tournament.status === 'active') && !hasParticipants && (
             <div className="flex flex-col items-center justify-center py-20 glass-panel rounded-xl border-dashed border-2 border-slate-600">
               <div className="text-6xl mb-4">🚧</div>
@@ -200,16 +264,15 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
             </div>
           )}
 
+          {/* TEAM ROSTER Section */}
           {hasParticipants && (
-            <div className="glass-panel p-8 rounded-xl space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="w-1.5 h-8 rounded-full bg-game-primary shadow-[0_0_20px_rgba(94,234,212,0.7)]" />
-                <div>
-                  <p className="text-sm uppercase tracking-[0.2em] text-game-primary font-bold">참가팀 명단</p>
-                  <h4 className="text-2xl font-display text-white font-black">TEAM ROSTER</h4>
-                </div>
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                {/* 녹색 리스트 아이콘 적용! */}
+                <ListIcon className="w-8 h-8 text-green-400" />
+                <h2 className="text-3xl font-display text-white">TEAM ROSTER</h2>
               </div>
-
+              
               <div className="overflow-x-auto">
                 <div className="min-w-[720px] rounded-xl border border-slate-700 bg-slate-900/60 backdrop-blur divide-y divide-slate-800">
                   <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] px-4 py-3 text-sm font-bold text-gray-300 bg-slate-800/70">
@@ -249,7 +312,6 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
         </div>
       </div>
       
-      {/* Explicit Bottom Spacer for Safety (Increased to 48 ~ 192px) */}
       <div className="h-48 w-full"></div>
     </div>
   );

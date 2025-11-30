@@ -1,4 +1,3 @@
-
 export interface Player {
   name: string;
   class?: string; // e.g., "Warrior", "Mage"
@@ -33,6 +32,8 @@ export interface Tournament {
   prizePool: string;
   winner?: Team;
   runnerUp?: Team;
+  thirdPlace?: Team; // 추가됨
+  fourthPlace?: Team; // 추가됨
   sponsors: Sponsor[];
   participants?: TournamentParticipantTeam[];
   description: string;
