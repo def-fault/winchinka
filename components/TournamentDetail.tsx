@@ -7,7 +7,7 @@ interface Props {
   onBack: () => void;
 }
 
-// 리스트 아이콘 컴포넌트 추가
+// 리스트 아이콘 컴포넌트
 const ListIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg 
     xmlns="http://www.w3.org/2000/svg" 
@@ -107,6 +107,11 @@ const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 | 3 | 4 }> = ({ team, rank 
 const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
 
   const hasParticipants = Boolean(tournament.participants && tournament.participants.length > 0);
+
+  // 참가 팀 중 가장 많은 멤버 수를 계산 (동적 컬럼 생성을 위함)
+  const maxMembers = tournament.participants 
+    ? Math.max(...tournament.participants.map(t => t.members.length)) 
+    : 0;
 
   const getYoutubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
@@ -268,22 +273,32 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
           {hasParticipants && (
             <div className="space-y-6">
               <div className="flex items-center gap-3 mb-2">
-                {/* 녹색 리스트 아이콘 적용! */}
                 <ListIcon className="w-8 h-8 text-green-400" />
                 <h2 className="text-3xl font-display text-white">TEAM ROSTER</h2>
               </div>
               
               <div className="overflow-x-auto">
                 <div className="min-w-[720px] rounded-xl border border-slate-700 bg-slate-900/60 backdrop-blur divide-y divide-slate-800">
-                  <div className="grid grid-cols-[1.2fr_1fr_1fr_1fr] px-4 py-3 text-sm font-bold text-gray-300 bg-slate-800/70">
+                  {/* Grid 컬럼 수 동적 할당 */}
+                  <div 
+                    className="grid px-4 py-3 text-sm font-bold text-gray-300 bg-slate-800/70 gap-2"
+                    style={{ gridTemplateColumns: `1.2fr repeat(${maxMembers}, 1fr)` }}
+                  >
                     <span className="pl-2">팀명</span>
-                    <span>팀대표</span>
-                    <span>팀원 1</span>
-                    <span>팀원 2</span>
+                    {/* [수정] 0번 인덱스만 '팀대표', 나머지는 모두 '팀원'으로 통일 (숫자 제거) */}
+                    {Array.from({ length: maxMembers }).map((_, i) => (
+                      <span key={i}>
+                        {i === 0 ? '팀대표' : '팀원'}
+                      </span>
+                    ))}
                   </div>
 
                   {tournament.participants?.map((team) => (
-                    <div key={team.name} className="grid grid-cols-[1.2fr_1fr_1fr_1fr] px-4 py-4 gap-2 text-sm text-gray-200">
+                    <div 
+                      key={team.name} 
+                      className="grid px-4 py-4 gap-2 text-sm text-gray-200"
+                      style={{ gridTemplateColumns: `1.2fr repeat(${maxMembers}, 1fr)` }}
+                    >
                       <div className="pl-2 font-semibold text-white">{team.name}</div>
                       {team.members.map((member, idx) => (
                         <div key={idx} className="space-y-1">

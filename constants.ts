@@ -4,10 +4,6 @@ const BASE_PATH = import.meta.env.BASE_URL || '/';
 
 /**
  * Builds a URL to a file that lives inside Vite's `public/` folder.
- *
- * Using the document's base URI keeps the path working regardless of whether the
- * app is served from a traditional server (https://example.com) or opened via
- * the file protocol after running `npm run build` (file:///path/to/dist).
  */
 const resolvePublicAsset = (path: string) => {
   const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
@@ -19,6 +15,134 @@ const resolvePublicAsset = (path: string) => {
   return new URL(normalizedPath, baseUrl).href;
 };
 
+// ==========================================
+// [시즌 1-1 참가자 명단] - 2인 구성 (팀대표 + 팀원)
+// ==========================================
+export const season1_1Participants = [
+  {
+    name: '뚀쪆',
+    members: [
+      { name: '드디어드디어', class: '도적' },
+      { name: '대쉬', class: '도적' },
+    ],
+  },
+  {
+    name: '어쌔신에게 꽃을',
+    members: [
+      { name: '어쌔신', class: '도적' },
+      { name: '당신에게꽃을', class: '마법사' },
+    ],
+  },
+  {
+    name: '가보자구',
+    members: [
+      { name: '보스', class: '전사' },
+      { name: '가령', class: '도적' },
+    ],
+  },
+  {
+    name: '꿈라우마',
+    members: [
+      { name: '이건꿈이야', class: '마법사' },
+      { name: '트라우마', class: '도적' },
+    ],
+  },
+  {
+    name: '평화와 전쟁',
+    members: [
+      { name: '예달', class: '사제' },
+      { name: '잿빛', class: '도적' },
+    ],
+  },
+  {
+    name: '햄토리 1팀',
+    members: [
+      { name: '증명', class: '사제' },
+      { name: '절단', class: '도적' },
+    ],
+  },
+  {
+    name: '마신족장 우정잉',
+    members: [
+      { name: '우정잉', class: '도적' },
+      { name: '마신족', class: '궁수' },
+    ],
+  },
+  {
+    name: '깡패',
+    members: [
+      { name: '째트킥', class: '무도가' },
+      { name: '생활', class: '무도가' },
+    ],
+  },
+] as const;
+
+// ==========================================
+// [시즌 1-2 참가자 명단] - 2인 구성 (팀대표 + 팀원)
+// ==========================================
+export const season1_2Participants = [
+  {
+    name: '아킬레우스 1팀',
+    members: [
+      { name: '영민', class: '버서커' },
+      { name: '카모', class: '카운터' },
+    ],
+  },
+  {
+    name: '따닉',
+    members: [
+      { name: '패닉', class: '파이터' },
+      { name: '까마귀88', class: '버서커' },
+    ],
+  },
+  {
+    name: '야인시대',
+    members: [
+      { name: '유수', class: '카운터' },
+      { name: '베니마루', class: '파이터' },
+    ],
+  },
+  {
+    name: '밟으면 꿈틀',
+    members: [
+      { name: '무인도', class: '어쌔신' },
+      { name: '트라우마', class: '트랩퍼' },
+    ],
+  },
+  {
+    name: '가보자구',
+    members: [
+      { name: '보스', class: '성기사' },
+      { name: '가령', class: '트랩퍼' },
+    ],
+  },
+  {
+    name: '침착한 으뜸',
+    members: [
+      { name: '키보드부순침착맨', class: '비스트마스터' },
+      { name: '으뜸', class: '파이터' },
+    ],
+  },
+  {
+    name: 'Run',
+    members: [
+      { name: '된장', class: '트랩퍼' },
+      { name: 'Sia', class: '비스트마스터' },
+    ],
+  },
+  {
+    name: '와쏘베쏘',
+    members: [
+      { name: '일병', class: '파이터' },
+      { name: '긴', class: '트랩퍼' },
+    ],
+  },
+] as const;
+
+
+// ==========================================
+// [시즌 2 참가자 명단] - 3인 구성 (팀대표 + 팀원1 + 팀원2)
+// ==========================================
 export const season2Participants = [
   {
     name: '제발1승만요',
@@ -150,6 +274,10 @@ export const season2Participants = [
   },
 ] as const;
 
+
+// ==========================================
+// [대회 정보 통합]
+// ==========================================
 export const TOURNAMENTS: Tournament[] = [
   {
     id: 'season-3',
@@ -174,7 +302,7 @@ export const TOURNAMENTS: Tournament[] = [
     posterUrl: resolvePublicAsset('season2.png'),
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
-    participants: season2Participants,
+    participants: season2Participants, // 3인 구성
     winner: {
       name: "날먹",
       players: [
@@ -208,8 +336,8 @@ export const TOURNAMENTS: Tournament[] = [
       ]
     },
     videoUrls: [
-      "https://www.youtube.com/watch?v=wZSFieB26YE",
-      "https://www.youtube.com/watch?v=ZPOVs5VECN8"
+      "https://www.youtube.com/watch?v=UiQUEeLPNa0",
+      "https://www.youtube.com/watch?v=JrtispzIs6Q"
     ],
     sponsors: [
       { name: "진실 (투신)" },
@@ -223,7 +351,6 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "융하 (낭만)" },
       { name: "Sia (투신)" }
     ],
-
     description: "제2회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 겨울의 전설에 도전하세요.",
   },
   {
@@ -236,6 +363,7 @@ export const TOURNAMENTS: Tournament[] = [
     posterUrl: resolvePublicAsset('season1-2.png'),
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
+    participants: season1_2Participants, // 2인 구성
     winner: {
       name: "아킬레우스 1팀",
       players: [
@@ -273,6 +401,7 @@ export const TOURNAMENTS: Tournament[] = [
     posterUrl: resolvePublicAsset('season1-1.png'),
     format: "2:2 듀오 매치",
     prizePool: "18만원 + 소정의 상품",
+    participants: season1_1Participants, // 2인 구성
     winner: {
       name: "햄토리 1팀",
       players: [
