@@ -455,6 +455,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
   { name: "빡스냥", role: "[최강의 듀오] 1차 해설진", imageUrl: getAvatarUrl("빡스") },
   { name: "진실", role: "[최강의 듀오] 2차 해설진", imageUrl: getAvatarUrl("진실") },
   { name: "원탑 ", role: "[트리플 아레나] 해설진", imageUrl: getAvatarUrl("원탑 ") },
+  { name: "핵토파스칼킥", role: "[크레센도 매치] 해설진", imageUrl: getAvatarUrl("핵토") },
   { name: "복숭아", role: "소통 담당", imageUrl: getAvatarUrl("복숭") },
   { name: "칠지도", role: "보조 지원", imageUrl: getAvatarUrl("칠지") },
   { name: "유미캣", role: "보조 지원", imageUrl: getAvatarUrl("유미") },
