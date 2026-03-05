@@ -162,7 +162,7 @@ const App: React.FC = () => {
               <img
                 src="/LOGO.png"
                 alt="Legends of Wind Slayer"
-                className="relative mx-auto h-[288px] md:h-[432px] mb-6 object-contain drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+                className="relative mx-auto h-[144px] md:h-[216px] mb-6 object-contain drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
               />
               <p className="relative text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
                 윈친카 무투대회의 역사가 기록된 아카이브입니다.<br />
