@@ -42,6 +42,14 @@ const App: React.FC = () => {
       {/* Clean background with subtle gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,_#1e293b_0%,_#050b14_60%)] pointer-events-none" />
       
+      {/* Homepage Background Images */}
+      {view === ViewState.LIST && (
+        <div className="fixed inset-0 pointer-events-none flex justify-between items-center z-0 overflow-hidden mix-blend-screen opacity-50 transition-opacity duration-1000">
+          <img src="/background_magician.png" alt="Magician" className="h-[80vh] w-auto max-w-[45%] object-contain object-left animate-fade-in-up" />
+          <img src="/background_warrior.png" alt="Warrior" className="h-[80vh] w-auto max-w-[45%] object-contain object-right animate-fade-in-up" />
+        </div>
+      )}
+      
       {/* Global Header */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050b14]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between relative">
