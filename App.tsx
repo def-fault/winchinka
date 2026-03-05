@@ -41,7 +41,7 @@ const App: React.FC = () => {
     <div className="min-h-screen flex flex-col bg-[#050b14] relative selection:bg-game-primary selection:text-white overflow-x-hidden">
       {/* Clean background with subtle gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,_#1e293b_0%,_#050b14_60%)] pointer-events-none" />
-      
+
       {/* Homepage Background Images */}
       {view === ViewState.LIST && (
         <div className="fixed inset-0 pointer-events-none flex justify-between items-center z-0 overflow-hidden mix-blend-screen opacity-50 transition-opacity duration-1000">
@@ -49,40 +49,40 @@ const App: React.FC = () => {
           <img src="/background_warrior.png" alt="Warrior" className="h-[80vh] w-auto max-w-[45%] object-contain object-right animate-fade-in-up" />
         </div>
       )}
-      
+
       {/* Global Header */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#050b14]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between relative">
           <div className="flex items-center gap-2 cursor-pointer" onClick={handleBack}>
             <div className="w-8 h-8 bg-gradient-to-tr from-game-primary to-game-accent rounded flex items-center justify-center shadow-lg">
-               <TrophyIcon className="text-white w-5 h-5" />
+              <TrophyIcon className="text-white w-5 h-5" />
             </div>
             <span className="font-display text-xl tracking-wider font-bold text-white neon-text">
               윈친카 <span className="text-game-primary">아카이브</span>
             </span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
-            <button 
+            <button
               onClick={() => navigateTo(ViewState.ABOUT)}
               className={`transition-colors ${view === ViewState.ABOUT ? 'text-white font-bold' : 'hover:text-white'}`}
             >
               대회 소개
             </button>
-            <button 
+            <button
               onClick={() => navigateTo(ViewState.HALL_OF_FAME)}
               className={`transition-colors ${view === ViewState.HALL_OF_FAME ? 'text-white font-bold' : 'hover:text-white'}`}
             >
               명예의 전당
             </button>
-             <button 
+            <button
               onClick={() => navigateTo(ViewState.GALLERY)}
               className={`transition-colors ${view === ViewState.GALLERY ? 'text-white font-bold' : 'hover:text-white'}`}
             >
               갤러리
             </button>
-            <a 
+            <a
               href={CAFE_URL}
-              target="_blank" 
+              target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 rounded bg-white/5 hover:bg-white/10 text-white transition-all flex items-center gap-2"
             >
@@ -159,31 +159,30 @@ const App: React.FC = () => {
             {/* Hero Section */}
             <section className="mb-16 text-center relative animate-fade-in">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-game-primary/20 blur-[100px] rounded-full pointer-events-none" />
-              <h1 className="relative text-5xl md:text-7xl font-display font-black text-white mb-6 tracking-tighter">
-                LEGENDS OF <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-game-primary via-purple-500 to-game-fire neon-text">
-                  WIND SLAYER
-                </span>
-              </h1>
+              <img
+                src="/LOGO.png"
+                alt="Legends of Wind Slayer"
+                className="relative mx-auto h-24 md:h-36 mb-6 object-contain drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]"
+              />
               <p className="relative text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-                윈친카 무투대회의 역사를 기록하는 아카이브입니다.<br/>
-                수많은 강자들이 거쳐간 영광의 순간들을 확인하세요.
+                윈친카 무투대회의 역사가 기록된 아카이브입니다.<br />
+                모험가들이 거쳐간 영광의 순간들을 확인하세요.
               </p>
             </section>
 
             {/* Tournament Grid */}
             <section className="animate-fade-in-up">
               <div className="flex items-center gap-3 mb-8">
-                 <div className="w-1 h-8 bg-game-primary neon-border" />
-                 <h2 className="text-2xl font-bold text-white">TOURNAMENTS</h2>
+                <div className="w-1 h-8 bg-game-primary neon-border" />
+                <h2 className="text-2xl font-bold text-white">TOURNAMENTS</h2>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {TOURNAMENTS.map((t) => (
-                  <TournamentCard 
-                    key={t.id} 
-                    tournament={t} 
-                    onClick={handleTournamentClick} 
+                  <TournamentCard
+                    key={t.id}
+                    tournament={t}
+                    onClick={handleTournamentClick}
                   />
                 ))}
               </div>
@@ -192,16 +191,16 @@ const App: React.FC = () => {
         )}
 
         {view === ViewState.DETAIL && selectedTournament && (
-          <TournamentDetail 
-            tournament={selectedTournament} 
-            onBack={handleBack} 
+          <TournamentDetail
+            tournament={selectedTournament}
+            onBack={handleBack}
           />
         )}
 
         {view === ViewState.ABOUT && <AboutPage />}
-        
+
         {view === ViewState.HALL_OF_FAME && <HallOfFamePage />}
-        
+
         {view === ViewState.GALLERY && <GalleryPage />}
 
       </main>
@@ -220,7 +219,7 @@ const App: React.FC = () => {
 
       {/* AI Chat Widget */}
       <ChatWidget />
-      
+
       {/* Music Player Widget */}
       <MusicPlayer />
     </div>
