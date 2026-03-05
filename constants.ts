@@ -445,7 +445,8 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "틀랩퍼", title: "투신", imageUrl: getAvatarUrl("틀랩") },
   { name: "원탑", title: "우주", imageUrl: getAvatarUrl("원탑") },
   { name: "융하", title: "F E E L 、", imageUrl: getAvatarUrl("융하") },
-  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") }
+  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") },
+  { name: "우위", title: "올리브영", imageUrl: getAvatarUrl("우위") }
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
