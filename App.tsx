@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ViewState, Tournament } from './types';
 import { TOURNAMENTS } from './constants';
 import TournamentCard from './components/TournamentCard';
@@ -9,6 +9,7 @@ import MusicPlayer from './components/MusicPlayer';
 import AboutPage from './components/AboutPage';
 import HallOfFamePage from './components/HallOfFamePage';
 import GalleryPage from './components/GalleryPage';
+import PlaygroundPage from './components/PlaygroundPage';
 import { TrophyIcon } from './components/Icons';
 
 const CAFE_URL = "https://cafe.naver.com/windslayerschin";
@@ -17,6 +18,15 @@ const App: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.LIST);
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    return localStorage.getItem('winchinka_playground_unlocked') === 'true';
+  });
+
+  useEffect(() => {
+    const handleUnlock = () => setIsUnlocked(true);
+    window.addEventListener('winchinka:unlock-playground', handleUnlock);
+    return () => window.removeEventListener('winchinka:unlock-playground', handleUnlock);
+  }, []);
 
   const handleTournamentClick = (tournament: Tournament) => {
     setSelectedTournament(tournament);
@@ -80,6 +90,15 @@ const App: React.FC = () => {
             >
               갤러리
             </button>
+            {isUnlocked && (
+              <button
+                onClick={() => navigateTo(ViewState.PLAYGROUND)}
+                className={`relative transition-colors ${view === ViewState.PLAYGROUND ? 'text-white font-bold' : 'hover:text-white'}`}
+              >
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[7px] leading-none bg-red-600 text-white px-0.5 py-0.5 rounded-sm animate-pulse font-bold tracking-tighter">BETA</span>
+                플레이그라운드
+              </button>
+            )}
             <a
               href={CAFE_URL}
               target="_blank"
@@ -137,6 +156,15 @@ const App: React.FC = () => {
                 >
                   갤러리
                 </button>
+                {isUnlocked && (
+                  <button
+                    onClick={() => navigateTo(ViewState.PLAYGROUND)}
+                    className={`px-4 py-3 text-left relative ${view === ViewState.PLAYGROUND ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
+                  >
+                    <span className="absolute top-3 right-4 text-[7px] leading-none bg-red-600 text-white px-0.5 py-0.5 rounded-sm animate-pulse font-bold tracking-tighter">BETA</span>
+                    플레이그라운드
+                  </button>
+                )}
                 <a
                   href={CAFE_URL}
                   target="_blank"
@@ -203,6 +231,8 @@ const App: React.FC = () => {
 
         {view === ViewState.GALLERY && <GalleryPage />}
 
+        {view === ViewState.PLAYGROUND && <PlaygroundPage />}
+
       </main>
 
       {/* Spacer to guarantee separation between content and footer */}
@@ -211,8 +241,9 @@ const App: React.FC = () => {
       {/* Footer - ONLY RENDER IF NOT IN DETAIL VIEW */}
       {view !== ViewState.DETAIL && (
         <footer className="border-t border-white/10 bg-black/50 backdrop-blur-sm py-8 relative z-10">
-          <div className="max-w-7xl mx-auto px-4 text-center text-gray-600 text-sm">
-            <p>© 2025 WinChinKa Archive. Community Fan Site.</p>
+          <div className="max-w-7xl mx-auto px-4 text-center text-gray-500 text-xs">
+            <p className="opacity-60 mb-1">© 2025 WinChinKa Archive. Community Fan Site.</p>
+            <p className="font-medium tracking-wider">© 2025 SESISOFT All copyrights reserved.</p>
           </div>
         </footer>
       )}

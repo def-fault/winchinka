@@ -46,6 +46,7 @@ export enum ViewState {
   ABOUT = 'ABOUT',
   HALL_OF_FAME = 'HALL_OF_FAME',
   GALLERY = 'GALLERY',
+  PLAYGROUND = 'PLAYGROUND',
 }
 
 export interface HallOfFameSponsor {

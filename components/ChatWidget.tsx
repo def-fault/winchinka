@@ -34,9 +34,20 @@ const ChatWidget: React.FC = () => {
     setIsLoading(true);
 
     const history = messages.map(m => `${m.sender}: ${m.text}`);
+
+    // Hidden command: "beta"냥
+    if (input.toLowerCase().trim() === 'beta') {
+      localStorage.setItem('winchinka_playground_unlocked', 'true');
+      window.dispatchEvent(new CustomEvent('winchinka:unlock-playground'));
+      const secretMsg: Message = { id: Date.now() + 1, text: "오호... 비밀 암호를 알고 있구리! 플레이그라운드 탭을 열어줬구리! 🛠️", sender: 'bot' };
+      setMessages(prev => [...prev, secretMsg]);
+      setIsLoading(false);
+      return;
+    }
+
     const response = await chatWithArchiveBot(userMsg.text, history);
 
-    const botMsg: Message = { id: Date.now() + 1, text: response || "응답을 불러올 수 없구리...", sender: 'bot' };
+    const botMsg: Message = { id: Date.now() + 1, text: response || "현재 준비 중인 기능이구리!", sender: 'bot' };
     setMessages(prev => [...prev, botMsg]);
     setIsLoading(false);
   };
@@ -55,40 +66,39 @@ const ChatWidget: React.FC = () => {
               <XIcon className="w-5 h-5" />
             </button>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] px-3 py-2 rounded-lg text-sm ${
-                  msg.sender === 'user' 
-                    ? 'bg-game-primary text-white' 
-                    : 'bg-slate-700 text-gray-100'
-                }`}>
+                <div className={`max-w-[80%] px-3 py-2 rounded-lg text-sm ${msg.sender === 'user'
+                  ? 'bg-game-primary text-white'
+                  : 'bg-slate-700 text-gray-100'
+                  }`}>
                   {msg.text}
                 </div>
               </div>
             ))}
             {isLoading && (
-               <div className="flex justify-start">
-                 <div className="bg-slate-700 text-gray-100 px-3 py-2 rounded-lg text-sm animate-pulse">
-                   생각 중이구리...
-                 </div>
-               </div>
+              <div className="flex justify-start">
+                <div className="bg-slate-700 text-gray-100 px-3 py-2 rounded-lg text-sm animate-pulse">
+                  생각 중이구리...
+                </div>
+              </div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
           <div className="p-3 bg-slate-800 border-t border-slate-600 flex gap-2">
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="구리구리에게 질문해봐!"
               className="flex-1 bg-slate-900 border border-slate-600 rounded px-3 py-2 text-sm focus:outline-none focus:border-game-primary text-white"
             />
-            <button 
-              onClick={handleSend} 
+            <button
+              onClick={handleSend}
               disabled={isLoading}
               className="bg-game-primary hover:bg-blue-600 disabled:bg-gray-600 text-white p-2 rounded transition-colors"
             >
@@ -97,12 +107,11 @@ const ChatWidget: React.FC = () => {
           </div>
         </div>
       )}
-      
-      <button 
+
+      <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`p-4 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center group ${
-          isOpen ? 'bg-slate-700 rotate-90' : 'bg-gradient-to-r from-game-primary to-game-accent hover:scale-110 neon-border'
-        }`}
+        className={`p-4 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center group ${isOpen ? 'bg-slate-700 rotate-90' : 'bg-gradient-to-r from-game-primary to-game-accent hover:scale-110 neon-border'
+          }`}
       >
         {isOpen ? <XIcon className="w-6 h-6 text-white" /> : <MessageCircleIcon className="w-7 h-7 text-white" />}
       </button>
