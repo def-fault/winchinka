@@ -18,7 +18,7 @@ interface PartDef {
 const PART_DEFS: PartDef[] = [
     { id: 'bg', label: '배경', prefix: 'bg', defaultFile: 'bg001.png', offsetX: 0, offsetY: 0, extractCount: 1, gapThreshold: 3, isBg: true },
     { id: 'body', label: '몸통', prefix: 'body', defaultFile: 'body001_a1.hsc.dds', offsetX: 0, offsetY: 0, extractCount: 1, gapThreshold: 3 },
-    { id: 'shoe', label: '신발', prefix: 'shoes', defaultFile: 'shoes001_a1.hsc.dds', offsetX: 0, offsetY: 60, extractCount: 1, gapThreshold: 3 },
+    { id: 'shoe', label: '신발', prefix: 'shoes', defaultFile: 'shoes001_a1.hsc.dds', offsetX: 0, offsetY: 60, extractCount: 2, gapThreshold: 1 },
     { id: 'pants', label: '하의', prefix: 'pant', defaultFile: 'pant001_a1.hsc.dds', offsetX: 0, offsetY: 44, extractCount: 1, gapThreshold: 3 },
     { id: 'shirt', label: '상의', prefix: 'shirt', defaultFile: 'shirt001_a1.hsc.dds', offsetX: 0, offsetY: 0, extractCount: 1, gapThreshold: 3 },
     { id: 'glove', label: '장갑', prefix: 'glove', defaultFile: 'glove007_a1.hsc.dds', offsetX: 0, offsetY: 30, extractCount: 2, gapThreshold: 1 },
@@ -47,122 +47,92 @@ const RENDER_ORDER: { id: string; order: number; hairHalf?: 'top' | 'bottom' }[]
 ];
 
 // ─── Types냥 ───────────────────────────────────────────────────────────────────
+interface Frame { x: number; y: number; w: number; h: number; }
 interface CropResult {
     canvas: HTMLCanvasElement;
-    cropX: number; cropY: number;
-    cropW: number; cropH: number;
+    frames: Frame[];
 }
 
 // ─── extract_first_frame — Hybrid version냥
-function extractFirstFrame(canvas: HTMLCanvasElement, extractCount: number, gapThreshold: number): { cropX: number; cropY: number; cropW: number; cropH: number } {
+function extractFrames(canvas: HTMLCanvasElement, extractCount: number, gapThreshold: number): Frame[] {
     const ctx = canvas.getContext('2d', { willReadFrequently: true })!;
     const w = canvas.width, h = canvas.height;
     const data = ctx.getImageData(0, 0, w, h).data;
     const alpha = new Uint8Array(w * h);
     for (let i = 0; i < w * h; i++) alpha[i] = data[i * 4 + 3];
 
-    let xStart = 0, xEnd = w, yStart = 0, yEnd = h;
-
-    if (extractCount > 1) {
-        // ─── BLOB DETECTION LOGIC (Gloves, Weapons) ───
-        // Step 1: 먼저 row-gap 스캔으로 첫 번째 애니메이션 행(row strip)을 찾고냥
-        const rowSum = new Float64Array(h);
-        for (let y = 0; y < h; y++) {
-            for (let x = 0; x < w; x++) rowSum[y] += alpha[y * w + x];
-        }
-        while (yStart < h && rowSum[yStart] === 0) yStart++;
-        {
-            let gs = -1, gl = 0;
-            for (let y = yStart; y < h; y++) {
-                if (rowSum[y] === 0) {
-                    if (gs < 0) gs = y; gl++;
-                    if (gl >= 3) { yEnd = gs; break; }  // 3px gap → 행 경계냥
-                } else { gs = -1; gl = 0; }
-            }
-        }
-
-        // Step 2: 그 행 안에서만 flood-fill BFS로 덩어리 탐색냥
-        const visited = new Uint8Array(w * h);
-        const MIN_BLOB_PX = 4; // 노이즈 필터: 4px 미만 무시냥
-        interface Blob { minX: number; minY: number; maxX: number; maxY: number; count: number; }
-        const blobs: Blob[] = [];
-
-        for (let y = yStart; y < yEnd; y++) {
-            for (let x = 0; x < w; x++) {
-                const i = y * w + x;
-                if (visited[i] || alpha[i] === 0) continue;
-                // BFS flood-fill (행 범위 내에서만)냥
-                const blob: Blob = { minX: w, minY: h, maxX: 0, maxY: 0, count: 0 };
-                const queue: number[] = [i];
-                visited[i] = 1;
-                while (queue.length > 0) {
-                    const idx = queue.pop()!;
-                    const bx = idx % w, by = (idx - bx) / w;
-                    blob.count++;
-                    if (bx < blob.minX) blob.minX = bx;
-                    if (bx > blob.maxX) blob.maxX = bx;
-                    if (by < blob.minY) blob.minY = by;
-                    if (by > blob.maxY) blob.maxY = by;
-                    // 4-directional neighbors (행 범위 제한)냥
-                    const neighbors = [
-                        by > yStart ? idx - w : -1,
-                        by < yEnd - 1 ? idx + w : -1,
-                        bx > 0 ? idx - 1 : -1,
-                        bx < w - 1 ? idx + 1 : -1,
-                    ];
-                    for (const ni of neighbors) {
-                        if (ni >= 0 && !visited[ni] && alpha[ni] > 0) {
-                            visited[ni] = 1;
-                            queue.push(ni);
-                        }
-                    }
-                }
-                if (blob.count >= MIN_BLOB_PX) blobs.push(blob);
-            }
-        }
-
-        // Step 3: X좌표(minX) 기준 정렬, 처음 extractCount개 선택냥
-        blobs.sort((a, b) => a.minX - b.minX);
-        const selected = blobs.slice(0, extractCount);
-
-        if (selected.length > 0) {
-            xStart = Math.min(...selected.map(b => b.minX));
-            xEnd = Math.max(...selected.map(b => b.maxX)) + 1;
-            yStart = Math.min(...selected.map(b => b.minY));
-            yEnd = Math.max(...selected.map(b => b.maxY)) + 1;
-        }
-    } else {
-        // ─── STABLE SINGLE PART LOGIC (Body, Hair, etc.) ───
-        // Row scan FIRST to find the first animation strip냥
-        const rowSum = new Float64Array(h);
-        for (let y = 0; y < h; y++) {
-            for (let x = 0; x < w; x++) rowSum[y] += alpha[y * w + x];
-        }
-        while (yStart < h && rowSum[yStart] === 0) yStart++;
+    let yStart = 0, yEnd = h;
+    const rowSum = new Float64Array(h);
+    for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) rowSum[y] += alpha[y * w + x];
+    }
+    while (yStart < h && rowSum[yStart] === 0) yStart++;
+    {
         let gs = -1, gl = 0;
         for (let y = yStart; y < h; y++) {
             if (rowSum[y] === 0) {
                 if (gs < 0) gs = y; gl++;
-                if (gl >= gapThreshold) { yEnd = gs; break; }
+                if (gl >= 3) { yEnd = gs; break; }
             } else { gs = -1; gl = 0; }
         }
-        // Col scan within that row band냥
-        const colSum = new Float64Array(w);
-        for (let x = 0; x < w; x++) {
-            for (let y = yStart; y < yEnd; y++) colSum[x] += alpha[y * w + x];
-        }
-        while (xStart < w && colSum[xStart] === 0) xStart++;
-        gs = -1, gl = 0; let lastNonZeroX = xStart;
-        for (let x = xStart; x < w; x++) {
-            if (colSum[x] === 0) {
-                if (gs < 0) gs = x; gl++;
-                if (gl >= gapThreshold) { xEnd = gs; break; }
-            } else { gs = -1; gl = 0; lastNonZeroX = x; }
-        }
-        if (xEnd === w || xEnd <= xStart) xEnd = lastNonZeroX + 1;
     }
 
-    return { cropX: xStart, cropY: yStart, cropW: Math.max(1, xEnd - xStart), cropH: Math.max(1, yEnd - yStart) };
+    // BFS for all blobs in this row strip
+    const visited = new Uint8Array(w * h);
+    const MIN_BLOB_PX = 4;
+    interface Blob { minX: number; minY: number; maxX: number; maxY: number; count: number; }
+    const blobs: Blob[] = [];
+
+    for (let y = yStart; y < yEnd; y++) {
+        for (let x = 0; x < w; x++) {
+            const i = y * w + x;
+            if (visited[i] || alpha[i] === 0) continue;
+            const blob: Blob = { minX: w, minY: h, maxX: 0, maxY: 0, count: 0 };
+            const queue: number[] = [i];
+            visited[i] = 1;
+            while (queue.length > 0) {
+                const idx = queue.pop()!;
+                const bx = idx % w, by = (idx - bx) / w;
+                blob.count++;
+                if (bx < blob.minX) blob.minX = bx;
+                if (bx > blob.maxX) blob.maxX = bx;
+                if (by < blob.minY) blob.minY = by;
+                if (by > blob.maxY) blob.maxY = by;
+                const neighbors = [
+                    by > yStart ? idx - w : -1,
+                    by < yEnd - 1 ? idx + w : -1,
+                    bx > 0 ? idx - 1 : -1,
+                    bx < w - 1 ? idx + 1 : -1,
+                ];
+                for (const ni of neighbors) {
+                    if (ni >= 0 && !visited[ni] && alpha[ni] > 0) {
+                        visited[ni] = 1;
+                        queue.push(ni);
+                    }
+                }
+            }
+            if (blob.count >= MIN_BLOB_PX) blobs.push(blob);
+        }
+    }
+
+    blobs.sort((a, b) => a.minX - b.minX);
+    
+    // Group blobs by extractCount to form animation frames
+    const frames: Frame[] = [];
+    for (let i = 0; i < Math.floor(blobs.length / extractCount); i++) {
+        const group = blobs.slice(i * extractCount, (i + 1) * extractCount);
+        frames.push({
+            x: Math.min(...group.map(b => b.minX)),
+            y: Math.min(...group.map(b => b.minY)),
+            w: Math.max(...group.map(b => b.maxX)) - Math.min(...group.map(b => b.minX)) + 1,
+            h: Math.max(...group.map(b => b.maxY)) - Math.min(...group.map(b => b.minY)) + 1,
+        });
+    }
+
+    if (frames.length === 0) {
+        return [{ x: 0, y: 0, w: 1, h: 1 }];
+    }
+    return frames;
 }
 
 // ─── Canvas decode냥 ──────────────────────────────────────────────────────────
@@ -190,10 +160,10 @@ async function loadPartCached(def: PartDef, fileName: string): Promise<CropResul
         const canvas = await decodeCanvas(url);
         let result: CropResult;
         if (def.isBg) {
-            result = { canvas, cropX: 0, cropY: 0, cropW: canvas.width, cropH: canvas.height };
+            result = { canvas, frames: [{ x: 0, y: 0, w: canvas.width, h: canvas.height }] };
         } else {
-            const crop = extractFirstFrame(canvas, def.extractCount, def.gapThreshold);
-            result = { canvas, ...crop };
+            const frames = extractFrames(canvas, def.extractCount, def.gapThreshold);
+            result = { canvas, frames };
         }
         partCache.set(key, result);
         return result;
@@ -238,12 +208,13 @@ function makeThumbnail(part: CropResult, id: string): string {
         ctx.strokeRect(1, 1, SIZE - 2, SIZE - 2);
     }
 
-    const scale = Math.min(1, SIZE / Math.max(part.cropW, part.cropH, 1));
-    const sw = Math.round(part.cropW * scale);
-    const sh = Math.round(part.cropH * scale);
+    const frame = part.frames[0];
+    const scale = Math.min(1, SIZE / Math.max(frame.w, frame.h, 1));
+    const sw = Math.round(frame.w * scale);
+    const sh = Math.round(frame.h * scale);
     const dx = Math.round((SIZE - sw) / 2);
     const dy = Math.round((SIZE - sh) / 2);
-    ctx.drawImage(part.canvas, part.cropX, part.cropY, part.cropW, part.cropH, dx, dy, sw, sh);
+    ctx.drawImage(part.canvas, frame.x, frame.y, frame.w, frame.h, dx, dy, sw, sh);
     return tc.toDataURL();
 }
 
@@ -388,7 +359,16 @@ const PlaygroundPage: React.FC = () => {
         () => Object.fromEntries(PART_DEFS.map(d => [d.id, d.id !== 'weapon' && d.id !== 'face' && d.id !== 'eye']))
     );
     const [loaded, setLoaded] = useState<Record<string, CropResult | null>>({});
+    const [animIndex, setAnimIndex] = useState(0);
     const canvasRef = useRef<HTMLCanvasElement>(null);
+
+    // Global animation timer synchronized across all parts냥
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setAnimIndex(i => i + 1);
+        }, 1000); // 1-second interval냥
+        return () => clearInterval(timer);
+    }, []);
 
     const loadAndSet = useCallback(async (def: PartDef, file: string) => {
         const part = await loadPartCached(def, file);
@@ -410,8 +390,12 @@ const PlaygroundPage: React.FC = () => {
         ctx.fillRect(0, 0, W, H);
 
         const bodyPart = loaded['body'];
-        const charBaseX = bodyPart ? 128 - (Math.round(bodyPart.cropW / 2) + bodyPart.cropX) : 128 - 256;
-        const charBaseY = bodyPart ? 100 - bodyPart.cropY : 80;
+        const bodyFrameIdx = (bodyPart && bodyPart.frames.length > 1) ? (animIndex % 2) : 0;
+        const bodyFrame = bodyPart?.frames[bodyFrameIdx] || { x: 0, y: 0, w: 256, h: 256 };
+        // Base X now centers the body without adding bodyFrame.x, since relative logic adds it back냥
+        const charBaseX = bodyPart ? 128 - Math.round(bodyFrame.w / 2) : 128 - 128;
+        // Base Y aligns the body's native top (as crop strips transparent space). 
+        const charBaseY = 100;
 
         const drawPart = (id: string, hairHalf?: 'top' | 'bottom') => {
             const def = PART_DEFS.find(d => d.id === id);
@@ -419,33 +403,47 @@ const PlaygroundPage: React.FC = () => {
             const part = loaded[id];
             if (!part || !visible[id]) return;
 
-            const px = Math.round(charBaseX + def.offsetX + part.cropX);
-            const py = Math.round(charBaseY + def.offsetY + part.cropY);
+            // Custom animation logic냥
+            let frameIdx = 0;
+            const fixedIds = ['hair', 'face', 'eye', 'helm'];
+            if (!fixedIds.includes(id) && part.frames.length > 1) {
+                frameIdx = (animIndex % 2);
+            }
+
+            const frame = part.frames[frameIdx];
+
+            // Intrinsic Offset relative to the matching Body frame냥
+            const refBodyIdx = (bodyPart && frameIdx < bodyPart.frames.length) ? frameIdx : 0;
+            const refBodyFrame = bodyPart?.frames[refBodyIdx] || { x: 0, y: 0, w: 256, h: 256 };
+            const relativeX = frame.x - refBodyFrame.x;
+            const relativeY = frame.y - refBodyFrame.y;
+
+            const bobOffset = (animIndex % 2 === 1) ? 1 : 0;
+            const px = Math.round(charBaseX + def.offsetX + relativeX);
+            const py = Math.round(charBaseY + def.offsetY + relativeY) + bobOffset;
 
             if (id === 'bg') {
-                const bx = Math.round((W - part.cropW) / 2);
-                const by = Math.round((H - part.cropH) / 2);
-                ctx.drawImage(part.canvas, part.cropX, part.cropY, part.cropW, part.cropH, bx, by, part.cropW, part.cropH);
+                const bx = Math.round((W - frame.w) / 2);
+                const by = Math.round((H - frame.h) / 2);
+                ctx.drawImage(part.canvas, frame.x, frame.y, frame.w, frame.h, bx, by, frame.w, frame.h);
                 return;
             }
 
             if (hairHalf === 'bottom') {
-                // Draw ONLY the bottom half of the hair (behind body)냥
-                const topH = Math.floor(part.cropH / 2);
-                const botY = part.cropY + topH;
-                const botH = part.cropH - topH;
-                ctx.drawImage(part.canvas, part.cropX, botY, part.cropW, botH, px, py + topH, part.cropW, botH);
+                const topH = Math.floor(frame.h / 2);
+                const botY = frame.y + topH;
+                const botH = frame.h - topH;
+                ctx.drawImage(part.canvas, frame.x, botY, frame.w, botH, px, py + topH, frame.w, botH);
             } else if (hairHalf === 'top') {
-                // Draw ONLY the top half of the hair (on top)냥
-                const topH = Math.floor(part.cropH / 2);
-                ctx.drawImage(part.canvas, part.cropX, part.cropY, part.cropW, topH, px, py, part.cropW, topH);
+                const topH = Math.floor(frame.h / 2);
+                ctx.drawImage(part.canvas, frame.x, frame.y, frame.w, topH, px, py, frame.w, topH);
             } else {
-                ctx.drawImage(part.canvas, part.cropX, part.cropY, part.cropW, part.cropH, px, py, part.cropW, part.cropH);
+                ctx.drawImage(part.canvas, frame.x, frame.y, frame.w, frame.h, px, py, frame.w, frame.h);
             }
         };
 
         RENDER_ORDER.sort((a, b) => a.order - b.order).forEach(entry => drawPart(entry.id, entry.hairHalf));
-    }, [loaded, visible]);
+    }, [loaded, visible, animIndex]);
 
     const handleSelect = useCallback((partId: string, file: string) => {
         setSelectedFile(p => ({ ...p, [partId]: file }));
@@ -480,23 +478,42 @@ const PlaygroundPage: React.FC = () => {
             // Transparent base, re-draw only non-bg parts냥
             ctx2.clearRect(0, 0, 256, 256);
             const bodyPart = loaded['body'];
-            const charBaseX = bodyPart ? 128 - (Math.round(bodyPart.cropW / 2) + bodyPart.cropX) : 128 - 256;
-            const charBaseY = bodyPart ? 100 - bodyPart.cropY : 80;
+            const bodyFrameIdx = (bodyPart && bodyPart.frames.length > 1) ? (animIndex % 2) : 0;
+            const bodyFrame = bodyPart?.frames[bodyFrameIdx] || { x: 0, y: 0, w: 256, h: 256 };
+            const charBaseX = bodyPart ? 128 - Math.round(bodyFrame.w / 2) : 128 - 128;
+            const charBaseY = 100;
+            
             RENDER_ORDER.sort((a, b) => a.order - b.order).forEach(({ id, hairHalf }) => {
                 if (id === 'bg') return;
                 const def = PART_DEFS.find(d => d.id === id);
                 if (!def) return;
                 const part = loaded[id];
                 if (!part || !visible[id]) return;
-                const px = Math.round(charBaseX + def.offsetX + part.cropX);
-                const py = Math.round(charBaseY + def.offsetY + part.cropY);
+
+                let frameIdx = 0;
+                const fixedIds = ['hair', 'face', 'eye', 'helm'];
+                if (!fixedIds.includes(id) && part.frames.length > 1) {
+                    frameIdx = (animIndex % 2);
+                }
+
+                const frame = part.frames[frameIdx];
+                
+                // Intrinsic Offset relative to the matching Body frame냥
+                const refBodyIdx = (bodyPart && frameIdx < bodyPart.frames.length) ? frameIdx : 0;
+                const refBodyFrame = bodyPart?.frames[refBodyIdx] || { x: 0, y: 0, w: 256, h: 256 };
+                const relativeX = frame.x - refBodyFrame.x;
+                const relativeY = frame.y - refBodyFrame.y;
+
+                const bobOffset = (animIndex % 2 === 1) ? 1 : 0;
+                const px = Math.round(charBaseX + def.offsetX + relativeX);
+                const py = Math.round(charBaseY + def.offsetY + relativeY) + bobOffset;
                 if (hairHalf === 'bottom') {
-                    const topH = Math.floor(part.cropH / 2), botH = part.cropH - topH;
-                    ctx2.drawImage(part.canvas, part.cropX, part.cropY + topH, part.cropW, botH, px, py + topH, part.cropW, botH);
+                    const topH = Math.floor(frame.h / 2), botH = frame.h - topH;
+                    ctx2.drawImage(part.canvas, frame.x, frame.y + topH, frame.w, botH, px, py + topH, frame.w, botH);
                 } else if (hairHalf === 'top') {
-                    ctx2.drawImage(part.canvas, part.cropX, part.cropY, part.cropW, Math.floor(part.cropH / 2), px, py, part.cropW, Math.floor(part.cropH / 2));
+                    ctx2.drawImage(part.canvas, frame.x, frame.y, frame.w, Math.floor(frame.h / 2), px, py, frame.w, Math.floor(frame.h / 2));
                 } else {
-                    ctx2.drawImage(part.canvas, part.cropX, part.cropY, part.cropW, part.cropH, px, py, part.cropW, part.cropH);
+                    ctx2.drawImage(part.canvas, frame.x, frame.y, frame.w, frame.h, px, py, frame.w, frame.h);
                 }
             });
         }
