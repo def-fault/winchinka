@@ -64,39 +64,73 @@ function extractFirstFrame(canvas: HTMLCanvasElement, extractCount: number, gapT
     let xStart = 0, xEnd = w, yStart = 0, yEnd = h;
 
     if (extractCount > 1) {
-        // ─── DUAL PART LOGIC (Gloves, Weapons) ───
-        // Scan columns GLOBALLY first to find all parts even if vertically offset냥
-        const globalColSum = new Float64Array(w);
-        for (let x = 0; x < w; x++) {
-            for (let y = 0; y < h; y++) globalColSum[x] += alpha[y * w + x];
-        }
-        while (xStart < w && globalColSum[xStart] === 0) xStart++;
-        let blocksFound = 0, gs = -1, gl = 0, lastNonZeroX = xStart;
-        for (let x = xStart; x < w; x++) {
-            if (globalColSum[x] === 0) {
-                if (gs < 0) gs = x; gl++;
-                if (gl >= gapThreshold) {
-                    blocksFound++; xEnd = gs; if (blocksFound >= extractCount) break;
-                    gs = -1; gl = 0;
-                }
-            } else { gs = -1; gl = 0; lastNonZeroX = x; }
-        }
-        if (blocksFound < extractCount) xEnd = lastNonZeroX + 1;
-
-        // Then find row band within this X range냥
+        // ─── BLOB DETECTION LOGIC (Gloves, Weapons) ───
+        // Step 1: 먼저 row-gap 스캔으로 첫 번째 애니메이션 행(row strip)을 찾고냥
         const rowSum = new Float64Array(h);
         for (let y = 0; y < h; y++) {
-            for (let x = xStart; x < xEnd; x++) rowSum[y] += alpha[y * w + x];
+            for (let x = 0; x < w; x++) rowSum[y] += alpha[y * w + x];
         }
         while (yStart < h && rowSum[yStart] === 0) yStart++;
-        let lastNonZeroY = yStart;
-        for (let y = yStart; y < h; y++) {
-            if (rowSum[y] === 0) {
-                if (gs < 0) gs = y; gl++;
-                if (gl >= gapThreshold) { yEnd = gs; break; }
-            } else { gs = -1; gl = 0; lastNonZeroY = y; }
+        {
+            let gs = -1, gl = 0;
+            for (let y = yStart; y < h; y++) {
+                if (rowSum[y] === 0) {
+                    if (gs < 0) gs = y; gl++;
+                    if (gl >= 3) { yEnd = gs; break; }  // 3px gap → 행 경계냥
+                } else { gs = -1; gl = 0; }
+            }
         }
-        if (yEnd === h || yEnd <= yStart) yEnd = lastNonZeroY + 1;
+
+        // Step 2: 그 행 안에서만 flood-fill BFS로 덩어리 탐색냥
+        const visited = new Uint8Array(w * h);
+        const MIN_BLOB_PX = 4; // 노이즈 필터: 4px 미만 무시냥
+        interface Blob { minX: number; minY: number; maxX: number; maxY: number; count: number; }
+        const blobs: Blob[] = [];
+
+        for (let y = yStart; y < yEnd; y++) {
+            for (let x = 0; x < w; x++) {
+                const i = y * w + x;
+                if (visited[i] || alpha[i] === 0) continue;
+                // BFS flood-fill (행 범위 내에서만)냥
+                const blob: Blob = { minX: w, minY: h, maxX: 0, maxY: 0, count: 0 };
+                const queue: number[] = [i];
+                visited[i] = 1;
+                while (queue.length > 0) {
+                    const idx = queue.pop()!;
+                    const bx = idx % w, by = (idx - bx) / w;
+                    blob.count++;
+                    if (bx < blob.minX) blob.minX = bx;
+                    if (bx > blob.maxX) blob.maxX = bx;
+                    if (by < blob.minY) blob.minY = by;
+                    if (by > blob.maxY) blob.maxY = by;
+                    // 4-directional neighbors (행 범위 제한)냥
+                    const neighbors = [
+                        by > yStart ? idx - w : -1,
+                        by < yEnd - 1 ? idx + w : -1,
+                        bx > 0 ? idx - 1 : -1,
+                        bx < w - 1 ? idx + 1 : -1,
+                    ];
+                    for (const ni of neighbors) {
+                        if (ni >= 0 && !visited[ni] && alpha[ni] > 0) {
+                            visited[ni] = 1;
+                            queue.push(ni);
+                        }
+                    }
+                }
+                if (blob.count >= MIN_BLOB_PX) blobs.push(blob);
+            }
+        }
+
+        // Step 3: X좌표(minX) 기준 정렬, 처음 extractCount개 선택냥
+        blobs.sort((a, b) => a.minX - b.minX);
+        const selected = blobs.slice(0, extractCount);
+
+        if (selected.length > 0) {
+            xStart = Math.min(...selected.map(b => b.minX));
+            xEnd = Math.max(...selected.map(b => b.maxX)) + 1;
+            yStart = Math.min(...selected.map(b => b.minY));
+            yEnd = Math.max(...selected.map(b => b.maxY)) + 1;
+        }
     } else {
         // ─── STABLE SINGLE PART LOGIC (Body, Hair, etc.) ───
         // Row scan FIRST to find the first animation strip냥
@@ -144,7 +178,7 @@ async function decodeCanvas(url: string): Promise<HTMLCanvasElement> {
 }
 
 // ─── Global caches — bump CACHE_VER when crop algorithm changes냥 ──────────────
-const CACHE_VER = 8; // increment this to invalidate stale in-memory caches냥
+const CACHE_VER = 10; // increment this to invalidate stale in-memory caches냥
 const partCache = new Map<string, CropResult>(); // key = "file:ec:gap:ver"
 const thumbCache = new Map<string, string>();     // key = "file:ec:gap:ver" → dataURL
 
