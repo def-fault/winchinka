@@ -290,7 +290,13 @@ const ThumbCell = React.memo(({ def, file, selected, onClick }: {
         >
             {src
                 ? <img src={src} alt={label} width={76} height={76}
-                    style={{ imageRendering: 'pixelated', display: 'block', width: 76, height: 76 }} />
+                    style={{ 
+                        imageRendering: 'pixelated', 
+                        display: 'block', 
+                        width: 76, 
+                        height: 76,
+                        transform: def.id === 'glove' ? 'scale(2)' : 'none'
+                    }} />
                 : <div style={{ width: 76, height: 76 }}
                     className="flex items-center justify-center bg-slate-800/80">
                     <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
@@ -553,16 +559,16 @@ const PlaygroundPage: React.FC = () => {
                 <p className="text-gray-400 text-lg">캐릭터 코디네이터 — 파츠를 클릭해서 조합해보세요!</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-stretch">
                 {/* ── Left: Canvas + toggles ── */}
-                <div className="flex flex-col items-center gap-5 lg:sticky lg:top-24">
-                    <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)]">
-                        <canvas ref={canvasRef} width={256} height={256} className="rounded-xl block"
-                            style={{ imageRendering: 'pixelated', width: 256, height: 256 }} />
+                <div className="flex flex-col items-center gap-5 lg:sticky lg:top-24 h-max">
+                    <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)] w-[344px] box-border">
+                        <canvas ref={canvasRef} width={256} height={256} className="rounded-xl block w-full h-full"
+                            style={{ imageRendering: 'pixelated' }} />
                         <div className="absolute inset-3 rounded-xl border border-blue-500/20 pointer-events-none" />
                     </div>
 
-                    <div className="w-64 bg-slate-900/80 rounded-2xl border border-white/5 p-4">
+                    <div className="w-[344px] bg-slate-900/80 rounded-2xl border border-white/5 p-4 box-border">
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-3">파츠 표시</p>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                             {PART_DEFS.filter(d => !d.isBg).map(def => {
@@ -594,9 +600,10 @@ const PlaygroundPage: React.FC = () => {
                 </div>
 
                 {/* ── Right: Part selector ── */}
-                <div className="bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col overflow-hidden">
-                    {/* Tab bar냥 */}
-                    <div className="flex overflow-x-auto bg-black/30 p-2 gap-1 shrink-0">
+                <div className="relative h-[650px] lg:h-auto min-w-0">
+                    <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col overflow-hidden">
+                        {/* Tab bar냥 */}
+                        <div className="flex overflow-x-auto bg-black/30 p-2 gap-1 shrink-0">
                         {tabs.map(def => (
                             <button key={def.id} onClick={() => setActiveTab(def.id)}
                                 className={`flex-shrink-0 px-4 py-2 rounded-lg text-xs font-bold transition-all
@@ -611,11 +618,8 @@ const PlaygroundPage: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Thumbnail grid — 10 cols, 5 rows visible, scrollable냥 */}
-                    <div className="overflow-y-auto p-3"
-                        style={{
-                            height: 'calc(5 * (76px + 8px + 14px) + 24px)',  /* 5 rows × (img+label+gap) + padding냥 */
-                        }}>
+                    {/* Thumbnail grid — scrollable냥 */}
+                    <div className="flex-1 overflow-y-auto p-3 min-h-0">
                         {!filesReady ? (
                             <div className="h-full flex items-center justify-center">
                                 <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
@@ -635,6 +639,7 @@ const PlaygroundPage: React.FC = () => {
                         ) : (
                             <div className="h-full flex items-center justify-center text-gray-600 text-sm">파일을 찾을 수 없습니다...</div>
                         )}
+                    </div>
                     </div>
                 </div>
             </div>
