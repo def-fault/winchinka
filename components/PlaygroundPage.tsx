@@ -1,6 +1,132 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DdsLoader } from '../services/DdsLoader';
 
+// ─── Custom Background Upload Modal ────────────────────────────────────────────
+const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (dataUrl: string) => void }) => {
+    const [imgSrc, setImgSrc] = useState<string | null>(null);
+    const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
+    const [pos, setPos] = useState({ x: 0, y: 0 });
+    const isDragging = useRef(false);
+    const dragStart = useRef({ x: 0, y: 0 });
+    const posStart = useRef({ x: 0, y: 0 });
+    const imgRef = useRef<HTMLImageElement>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const result = ev.target?.result as string;
+            const img = new Image();
+            img.onload = () => {
+                if (img.width < 256 || img.height < 256) {
+                    alert('이미지는 가로 256px, 세로 256px 이상이어야 합니다냥!');
+                    return;
+                }
+                setImgSize({ w: img.width, h: img.height });
+                setImgSrc(result);
+                setPos({ x: 0, y: 0 });
+            };
+            img.src = result;
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+        isDragging.current = true;
+        const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+        const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+        dragStart.current = { x: clientX, y: clientY };
+        posStart.current = { ...pos };
+    };
+
+    const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+        if (!isDragging.current || !imgSrc) return;
+        const clientX = 'touches' in e ? e.touches[0].clientX : (e as React.MouseEvent).clientX;
+        const clientY = 'touches' in e ? e.touches[0].clientY : (e as React.MouseEvent).clientY;
+        
+        const dx = clientX - dragStart.current.x;
+        const dy = clientY - dragStart.current.y;
+        
+        let nx = posStart.current.x + dx;
+        let ny = posStart.current.y + dy;
+        
+        nx = Math.min(0, Math.max(nx, 256 - imgSize.w));
+        ny = Math.min(0, Math.max(ny, 256 - imgSize.h));
+        
+        setPos({ x: nx, y: ny });
+    };
+
+    const handleMouseUp = () => {
+        isDragging.current = false;
+    };
+
+    const handleApply = () => {
+        if (!imgRef.current) return;
+        const cvs = document.createElement('canvas');
+        cvs.width = 256; cvs.height = 256;
+        const ctx = cvs.getContext('2d')!;
+        ctx.fillStyle = '#323232';
+        ctx.fillRect(0, 0, 256, 256);
+        ctx.drawImage(imgRef.current, pos.x, pos.y, imgSize.w, imgSize.h);
+        onApply(cvs.toDataURL('image/png'));
+    };
+
+    return (
+        <div className="fixed inset-0 z-[100] bg-black/80 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 w-full max-w-md flex flex-col gap-6">
+                <h2 className="text-xl font-bold text-white neon-text">커스텀 배경 업로드 (bg000)</h2>
+                
+                {!imgSrc ? (
+                    <div className="border-2 border-dashed border-white/20 hover:border-blue-400 group rounded-xl p-8 flex flex-col items-center justify-center cursor-pointer transition-colors relative">
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        <div className="text-blue-400 mb-2 font-bold">📁 클릭하여 파일 업로드</div>
+                        <p className="mt-2 text-xs text-gray-400 group-hover:text-gray-300">256x256 픽셀 이상 이미지만 가능합니다냥.</p>
+                    </div>
+                ) : (
+                    <div className="flex flex-col items-center">
+                        <p className="text-sm text-gray-400 mb-2">이미지를 드래그해서 256x256 크기로 맞추세요냥!</p>
+                        <div 
+                            className="relative w-[256px] h-[256px] border whitespace-nowrap border-blue-500 overflow-hidden cursor-move touch-none bg-black shrink-0"
+                            onMouseDown={handleMouseDown}
+                            onMouseMove={handleMouseMove}
+                            onMouseUp={handleMouseUp}
+                            onMouseLeave={handleMouseUp}
+                            onTouchStart={handleMouseDown}
+                            onTouchMove={handleMouseMove}
+                            onTouchEnd={handleMouseUp}
+                        >
+                            <img 
+                                ref={imgRef}
+                                src={imgSrc} 
+                                alt="crop" 
+                                draggable={false}
+                                style={{ 
+                                    position: 'absolute', 
+                                    left: pos.x, 
+                                    top: pos.y, 
+                                    width: imgSize.w, 
+                                    height: imgSize.h, 
+                                    maxWidth: 'none', 
+                                    maxHeight: 'none',
+                                    pointerEvents: 'none' 
+                                }} 
+                            />
+                        </div>
+                    </div>
+                )}
+                
+                <div className="flex justify-end gap-3 mt-2">
+                    <button onClick={onClose} className="px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600 transition-colors">취소</button>
+                    {imgSrc && (
+                        <button onClick={handleApply} className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-500 transition-colors shadow-[0_0_10px_rgba(59,130,246,0.3)]">적용하기</button>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 // ─── Part definitions냥 ────────────────────────────────────────────────────────
 interface PartDef {
     id: string;
@@ -25,20 +151,24 @@ const PART_DEFS: PartDef[] = [
     { id: 'weapon', label: '무기', prefix: 'weapon', defaultFile: 'weapon001_a1.hsc.dds', offsetX: -34, offsetY: 42, extractCount: 2, gapThreshold: 1 },
     { id: 'hair', label: '헤어', prefix: 'hair', defaultFile: 'hair001_a1.hsc.dds', offsetX: -43, offsetY: -35, extractCount: 1, gapThreshold: 3, hidden: true },
     { id: 'helm', label: '모자/헤어', prefix: 'helm', defaultFile: 'helm001_a1.hsc.dds', offsetX: -43, offsetY: -35, extractCount: 1, gapThreshold: 3 },
-    { id: 'face', label: '얼굴 장식', prefix: 'face', defaultFile: 'face001_a1.hsc.dds', offsetX: -43, offsetY: -35, extractCount: 1, gapThreshold: 3 },
-    { id: 'eye', label: '눈 장식', prefix: 'eye', defaultFile: 'eye001_a8.hsc.dds', offsetX: -43, offsetY: -35, extractCount: 1, gapThreshold: 3 },
+    { id: 'face', label: '얼굴장식', prefix: 'face', defaultFile: 'face001_a1.hsc.dds', offsetX: -43, offsetY: -35, extractCount: 1, gapThreshold: 3 },
+    { id: 'eye', label: '눈장식', prefix: 'eye', defaultFile: 'eye001_a8.hsc.dds', offsetX: -43, offsetY: -35, extractCount: 1, gapThreshold: 3 },
+    { id: 'shield', label: '방패', prefix: 'shield', defaultFile: 'shield001_a1.hsc.dds', offsetX: -8, offsetY: 44, extractCount: 1, gapThreshold: 3 },
+    { id: 'cloak', label: '망토', prefix: 'cloak', defaultFile: 'cloak001_a1.hsc.dds', offsetX: -14, offsetY: 30, extractCount: 1, gapThreshold: 3 },
 ];
 
 // Render order — hair split: bottom half behind body, top half on top냥
 // face = order 8 (얼굴 장식), eye = order 9 (최상단)
 const RENDER_ORDER: { id: string; order: number; hairHalf?: 'top' | 'bottom' }[] = [
     { id: 'bg', order: -1 },
+    { id: 'cloak', order: -0.8 },
     { id: 'hair', order: -0.5, hairHalf: 'bottom' },
     { id: 'body', order: 0 },
     { id: 'shoe', order: 1 },
     { id: 'pants', order: 2 },
     { id: 'shirt', order: 3 },
     { id: 'glove', order: 4 },
+    { id: 'shield', order: 4.5 },
     { id: 'weapon', order: 5 },
     { id: 'hair', order: 6, hairHalf: 'top' },
     { id: 'helm', order: 7 },
@@ -153,7 +283,12 @@ const partCache = new Map<string, CropResult>(); // key = "file:ec:gap:ver"
 const thumbCache = new Map<string, string>();     // key = "file:ec:gap:ver" → dataURL
 
 async function loadPartCached(def: PartDef, fileName: string): Promise<CropResult | null> {
-    const key = `${fileName}:${def.extractCount}:${def.gapThreshold}:v${CACHE_VER}`;
+    let ec = def.extractCount;
+    // Override for specific cloaks that need 2 chunks냥
+    if (def.id === 'cloak' && ['cloak004', 'cloak005', 'cloak006', 'cloak008', 'cloak009', 'cloak012'].some(c => fileName.startsWith(c))) {
+        ec = 2;
+    }
+    const key = `${fileName}:${ec}:${def.gapThreshold}:v${CACHE_VER}`;
     if (partCache.has(key)) return partCache.get(key)!;
     const url = `/coordinate/${fileName}`;
     try {
@@ -162,7 +297,7 @@ async function loadPartCached(def: PartDef, fileName: string): Promise<CropResul
         if (def.isBg) {
             result = { canvas, frames: [{ x: 0, y: 0, w: canvas.width, h: canvas.height }] };
         } else {
-            const frames = extractFrames(canvas, def.extractCount, def.gapThreshold);
+            const frames = extractFrames(canvas, ec, def.gapThreshold);
             result = { canvas, frames };
         }
         partCache.set(key, result);
@@ -242,7 +377,11 @@ function drainThumbQueue() {
 }
 
 function enqueueThumb(def: PartDef, file: string, cb: (url: string) => void) {
-    const key = `${file}:${def.extractCount}:${def.gapThreshold}:v${CACHE_VER}`;
+    let ec = def.extractCount;
+    if (def.id === 'cloak' && ['cloak004', 'cloak005', 'cloak006', 'cloak008', 'cloak009', 'cloak012'].some(c => file.startsWith(c))) {
+        ec = 2;
+    }
+    const key = `${file}:${ec}:${def.gapThreshold}:v${CACHE_VER}`;
     if (thumbCache.has(key)) { cb(thumbCache.get(key)!); return; }
     thumbQueue.push({ def, file, cb });
     drainThumbQueue();
@@ -288,25 +427,26 @@ const ThumbCell = React.memo(({ def, file, selected, onClick }: {
                     ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]'
                     : 'border-white/5 bg-slate-800/60 hover:border-blue-400/40'}`}
         >
-            {src
-                ? <img src={src} alt={label} width={76} height={76}
-                    style={{ 
-                        imageRendering: 'pixelated', 
-                        display: 'block', 
-                        width: 76, 
-                        height: 76,
-                        transform: def.id === 'glove' ? 'scale(2)' : 'none'
-                    }} />
-                : <div style={{ width: 76, height: 76 }}
-                    className="flex items-center justify-center bg-slate-800/80">
-                    <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-                </div>
-            }
-            <span className={`w-full text-center text-[9px] font-mono leading-tight py-0.5 truncate px-0.5
+            <div className="relative w-[76px] h-[76px] overflow-hidden flex items-center justify-center shrink-0">
+                {src
+                    ? <img src={src} alt={label}
+                        style={{ 
+                            imageRendering: 'pixelated', 
+                            display: 'block', 
+                            width: 76, 
+                            height: 76,
+                            transform: def.id === 'glove' ? 'scale(2)' : 'none'
+                        }} />
+                    : <div className="flex items-center justify-center bg-slate-800/80 w-full h-full">
+                        <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                    </div>
+                }
+            </div>
+            <span className={`w-full text-center text-[9px] font-mono leading-tight py-0.5 truncate px-0.5 z-10
         ${selected ? 'bg-blue-600 text-white' : 'bg-black/70 text-gray-500'}`}>
                 {label}
             </span>
-            {selected && <div className="absolute top-0.5 right-0.5 w-2 h-2 bg-blue-400 rounded-full" />}
+            {selected && <div className="absolute top-0.5 right-0.5 w-2 h-2 bg-blue-400 rounded-full z-10" />}
         </button>
     );
 });
@@ -315,6 +455,10 @@ const ThumbCell = React.memo(({ def, file, selected, onClick }: {
 const PlaygroundPage: React.FC = () => {
     const [allFiles, setAllFiles] = useState<string[]>([]);
     const [filesReady, setFilesReady] = useState(false);
+    
+    // State for Custom BG냥
+    const [customBgModalOpen, setCustomBgModalOpen] = useState(false);
+    const customBgRef = useRef<string | null>(null);
 
     useEffect(() => {
         fetch('/coordinate-files.json')
@@ -362,7 +506,7 @@ const PlaygroundPage: React.FC = () => {
         () => Object.fromEntries(PART_DEFS.map(d => [d.id, d.defaultFile]))
     );
     const [visible, setVisible] = useState<Record<string, boolean>>(
-        () => Object.fromEntries(PART_DEFS.map(d => [d.id, d.id !== 'weapon' && d.id !== 'face' && d.id !== 'eye']))
+        () => Object.fromEntries(PART_DEFS.map(d => [d.id, d.id !== 'weapon' && d.id !== 'face' && d.id !== 'eye' && d.id !== 'shield']))
     );
     const [loaded, setLoaded] = useState<Record<string, CropResult | null>>({});
     const [animIndex, setAnimIndex] = useState(0);
@@ -377,6 +521,13 @@ const PlaygroundPage: React.FC = () => {
     }, []);
 
     const loadAndSet = useCallback(async (def: PartDef, file: string) => {
+        if (def.id === 'bg' && file === 'bg000.png') {
+            if (customBgRef.current) {
+                const canvas = await decodeCanvas(customBgRef.current);
+                setLoaded(p => ({ ...p, [def.id]: { canvas, frames: [{ x: 0, y: 0, w: 256, h: 256 }] } }));
+            }
+            return;
+        }
         const part = await loadPartCached(def, file);
         setLoaded(p => ({ ...p, [def.id]: part }));
     }, []);
@@ -401,7 +552,7 @@ const PlaygroundPage: React.FC = () => {
         // Base X now centers the body without adding bodyFrame.x, since relative logic adds it back냥
         const charBaseX = bodyPart ? 128 - Math.round(bodyFrame.w / 2) : 128 - 128;
         // Base Y aligns the body's native top (as crop strips transparent space). 
-        const charBaseY = 100;
+        const charBaseY = 94;
 
         const drawPart = (id: string, hairHalf?: 'top' | 'bottom') => {
             const def = PART_DEFS.find(d => d.id === id);
@@ -411,7 +562,7 @@ const PlaygroundPage: React.FC = () => {
 
             // Custom animation logic냥
             let frameIdx = 0;
-            const fixedIds = ['hair', 'face', 'eye', 'helm'];
+            const fixedIds = ['hair', 'face', 'eye', 'helm', 'shield', 'cloak', 'weapon'];
             if (!fixedIds.includes(id) && part.frames.length > 1) {
                 frameIdx = (animIndex % 2);
             }
@@ -425,7 +576,8 @@ const PlaygroundPage: React.FC = () => {
             const relativeY = frame.y - refBodyFrame.y;
 
             const bobOffset = (animIndex % 2 === 1) ? 1 : 0;
-            const px = Math.round(charBaseX + def.offsetX + relativeX);
+            const weaponShake = (id === 'weapon' && animIndex % 2 === 0) ? -1 : 0;
+            const px = Math.round(charBaseX + def.offsetX + relativeX) + weaponShake;
             const py = Math.round(charBaseY + def.offsetY + relativeY) + bobOffset;
 
             if (id === 'bg') {
@@ -487,7 +639,7 @@ const PlaygroundPage: React.FC = () => {
             const bodyFrameIdx = (bodyPart && bodyPart.frames.length > 1) ? (animIndex % 2) : 0;
             const bodyFrame = bodyPart?.frames[bodyFrameIdx] || { x: 0, y: 0, w: 256, h: 256 };
             const charBaseX = bodyPart ? 128 - Math.round(bodyFrame.w / 2) : 128 - 128;
-            const charBaseY = 100;
+            const charBaseY = 94;
             
             RENDER_ORDER.sort((a, b) => a.order - b.order).forEach(({ id, hairHalf }) => {
                 if (id === 'bg') return;
@@ -497,7 +649,7 @@ const PlaygroundPage: React.FC = () => {
                 if (!part || !visible[id]) return;
 
                 let frameIdx = 0;
-                const fixedIds = ['hair', 'face', 'eye', 'helm'];
+                const fixedIds = ['hair', 'face', 'eye', 'helm', 'shield', 'cloak', 'weapon'];
                 if (!fixedIds.includes(id) && part.frames.length > 1) {
                     frameIdx = (animIndex % 2);
                 }
@@ -511,7 +663,8 @@ const PlaygroundPage: React.FC = () => {
                 const relativeY = frame.y - refBodyFrame.y;
 
                 const bobOffset = (animIndex % 2 === 1) ? 1 : 0;
-                const px = Math.round(charBaseX + def.offsetX + relativeX);
+                const weaponShake = (id === 'weapon' && animIndex % 2 === 0) ? -1 : 0;
+                const px = Math.round(charBaseX + def.offsetX + relativeX) + weaponShake;
                 const py = Math.round(charBaseY + def.offsetY + relativeY) + bobOffset;
                 if (hairHalf === 'bottom') {
                     const topH = Math.floor(frame.h / 2), botH = frame.h - topH;
@@ -559,32 +712,43 @@ const PlaygroundPage: React.FC = () => {
                 <p className="text-gray-400 text-lg">캐릭터 코디네이터 — 파츠를 클릭해서 조합해보세요!</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-8 items-stretch">
+            <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* ── Left: Canvas + toggles ── */}
-                <div className="flex flex-col items-center gap-5 lg:sticky lg:top-24 h-max">
-                    <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)] w-[344px] box-border">
+                <div className="flex flex-col items-center gap-5 lg:sticky lg:top-24 w-full lg:w-auto shrink-0">
+                    <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)] w-[344px] box-border mx-auto">
                         <canvas ref={canvasRef} width={256} height={256} className="rounded-xl block w-full h-full"
                             style={{ imageRendering: 'pixelated' }} />
                         <div className="absolute inset-3 rounded-xl border border-blue-500/20 pointer-events-none" />
                     </div>
 
-                    <div className="w-[344px] bg-slate-900/80 rounded-2xl border border-white/5 p-4 box-border">
+                    <div className="w-[344px] bg-slate-900/80 rounded-2xl border border-white/5 p-4 box-border mx-auto">
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-3">파츠 표시</p>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                            {PART_DEFS.filter(d => !d.isBg).map(def => {
-                                const isEssential = ['body', 'shirt', 'pants'].includes(def.id);
-                                return (
-                                    <label key={def.id} className={`flex items-center gap-2 group ${isEssential ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}>
-                                        <input type="checkbox" checked={!!visible[def.id]}
-                                            disabled={isEssential}
-                                            onChange={e => setVisible(p => ({ ...p, [def.id]: e.target.checked }))}
-                                            className={`w-4 h-4 ${isEssential ? 'accent-gray-500' : 'accent-blue-500'}`} />
-                                        <span className="text-xs text-gray-400 group-hover:text-white transition-colors">
-                                            {def.label} {isEssential && <span className="text-[8px] text-gray-600">(고정)</span>}
-                                        </span>
-                                    </label>
-                                );
-                            })}
+                            {
+                                [
+                                    'body', 'shirt',
+                                    'pants', 'shield',
+                                    'face', 'eye',
+                                    'shoe', 'glove',
+                                    'weapon', 'helm',
+                                    'cloak'
+                                ].map(id => {
+                                    const def = PART_DEFS.find(d => d.id === id);
+                                    if (!def) return null;
+                                    const isEssential = ['body', 'shirt', 'pants'].includes(def.id);
+                                    return (
+                                        <label key={def.id} className={`flex items-center gap-2 group ${isEssential ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'}`}>
+                                            <input type="checkbox" checked={!!visible[def.id]}
+                                                disabled={isEssential}
+                                                onChange={e => setVisible(p => ({ ...p, [def.id]: e.target.checked }))}
+                                                className={`w-4 h-4 ${isEssential ? 'accent-gray-500' : 'accent-blue-500'}`} />
+                                            <span className="text-xs text-gray-400 group-hover:text-white transition-colors">
+                                                {def.label} {isEssential && <span className="text-[8px] text-gray-600">(고정)</span>}
+                                            </span>
+                                        </label>
+                                    );
+                                })
+                            }
                             <label className="flex items-center gap-2 cursor-pointer group">
                                 <input type="checkbox" checked={!!visible['bg']}
                                     onChange={e => setVisible(p => ({ ...p, bg: e.target.checked }))}
@@ -600,7 +764,7 @@ const PlaygroundPage: React.FC = () => {
                 </div>
 
                 {/* ── Right: Part selector ── */}
-                <div className="relative h-[650px] lg:h-auto min-w-0">
+                <div className="relative h-[650px] lg:h-[750px] flex-1 min-w-0 w-full">
                     <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col overflow-hidden">
                         {/* Tab bar냥 */}
                         <div className="flex overflow-x-auto bg-black/30 p-2 gap-1 shrink-0">
@@ -626,6 +790,37 @@ const PlaygroundPage: React.FC = () => {
                             </div>
                         ) : fileLists[activeTab]?.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
+                                {activeTab === 'bg' && (
+                                    <>
+                                        <button
+                                            title="커스텀 배경 업로드"
+                                            onClick={() => setCustomBgModalOpen(true)}
+                                            style={{ width: 84, flexShrink: 0 }}
+                                            className="relative flex flex-col items-center justify-center rounded-xl border-2 transition-all border-dashed border-blue-400/50 bg-slate-800/60 hover:bg-slate-700/60 overflow-hidden h-[96px]"
+                                        >
+                                            <div className="text-blue-400 text-3xl font-light mb-2">+</div>
+                                            <span className="w-full text-center text-[9px] font-mono py-1 px-1 bg-black/70 text-gray-400 absolute bottom-0">
+                                                업로드 (bg000)
+                                            </span>
+                                        </button>
+                                        {customBgRef.current && (
+                                            <button
+                                                title="bg000.png"
+                                                onClick={() => handleSelect('bg', 'bg000.png')}
+                                                style={{ width: 84, flexShrink: 0 }}
+                                                className={`relative flex flex-col justify-between items-center rounded-xl border-2 transition-all overflow-hidden h-[96px] ${selectedFile['bg'] === 'bg000.png' ? 'border-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)]' : 'border-white/5 bg-slate-800/60 hover:border-blue-400/40'}`}
+                                            >
+                                                <div className="flex-1 flex items-center justify-center w-full">
+                                                    <img src={customBgRef.current} alt="bg000" style={{ width: 76, height: 76, display: 'block', objectFit: 'contain' }} />
+                                                </div>
+                                                <span className={`w-full text-center text-[9px] font-mono py-1 mt-auto shrink-0 ${selectedFile['bg'] === 'bg000.png' ? 'bg-blue-600 text-white' : 'bg-black/70 text-gray-500'}`}>
+                                                    bg000.png
+                                                </span>
+                                                {selectedFile['bg'] === 'bg000.png' && <div className="absolute top-1 right-1 w-2 h-2 bg-blue-400 rounded-full" />}
+                                            </button>
+                                        )}
+                                    </>
+                                )}
                                 {fileLists[activeTab].map(file => (
                                     <ThumbCell
                                         key={file}
@@ -643,6 +838,16 @@ const PlaygroundPage: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {customBgModalOpen && (
+                <CustomBgModal 
+                    onClose={() => setCustomBgModalOpen(false)} 
+                    onApply={(dataUrl) => {
+                        customBgRef.current = dataUrl;
+                        setCustomBgModalOpen(false);
+                        handleSelect('bg', 'bg000.png');
+                    }} 
+                />
+            )}
         </div>
     );
 };
