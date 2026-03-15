@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DdsLoader } from '../services/DdsLoader';
-import { ZoomInIcon, ZoomOutIcon } from './Icons';
+import { ZoomInIcon, ZoomOutIcon, DownloadIcon, UploadIcon } from './Icons';
 
 // ─── Custom Background Upload Modal ────────────────────────────────────────────
 // ─── Custom Background Upload Modal ────────────────────────────────────────────
@@ -328,6 +328,11 @@ interface Frame { x: number; y: number; w: number; h: number; }
 interface CropResult {
     canvas: HTMLCanvasElement;
     frames: Frame[];
+}
+
+interface CharacterPreset {
+    selectedFile: Record<string, string>;
+    visible: Record<string, boolean>;
 }
 
 // ─── extract_first_frame — Hybrid version냥
@@ -659,6 +664,58 @@ const PlaygroundPage: React.FC = () => {
     const [animIndex, setAnimIndex] = useState(0);
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
+    const saveCharacterToFile = () => {
+        // Exclude background냥
+        const filteredFiles = { ...selectedFile };
+        const filteredVisible = { ...visible };
+        delete filteredFiles['bg'];
+        delete filteredVisible['bg'];
+
+        const preset: CharacterPreset = {
+            selectedFile: filteredFiles,
+            visible: filteredVisible
+        };
+
+        const data = JSON.stringify(preset, null, 2);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `character_${new Date().getTime()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const loadCharacterFromFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            try {
+                const imported = JSON.parse(ev.target?.result as string);
+                if (!imported.selectedFile || !imported.visible) {
+                    throw new Error('유효하지 않은 캐릭터 파일입니다냥!');
+                }
+                
+                // Update equipment parts only냥
+                setSelectedFile(prev => ({ ...prev, ...imported.selectedFile }));
+                setVisible(prev => ({ ...prev, ...imported.visible }));
+
+                // Reload necessary parts냥
+                Object.keys(imported.selectedFile).forEach(id => {
+                    const def = PART_DEFS.find(d => d.id === id);
+                    if (def) loadAndSet(def, imported.selectedFile[id]);
+                });
+                
+                alert('캐릭터 설정을 불러왔습니다냥!');
+            } catch (err) {
+                alert('파일을 불러오는 중 오류가 발생했습니다냥: ' + (err as Error).message);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = ''; 
+    };
+
     // Global animation timer synchronized across all parts냥
     useEffect(() => {
         const timer = setInterval(() => {
@@ -861,14 +918,14 @@ const PlaygroundPage: React.FC = () => {
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* ── Left: Canvas + toggles ── */}
-                <div className="flex flex-col items-center gap-5 lg:sticky lg:top-24 w-full lg:w-auto shrink-0">
+                <div className="flex flex-col gap-5 lg:sticky lg:top-24 w-full lg:w-[344px] shrink-0 h-[650px] lg:h-[750px]">
                     <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)] w-[344px] box-border mx-auto">
                         <canvas ref={canvasRef} width={256} height={256} className="rounded-xl block w-full h-full"
                             style={{ imageRendering: 'pixelated' }} />
                         <div className="absolute inset-3 rounded-xl border border-blue-500/20 pointer-events-none" />
                     </div>
 
-                    <div className="w-[344px] bg-slate-900/80 rounded-2xl border border-white/5 p-4 box-border mx-auto">
+                    <div className="w-full bg-slate-900/80 rounded-2xl border border-white/5 p-5 box-border flex flex-col flex-1 min-h-0 overflow-hidden">
                         <p className="text-xs text-gray-500 font-bold uppercase tracking-widest mb-3">파츠 표시</p>
                         <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                             {
@@ -907,6 +964,24 @@ const PlaygroundPage: React.FC = () => {
                             className="w-full mt-4 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-bold rounded-xl hover:brightness-110 transition-all active:scale-95">
                             💾 이미지 저장
                         </button>
+
+                        <div className="mt-auto pt-6 border-t border-white/5 flex flex-col gap-3">
+                            <p className="text-xs text-gray-500 font-bold uppercase tracking-widest pl-1">캐릭터 설정 (파일)</p>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={saveCharacterToFile}
+                                    className="flex-1 py-2.5 bg-blue-600/20 text-blue-400 border border-blue-500/30 rounded-xl hover:bg-blue-600 hover:text-white transition-all flex items-center justify-center gap-2 font-bold text-xs"
+                                >
+                                    <DownloadIcon className="w-4 h-4" />
+                                    캐릭터 저장
+                                </button>
+                                <label className="flex-1 py-2.5 bg-slate-800 text-gray-400 border border-white/10 rounded-xl hover:bg-slate-700 hover:text-white transition-all flex items-center justify-center gap-2 font-bold text-xs cursor-pointer">
+                                    <UploadIcon className="w-4 h-4" />
+                                    캐릭터 불러오기
+                                    <input type="file" accept=".json" onChange={loadCharacterFromFile} className="hidden" />
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
