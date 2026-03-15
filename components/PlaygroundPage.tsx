@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DdsLoader } from '../services/DdsLoader';
+import { ZoomInIcon, ZoomOutIcon } from './Icons';
 
 // ─── Custom Background Upload Modal ────────────────────────────────────────────
 const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (dataUrl: string) => void }) => {
     const [imgSrc, setImgSrc] = useState<string | null>(null);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
+    const [baseSize, setBaseSize] = useState({ w: 0, h: 0 });
+    const [zoom, setZoom] = useState(1);
     const [pos, setPos] = useState({ x: 0, y: 0 });
     const isDragging = useRef(false);
     const dragStart = useRef({ x: 0, y: 0 });
@@ -19,10 +22,14 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
             const result = ev.target?.result as string;
             const img = new Image();
             img.onload = () => {
-                if (img.width < 256 || img.height < 256) {
-                    alert('이미지는 가로 256px, 세로 256px 이상이어야 합니다냥!');
+                const minDim = Math.min(img.width, img.height);
+                if (minDim < 256) {
+                    alert('이미지의 짧은 쪽이 256px 이상이어야 합니다냥!');
                     return;
                 }
+                const initialZoom = 1.0;
+                setBaseSize({ w: img.width, h: img.height });
+                setZoom(initialZoom);
                 setImgSize({ w: img.width, h: img.height });
                 setImgSrc(result);
                 setPos({ x: 0, y: 0 });
@@ -59,6 +66,49 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
 
     const handleMouseUp = () => {
         isDragging.current = false;
+    };
+
+    const minZoom = baseSize.w > 0 ? Math.max(256 / baseSize.w, 256 / baseSize.h) : 1;
+
+    const handleZoomChange = (sliderValue: number) => {
+        // sliderValue range: -1 to 1냥
+        // -1 maps to minZoom, 0 maps to 1, 1 maps to 5냥
+        let newZoom = 1;
+        if (sliderValue < 0) {
+            newZoom = 1 + sliderValue * (1 - minZoom);
+        } else {
+            newZoom = 1 + sliderValue * 4;
+        }
+
+        const oldZoom = zoom;
+        const boundedZoom = Math.max(minZoom, Math.min(newZoom, 5));
+        
+        // Zoom relative to the center of the 256x256 crop area냥
+        const centerX = -pos.x + 128;
+        const centerY = -pos.y + 128;
+        
+        const scale = boundedZoom / oldZoom;
+        
+        let nx = 128 - (centerX * scale);
+        let ny = 128 - (centerY * scale);
+        
+        const nw = baseSize.w * boundedZoom;
+        const nh = baseSize.h * boundedZoom;
+        
+        nx = Math.min(0, Math.max(nx, 256 - nw));
+        ny = Math.min(0, Math.max(ny, 256 - nh));
+        
+        setZoom(boundedZoom);
+        setImgSize({ w: nw, h: nh });
+        setPos({ x: nx, y: ny });
+    };
+
+    const getSliderValue = (z: number) => {
+        if (z < 1) {
+            return (z - 1) / (1 - minZoom);
+        } else {
+            return (z - 1) / 4;
+        }
     };
 
     const handleApply = () => {
@@ -112,6 +162,33 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
                                     pointerEvents: 'none' 
                                 }} 
                             />
+                        </div>
+                        
+                        <div className="flex items-center gap-3 w-full mt-4">
+                            <button 
+                                onClick={() => handleZoomChange(getSliderValue(zoom) - 0.1)}
+                                className="p-2 rounded-lg bg-slate-800 text-gray-400 hover:text-white hover:bg-slate-700 transition-colors"
+                            >
+                                <ZoomOutIcon className="w-5 h-5" />
+                            </button>
+                            <input 
+                                type="range" 
+                                min="-1" 
+                                max="1" 
+                                step="0.01" 
+                                value={getSliderValue(zoom)} 
+                                onChange={(e) => handleZoomChange(parseFloat(e.target.value))}
+                                className="flex-1 accent-blue-500 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                            />
+                            <button 
+                                onClick={() => handleZoomChange(getSliderValue(zoom) + 0.1)}
+                                className="p-2 rounded-lg bg-slate-800 text-gray-400 hover:text-white hover:bg-slate-700 transition-colors"
+                            >
+                                <ZoomInIcon className="w-5 h-5" />
+                            </button>
+                            <span className="text-xs font-mono text-gray-500 w-10 text-right">
+                                {zoom.toFixed(1)}x
+                            </span>
                         </div>
                     </div>
                 )}
