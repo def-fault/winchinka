@@ -3,7 +3,20 @@ import { DdsLoader } from '../services/DdsLoader';
 import { ZoomInIcon, ZoomOutIcon } from './Icons';
 
 // ─── Custom Background Upload Modal ────────────────────────────────────────────
-const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (dataUrl: string) => void }) => {
+// ─── Custom Background Upload Modal ────────────────────────────────────────────
+const CustomBgModal = ({ 
+    onClose, 
+    onApply,
+    loadedParts,
+    visibleParts,
+    animIndex
+}: { 
+    onClose: () => void, 
+    onApply: (dataUrl: string) => void,
+    loadedParts: Record<string, CropResult | null>,
+    visibleParts: Record<string, boolean>,
+    animIndex: number
+}) => {
     const [imgSrc, setImgSrc] = useState<string | null>(null);
     const [imgSize, setImgSize] = useState({ w: 0, h: 0 });
     const [baseSize, setBaseSize] = useState({ w: 0, h: 0 });
@@ -13,6 +26,7 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
     const dragStart = useRef({ x: 0, y: 0 });
     const posStart = useRef({ x: 0, y: 0 });
     const imgRef = useRef<HTMLImageElement>(null);
+    const overlayCanvasRef = useRef<HTMLCanvasElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -71,8 +85,6 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
     const minZoom = baseSize.w > 0 ? Math.max(256 / baseSize.w, 256 / baseSize.h) : 1;
 
     const handleZoomChange = (sliderValue: number) => {
-        // sliderValue range: -1 to 1냥
-        // -1 maps to minZoom, 0 maps to 1, 1 maps to 5냥
         let newZoom = 1;
         if (sliderValue < 0) {
             newZoom = 1 + sliderValue * (1 - minZoom);
@@ -83,7 +95,6 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
         const oldZoom = zoom;
         const boundedZoom = Math.max(minZoom, Math.min(newZoom, 5));
         
-        // Zoom relative to the center of the 256x256 crop area냥
         const centerX = -pos.x + 128;
         const centerY = -pos.y + 128;
         
@@ -110,6 +121,58 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
             return (z - 1) / 4;
         }
     };
+
+    // Render character preview on overlay canvas냥
+    useEffect(() => {
+        const cvs = overlayCanvasRef.current;
+        if (!cvs || !imgSrc) return;
+        const ctx = cvs.getContext('2d')!;
+        const W = 256, H = 256;
+        ctx.clearRect(0, 0, W, H);
+
+        const bodyPart = loadedParts['body'];
+        const bodyFrameIdx = (bodyPart && bodyPart.frames.length > 1) ? (animIndex % 2) : 0;
+        const bodyFrame = bodyPart?.frames[bodyFrameIdx] || { x: 0, y: 0, w: 256, h: 256 };
+        const charBaseX = bodyPart ? 128 - Math.round(bodyFrame.w / 2) : 128 - 128;
+        const charBaseY = 94;
+
+        const drawPart = (id: string, hairHalf?: 'top' | 'bottom') => {
+            if (id === 'bg') return; // Don't draw background here냥
+            const def = PART_DEFS.find(d => d.id === id);
+            if (!def) return;
+            const part = loadedParts[id];
+            if (!part || !visibleParts[id]) return;
+
+            let frameIdx = 0;
+            const fixedIds = ['hair', 'face', 'eye', 'helm', 'shield', 'cloak', 'weapon'];
+            if (!fixedIds.includes(id) && part.frames.length > 1) {
+                frameIdx = (animIndex % 2);
+            }
+
+            const frame = part.frames[frameIdx];
+            const refBodyIdx = (bodyPart && frameIdx < bodyPart.frames.length) ? frameIdx : 0;
+            const refBodyFrame = bodyPart?.frames[refBodyIdx] || { x: 0, y: 0, w: 256, h: 256 };
+            const relativeX = frame.x - refBodyFrame.x;
+            const relativeY = frame.y - refBodyFrame.y;
+
+            const bobOffset = (animIndex % 2 === 1) ? 1 : 0;
+            const weaponShake = (id === 'weapon' && animIndex % 2 === 0) ? -1 : 0;
+            const px = Math.round(charBaseX + def.offsetX + relativeX) + weaponShake;
+            const py = Math.round(charBaseY + def.offsetY + relativeY) + bobOffset;
+
+            if (hairHalf === 'bottom') {
+                const topH = Math.floor(frame.h / 2), botY = frame.y + topH, botH = frame.h - topH;
+                ctx.drawImage(part.canvas, frame.x, botY, frame.w, botH, px, py + topH, frame.w, botH);
+            } else if (hairHalf === 'top') {
+                const topH = Math.floor(frame.h / 2);
+                ctx.drawImage(part.canvas, frame.x, frame.y, frame.w, topH, px, py, frame.w, topH);
+            } else {
+                ctx.drawImage(part.canvas, frame.x, frame.y, frame.w, frame.h, px, py, frame.w, frame.h);
+            }
+        };
+
+        RENDER_ORDER.sort((a, b) => a.order - b.order).forEach(entry => drawPart(entry.id, entry.hairHalf));
+    }, [imgSrc, loadedParts, visibleParts, animIndex]);
 
     const handleApply = () => {
         if (!imgRef.current) return;
@@ -161,6 +224,13 @@ const CustomBgModal = ({ onClose, onApply }: { onClose: () => void, onApply: (da
                                     maxHeight: 'none',
                                     pointerEvents: 'none' 
                                 }} 
+                            />
+                            <canvas 
+                                ref={overlayCanvasRef}
+                                width={256}
+                                height={256}
+                                className="absolute inset-0 pointer-events-none"
+                                style={{ imageRendering: 'pixelated', opacity: 0.8 }}
                             />
                         </div>
                         
@@ -923,6 +993,9 @@ const PlaygroundPage: React.FC = () => {
                         setCustomBgModalOpen(false);
                         handleSelect('bg', 'bg000.png');
                     }} 
+                    loadedParts={loaded}
+                    visibleParts={visible}
+                    animIndex={animIndex}
                 />
             )}
         </div>
