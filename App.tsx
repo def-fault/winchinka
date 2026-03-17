@@ -11,6 +11,7 @@ import HallOfFamePage from './components/HallOfFamePage';
 import GalleryPage from './components/GalleryPage';
 import PlaygroundPage from './components/PlaygroundPage';
 import { TrophyIcon } from './components/Icons';
+import VideoIntro from './components/VideoIntro';
 
 const CAFE_URL = "https://cafe.naver.com/windslayerschin";
 
@@ -21,6 +22,7 @@ const App: React.FC = () => {
   const [isUnlocked, setIsUnlocked] = useState(() => {
     return localStorage.getItem('winchinka_playground_unlocked') === 'true';
   });
+  const [showIntro, setShowIntro] = useState(true);
 
   useEffect(() => {
     const handleUnlock = () => setIsUnlocked(true);
@@ -49,6 +51,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#050b14] relative selection:bg-game-primary selection:text-white overflow-x-hidden">
+      {showIntro && <VideoIntro onFinished={() => setShowIntro(false)} />}
       {/* Clean background with subtle gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,_#1e293b_0%,_#050b14_60%)] pointer-events-none" />
 

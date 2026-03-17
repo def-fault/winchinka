@@ -41,6 +41,9 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
   '융하': 'yungha.png',
   'Sia': 'sia.png',
   '우위': 'uwi.png',
+  '다겸이': 'dagy.png',
+  '미토': 'mito.png',
+  '소곤소곤': 'sogon.png'
 };
 
 const getProfileImageUrl = (name: string, fallback?: string) => {
