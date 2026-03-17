@@ -82,7 +82,7 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onFinished }) => {
       <div className={`video-intro-wrapper${folding ? ' folding' : ''}`}>
         <video
           ref={videoRef}
-          src="/video.mp4"
+          src="/video.mp4?v=2"
           playsInline
           className="video-intro-video"
         />
