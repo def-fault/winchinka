@@ -435,21 +435,21 @@ const getAvatarUrl = (name: string) =>
 export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "루비", title: "노바스텔라", imageUrl: getAvatarUrl("루비") },
   { name: "우나", title: "윈친카", imageUrl: getAvatarUrl("우나") },
-  { name: "DOS", title: "놀이터", imageUrl: getAvatarUrl("DOS") },
   { name: "진실", title: "투신", imageUrl: getAvatarUrl("진실") },
+  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") },
+  { name: "카모", title: "투신", imageUrl: getAvatarUrl("카모") },
+  { name: "틀랩퍼", title: "투신", imageUrl: getAvatarUrl("틀랩") },
   { name: "세라핀", title: "투신", imageUrl: getAvatarUrl("세라핀") },
   { name: "효륵사마", title: "투신", imageUrl: getAvatarUrl("효륵") },
   { name: "거북", title: "우주", imageUrl: getAvatarUrl("거북") },
   { name: "별", title: "우주", imageUrl: getAvatarUrl("별") },
-  { name: "카모", title: "투신", imageUrl: getAvatarUrl("카모") },
-  { name: "틀랩퍼", title: "투신", imageUrl: getAvatarUrl("틀랩") },
   { name: "원탑", title: "우주", imageUrl: getAvatarUrl("원탑") },
   { name: "융하", title: "F E E L 、", imageUrl: getAvatarUrl("융하") },
-  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") },
   { name: "우위", title: "올리브영", imageUrl: getAvatarUrl("우위") },
   { name: "다겸이", title: "올리브영", imageUrl: getAvatarUrl("다겸이") },
   { name: "미토", title: "올리브영", imageUrl: getAvatarUrl("미토") },
-  { name: "소곤소곤", title: "올리브영", imageUrl: getAvatarUrl("소곤소곤") }
+  { name: "소곤소곤", title: "올리브영", imageUrl: getAvatarUrl("소곤소곤") },
+  { name: "DOS", title: "놀이터", imageUrl: getAvatarUrl("DOS") },
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
