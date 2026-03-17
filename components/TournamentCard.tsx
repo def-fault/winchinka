@@ -8,8 +8,59 @@ interface Props {
   onClick: (t: Tournament) => void;
 }
 
+const meteorStyle = `
+  @keyframes meteor-orbit {
+    from { offset-distance: 0%; }
+    to   { offset-distance: 100%; }
+  }
+  .meteor-orbit-wrapper {
+    position: absolute;
+    inset: -2px;
+    border-radius: 14px;
+    pointer-events: none;
+    z-index: 50;
+    overflow: hidden;
+  }
+  .meteor {
+    position: absolute;
+    width: 120px;
+    height: 4px;
+    offset-path: inset(0px round 14px);
+    offset-rotate: auto;
+    animation: meteor-orbit 3s linear infinite;
+    background: linear-gradient(to right, 
+      rgba(139, 92, 246, 0) 0%, 
+      rgba(139, 92, 246, 0.3) 50%,
+      rgba(167, 139, 250, 0.8) 80%,
+      #ffffff 100%
+    );
+    filter: blur(1px);
+    box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+    border-radius: 2px;
+  }
+  .meteor::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 
+      0 0 10px #fff,
+      0 0 20px rgba(167, 139, 250, 0.8),
+      0 0 30px rgba(139, 92, 246, 0.6);
+  }
+  .meteor-2 {
+    animation-delay: -1.5s;
+  }
+`;
+
 const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
   const [imgError, setImgError] = useState(false);
+  const isSeason3 = tournament.id === 'season-3';
 
   // Determine badge style and text based on status
   const getStatusBadge = () => {
@@ -35,7 +86,7 @@ const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
 
   const badge = getStatusBadge();
 
-  return (
+  const card = (
     <div 
       onClick={() => onClick(tournament)}
       className="glass-panel rounded-xl overflow-hidden cursor-pointer hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] group h-full flex flex-col"
@@ -49,10 +100,7 @@ const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
             src={tournament.posterUrl} 
             alt={tournament.title}
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-            onError={(e) => {
-              // Quietly handle error without spamming console
-              setImgError(true);
-            }}
+            onError={() => setImgError(true)}
           />
         ) : (
           /* Fallback placeholder if image is missing */
@@ -98,6 +146,22 @@ const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
         </div>
       </div>
     </div>
+  );
+
+  if (!isSeason3) return card;
+
+  return (
+    <>
+      <style>{meteorStyle}</style>
+      <div style={{ position: 'relative' }}>
+        {/* 유성 두 개가 카드 테두리를 따라 돌아요 냥~ */}
+        <div className="meteor-orbit-wrapper">
+          <div className="meteor" />
+          <div className="meteor meteor-2" />
+        </div>
+        {card}
+      </div>
+    </>
   );
 };
 
