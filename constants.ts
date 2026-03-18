@@ -294,7 +294,8 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "우위 (올리브영)" },
       { name: "다겸이 (올리브영)" },
       { name: "미토 (올리브영)" },
-      { name: "소곤소곤 (올리브영)" }
+      { name: "소곤소곤 (올리브영)" },
+      { name: "주먹이운다 (올리브영)" }
     ],
     description: "점차 강렬해지는 승부! 1:1 개인전으로 시작하여 2:2 듀오, 그리고 3:3 팀전으로 이어지는 '크레센도' 방식의 단계별 서바이벌. 라운드가 거듭될수록 더 큰 전략과 협동심이 요구됩니다."
   },
@@ -456,6 +457,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "다겸이", title: "올리브영", imageUrl: getAvatarUrl("다겸이") },
   { name: "미토", title: "올리브영", imageUrl: getAvatarUrl("미토") },
   { name: "소곤소곤", title: "올리브영", imageUrl: getAvatarUrl("소곤소곤") },
+  { name: "주먹이운다", title: "올리브영", imageUrl: resolvePublicAsset('zumuk.png') },
   { name: "DOS", title: "놀이터", imageUrl: getAvatarUrl("DOS") },
 ];
 

@@ -31,7 +31,7 @@ const style = `
     position: absolute;
     bottom: 40px;
     right: 40px;
-    padding: 10px 24px;
+    padding: 10px 0;
     background: rgba(255,255,255,0.15);
     color: #fff;
     border: 1px solid rgba(255,255,255,0.4);
@@ -42,9 +42,37 @@ const style = `
     letter-spacing: 0.05em;
     transition: background 0.2s;
     font-family: inherit;
+    width: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  .video-intro-skip:hover {
+  .video-intro-skip:hover, .video-intro-unmute:hover {
     background: rgba(255,255,255,0.3);
+  }
+  .video-intro-unmute {
+    position: absolute;
+    bottom: 95px;
+    right: 40px;
+    padding: 10px 0;
+    background: rgba(59, 130, 246, 0.4);
+    color: #fff;
+    border: 1px solid rgba(59, 130, 246, 0.6);
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+    font-family: inherit;
+    width: 140px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .video-intro-unmute:hover {
+    background: rgba(59, 130, 246, 0.6);
+    transform: translateY(-2px);
   }
 `;
 
@@ -52,6 +80,7 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onFinished }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [folding, setFolding] = useState(false);
   const [gone, setGone] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   const triggerFold = () => {
     if (folding) return;
@@ -86,6 +115,19 @@ const VideoIntro: React.FC<VideoIntroProps> = ({ onFinished }) => {
           playsInline
           className="video-intro-video"
         />
+        {isMuted && (
+          <button
+            className="video-intro-unmute"
+            onClick={() => {
+              if (videoRef.current) {
+                videoRef.current.muted = false;
+                setIsMuted(false);
+              }
+            }}
+          >
+            🔊 소리 듣기
+          </button>
+        )}
         <button
           className="video-intro-skip"
           onClick={triggerFold}

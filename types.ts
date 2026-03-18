@@ -30,12 +30,12 @@ export interface Tournament {
   posterUrl: string;
   format: string; // e.g., "3:3 Team Match", "2:2 Duo"
   prizePool: string;
-  winner?: Team;
-  runnerUp?: Team;
-  thirdPlace?: Team; // 추가됨
-  fourthPlace?: Team; // 추가됨
+  winner?: Team | any; // allow readonly winner
+  runnerUp?: Team | any;
+  thirdPlace?: Team | any;
+  fourthPlace?: Team | any;
   sponsors: Sponsor[];
-  participants?: TournamentParticipantTeam[];
+  participants?: TournamentParticipantTeam[] | readonly any[];
   description: string;
   videoUrls?: string[];
   pdfUrl?: string;
