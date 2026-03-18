@@ -807,6 +807,37 @@ const PlaygroundPage: React.FC = () => {
         RENDER_ORDER.sort((a, b) => a.order - b.order).forEach(entry => drawPart(entry.id, entry.hairHalf));
     }, [loaded, visible, animIndex]);
 
+    const handleRandom = useCallback(() => {
+        const nextFiles: Record<string, string> = { ...selectedFile };
+        const nextVisible: Record<string, boolean> = { ...visible };
+
+        PART_DEFS.forEach(def => {
+            const files = fileLists[def.id];
+            if (files && files.length > 0) {
+                const randomFile = files[Math.floor(Math.random() * files.length)];
+                nextFiles[def.id] = randomFile;
+                // nextVisible[def.id] = true; // Always make it visible on random냥 -> Removed to preserve visibility
+                loadAndSet(def, randomFile);
+
+                // Helm/Hair special sync냥
+                if (def.id === 'helm') {
+                    const m = randomFile.match(/helm(\d+)/);
+                    if (m) {
+                        const hairFile = `hair${m[1]}_a1.hsc.dds`;
+                        if (fileLists['hair']?.includes(hairFile)) {
+                            nextFiles['hair'] = hairFile;
+                            // nextVisible['hair'] = true; -> Removed to preserve visibility
+                            loadAndSet(PART_DEFS.find(d => d.id === 'hair')!, hairFile);
+                        }
+                    }
+                }
+            }
+        });
+
+        setSelectedFile(nextFiles);
+        setVisible(nextVisible);
+    }, [fileLists, loadAndSet, selectedFile, visible]);
+
     const handleSelect = useCallback((partId: string, file: string) => {
         setSelectedFile(p => ({ ...p, [partId]: file }));
         const def = PART_DEFS.find(d => d.id === partId)!;
@@ -918,8 +949,8 @@ const PlaygroundPage: React.FC = () => {
 
             <div className="flex flex-col lg:flex-row gap-8 items-start">
                 {/* ── Left: Canvas + toggles ── */}
-                <div className="flex flex-col gap-5 lg:sticky lg:top-24 w-full lg:w-[344px] shrink-0 h-[650px] lg:h-[750px]">
-                    <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)] w-[344px] box-border mx-auto">
+                <div className="flex flex-col gap-5 lg:sticky lg:top-24 w-full lg:w-[344px] shrink-0 lg:h-[750px]">
+                    <div className="relative p-3 bg-gradient-to-b from-slate-800 to-slate-900 rounded-2xl border border-white/10 shadow-[0_0_40px_rgba(59,130,246,0.15)] max-w-[344px] w-full box-border mx-auto">
                         <canvas ref={canvasRef} width={256} height={256} className="rounded-xl block w-full h-full"
                             style={{ imageRendering: 'pixelated' }} />
                         <div className="absolute inset-3 rounded-xl border border-blue-500/20 pointer-events-none" />
@@ -960,10 +991,16 @@ const PlaygroundPage: React.FC = () => {
                                 <span className="text-xs text-gray-400 group-hover:text-white transition-colors">배경</span>
                             </label>
                         </div>
-                        <button onClick={handleSave}
-                            className="w-full mt-4 py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-bold rounded-xl hover:brightness-110 transition-all active:scale-95">
-                            💾 이미지 저장
-                        </button>
+                        <div className="flex gap-2 mt-4">
+                            <button onClick={handleSave}
+                                className="flex-[2.5] py-2.5 bg-gradient-to-r from-blue-600 to-violet-600 text-white text-sm font-bold rounded-xl hover:brightness-110 transition-all active:scale-95">
+                                💾 이미지 저장
+                            </button>
+                            <button onClick={handleRandom}
+                                className="flex-1 py-2.5 bg-slate-800 text-gray-300 text-sm font-bold rounded-xl border border-white/10 hover:bg-slate-700 hover:text-white transition-all active:scale-95">
+                                🎲 랜덤
+                            </button>
+                        </div>
 
                         <div className="mt-auto pt-6 border-t border-white/5 flex flex-col gap-3">
                             <p className="text-xs text-gray-500 font-bold uppercase tracking-widest pl-1">캐릭터 설정 (파일)</p>
@@ -986,7 +1023,7 @@ const PlaygroundPage: React.FC = () => {
                 </div>
 
                 {/* ── Right: Part selector ── */}
-                <div className="relative h-[650px] lg:h-[750px] flex-1 min-w-0 w-full">
+                <div className="relative h-[550px] sm:h-[650px] lg:h-[750px] flex-1 min-w-0 w-full mb-10 lg:mb-0">
                     <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/10 flex flex-col overflow-hidden">
                         {/* Tab bar냥 */}
                         <div className="flex overflow-x-auto bg-black/30 p-2 gap-1 shrink-0">
