@@ -38,6 +38,7 @@ export interface Tournament {
   participants?: TournamentParticipantTeam[];
   description: string;
   videoUrls?: string[];
+  pdfUrl?: string;
 }
 
 export enum ViewState {

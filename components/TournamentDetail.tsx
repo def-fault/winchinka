@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tournament, Team } from '../types';
-import { ArrowLeftIcon, TrophyIcon, SwordsIcon, CoinsIcon, CrownIcon, VideoIcon } from './Icons';
+import { ArrowLeftIcon, TrophyIcon, SwordsIcon, CoinsIcon, CrownIcon, VideoIcon, DownloadIcon } from './Icons';
 
 interface Props {
   tournament: Tournament;
@@ -122,15 +122,32 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
   return (
     <div className="animate-fade-in w-full">
       {/* Header Navigation */}
-      <button 
-        onClick={onBack}
-        className="group flex items-center gap-2 text-gray-400 hover:text-white mb-6 transition-colors"
-      >
-        <div className="p-2 rounded-full bg-slate-800 group-hover:bg-game-primary transition-colors">
-          <ArrowLeftIcon className="w-5 h-5" />
-        </div>
-        <span className="font-bold">목록으로 돌아가기</span>
-      </button>
+      <div className="flex justify-between items-center mb-6">
+        <button 
+          onClick={onBack}
+          className="group flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
+        >
+          <div className="p-2 rounded-full bg-slate-800 group-hover:bg-game-primary transition-colors">
+            <ArrowLeftIcon className="w-5 h-5" />
+          </div>
+          <span className="font-bold">목록으로 돌아가기</span>
+        </button>
+
+        {tournament.pdfUrl && (
+          <a 
+            href={tournament.pdfUrl}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex items-center gap-2 text-gray-400 hover:text-game-primary transition-colors"
+          >
+            <span className="font-bold hidden sm:inline">대회 요강 다운로드</span>
+            <div className="p-2 rounded-full bg-slate-800 group-hover:bg-game-primary transition-colors">
+              <DownloadIcon className="w-5 h-5 group-hover:text-white" />
+            </div>
+          </a>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
