@@ -22,7 +22,19 @@ const App: React.FC = () => {
   const [isUnlocked, setIsUnlocked] = useState(() => {
     return localStorage.getItem('winchinka_playground_unlocked') === 'true';
   });
-  const [showIntro, setShowIntro] = useState(true);
+  const [showIntro, setShowIntro] = useState(() => {
+    // URL에 'force_intro=true'가 있으면 무조건 영상 노출냥
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('force_intro') === 'true') return true;
+    
+    // 이미 본 적이 있다면 인트로 생략냥
+    return localStorage.getItem('winchinka_intro_seen') !== 'true';
+  });
+
+  const handleIntroFinished = () => {
+    localStorage.setItem('winchinka_intro_seen', 'true');
+    setShowIntro(false);
+  };
 
   useEffect(() => {
     const handleUnlock = () => setIsUnlocked(true);
@@ -51,7 +63,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#050b14] relative selection:bg-game-primary selection:text-white overflow-x-hidden">
-      {showIntro && <VideoIntro onFinished={() => setShowIntro(false)} />}
+      {showIntro && <VideoIntro onFinished={handleIntroFinished} />}
       {/* Clean background with subtle gradient */}
       <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,_#1e293b_0%,_#050b14_60%)] pointer-events-none" />
 

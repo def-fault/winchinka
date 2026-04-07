@@ -626,34 +626,26 @@ const PlaygroundPage: React.FC = () => {
         );
     }, [allFiles, filesReady]);
 
-    // Eagerly preload ALL thumbnail images as soon as fileLists is ready냥
-    // Active tab files go first, then remaining tabs in background냥
-    useEffect(() => {
-        if (!filesReady) return;
-        // Active tab first냥
-        const activeDef = PART_DEFS.find(d => d.id === 'body')!; // default first tab냥
-        const allDefs = PART_DEFS;
-        // Enqueue in order: current (body) first, then others냥
-        allDefs.forEach(def => {
-            const files = allFiles.filter(f => f.startsWith(def.prefix) && (f.endsWith('.dds') || f.endsWith('.png')));
-            files.forEach(file => {
-                // Fire-and-forget: just try the pre-baked PNG img load냥
-                const prebakedUrl = `/coordinate-thumbs/${encodeURIComponent(file)}.thumb.png`;
-                const cacheKey = `${file}:${def.extractCount}:${def.gapThreshold}`;
-                if (thumbCache.has(cacheKey)) return;
-                const img = new Image();
-                img.onload = () => { thumbCache.set(cacheKey, prebakedUrl); };
-                img.onerror = () => {
-                    // Only do DDS decode fallback if truly no prebaked thumb냥
-                    enqueueThumb(def, file, url => { thumbCache.set(cacheKey, url); });
-                };
-                img.src = prebakedUrl;
-            });
-        });
-        void activeDef; // suppress unused warning냥
-    }, [filesReady, allFiles]);
-
     const [activeTab, setActiveTab] = useState('body');
+
+    // ─── Only load thumbnails for the active tab to save bandwidth냥 ───────────────────
+    useEffect(() => {
+        if (!filesReady || !activeTab) return;
+        
+        const activeDef = PART_DEFS.find(d => d.id === activeTab);
+        if (!activeDef) return;
+
+        const files = allFiles.filter(f => f.startsWith(activeDef.prefix) && (f.endsWith('.dds') || f.endsWith('.png')));
+        files.forEach(file => {
+            const prebakedUrl = `/coordinate-thumbs/${encodeURIComponent(file)}.thumb.png`;
+            const cacheKey = `${file}:${activeDef.extractCount}:${activeDef.gapThreshold}`;
+            if (thumbCache.has(cacheKey)) return;
+            
+            const img = new Image();
+            img.onload = () => { thumbCache.set(cacheKey, prebakedUrl); };
+            img.src = prebakedUrl;
+        });
+    }, [filesReady, allFiles, activeTab]);
     const [selectedFile, setSelectedFile] = useState<Record<string, string>>(
         () => Object.fromEntries(PART_DEFS.map(d => [d.id, d.defaultFile]))
     );
