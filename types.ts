@@ -39,6 +39,7 @@ export interface Tournament {
   description: string;
   videoUrls?: string[];
   pdfUrl?: string;
+  formUrl?: string;
 }
 
 export enum ViewState {

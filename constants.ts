@@ -290,6 +290,7 @@ export const TOURNAMENTS: Tournament[] = [
     format: "1:1 → 2:2 → 3:3 (순차 진행)",
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('2026-1.pdf'),
+    formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdlNyEdx2dqiOdDNUzioETc51qTM6rKY7-W5TTHGZ_kDLEKiw/viewform?usp=dialog",
     sponsors: [
       { name: "우위 (올리브영)" },
       { name: "다겸이 (올리브영)" },
