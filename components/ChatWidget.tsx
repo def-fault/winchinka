@@ -35,15 +35,7 @@ const ChatWidget: React.FC = () => {
 
     const history = messages.map(m => `${m.sender}: ${m.text}`);
 
-    // Hidden command: "beta"냥
-    if (input.toLowerCase().trim() === 'beta') {
-      localStorage.setItem('winchinka_playground_unlocked', 'true');
-      window.dispatchEvent(new CustomEvent('winchinka:unlock-playground'));
-      const secretMsg: Message = { id: Date.now() + 1, text: "오호... 비밀 암호를 알고 있구리! 플레이그라운드 탭을 열어줬구리! 🛠️", sender: 'bot' };
-      setMessages(prev => [...prev, secretMsg]);
-      setIsLoading(false);
-      return;
-    }
+
 
     const response = await chatWithArchiveBot(userMsg.text, history);
 
