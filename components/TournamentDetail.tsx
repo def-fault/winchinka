@@ -380,9 +380,61 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
               </div>
             </div>
           )}
+
+          {/* PRELIMINARY ROUND Section */}
+          {tournament.preliminaryMatches && tournament.preliminaryMatches.length > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center gap-3 mb-2">
+                <SwordsIcon className="w-8 h-8 text-game-fire" />
+                <h2 className="text-3xl font-display text-white uppercase">PRELIMINARY ROUND</h2>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-6">
+                {tournament.preliminaryMatches.map((match, idx) => (
+                  <div key={idx} className="relative group overflow-hidden">
+                    {/* Background Glow */}
+                    <div className="absolute -inset-0.5 bg-gradient-to-r from-game-primary/20 via-game-fire/20 to-game-primary/20 rounded-2xl blur opacity-30 group-hover:opacity-100 transition duration-1000"></div>
+                    
+                    <div className="relative glass-panel rounded-2xl border border-slate-700/50 overflow-hidden shadow-lg transition-transform duration-300 group-hover:scale-[1.01]">
+                      <div className="flex items-stretch">
+                        {/* Defense Team Column */}
+                        <div className="flex-1 flex flex-col">
+                          <div className="h-1 bg-game-primary"></div>
+                          <div className="p-5 flex-1 bg-gradient-to-br from-slate-900/90 to-transparent">
+                            <div className="flex flex-col">
+                              <span className="text-[13px] font-black text-game-primary uppercase tracking-[0.25em] mb-1 opacity-90 font-display">DEFENSE</span>
+                              <span className="text-2xl font-black text-white drop-shadow-md leading-tight font-sans">{match.defenseTeam}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* VS Divider Column */}
+                        <div className="flex flex-col items-center justify-center px-4 bg-black/40 border-x border-slate-800/50">
+                          <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/30 to-transparent mb-2"></div>
+                          <span className="font-display font-black italic text-2xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">VS</span>
+                          <div className="w-px h-8 bg-gradient-to-b from-transparent via-white/30 to-transparent mt-2"></div>
+                        </div>
+
+                        {/* Attack Team Column */}
+                        <div className="flex-1 flex flex-col">
+                          <div className="h-1 bg-game-fire"></div>
+                          <div className="p-5 flex-1 text-right bg-gradient-to-bl from-slate-900/90 to-transparent">
+                            <div className="flex flex-col">
+                              <span className="text-[13px] font-black text-game-fire uppercase tracking-[0.25em] mb-1 opacity-90 font-display">ATTACK</span>
+                              <span className="text-2xl font-black text-white drop-shadow-md leading-tight font-sans">{match.attackTeam}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      
+
       <div className="h-48 w-full"></div>
     </div>
   );

@@ -21,6 +21,11 @@ export interface Sponsor {
   message?: string;
 }
 
+export interface PreliminaryMatch {
+  defenseTeam: string;
+  attackTeam: string;
+}
+
 export interface Tournament {
   id: string;
   season: string;
@@ -37,6 +42,7 @@ export interface Tournament {
   fourthPlace?: Team | any;
   sponsors: Sponsor[];
   participants?: TournamentParticipantTeam[] | readonly any[];
+  preliminaryMatches?: PreliminaryMatch[];
   description: string;
   videoUrls?: string[];
   pdfUrl?: string;

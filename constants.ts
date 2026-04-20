@@ -307,7 +307,7 @@ export const season3Participants = [
   },
   {
     name: '세얼간이',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -325,7 +325,7 @@ export const season3Participants = [
   },
   {
     name: '이름이뭐에요전화버논뭐에요',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -442,6 +442,10 @@ export const TOURNAMENTS: Tournament[] = [
     pdfUrl: resolvePublicAsset('2026-1.pdf'),
     formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdlNyEdx2dqiOdDNUzioETc51qTM6rKY7-W5TTHGZ_kDLEKiw/viewform?usp=dialog",
     participants: season3Participants,
+    preliminaryMatches: [
+      { defenseTeam: '세얼간이', attackTeam: '청설모' },
+      { defenseTeam: '이름이뭐에요전화버논뭐에요', attackTeam: '엄머머~' },
+    ],
     sponsors: [
       { name: "우위 (올리브영)" },
       { name: "다겸이 (올리브영)" },
