@@ -6,6 +6,7 @@ export interface Player {
 
 export interface TournamentParticipantTeam {
   name: string;
+  state?: string;
   members: (Player & { role?: string })[];
 }
 

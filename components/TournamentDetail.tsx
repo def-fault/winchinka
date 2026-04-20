@@ -113,6 +113,11 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
     ? Math.max(...tournament.participants.map(t => t.members.length)) 
     : 0;
 
+  const hasStateColumn = tournament.participants?.some(t => t.state);
+  const gridTemplateColumns = hasStateColumn 
+    ? `1.2fr repeat(${maxMembers}, 1fr) 0.8fr`
+    : `1.2fr repeat(${maxMembers}, 1fr)`;
+
   const getYoutubeId = (url: string) => {
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
     const match = url.match(regExp);
@@ -314,7 +319,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                   {/* Grid 컬럼 수 동적 할당 */}
                   <div 
                     className="grid px-4 py-3 text-sm font-bold text-gray-300 bg-slate-800/70 gap-2"
-                    style={{ gridTemplateColumns: `1.2fr repeat(${maxMembers}, 1fr)` }}
+                    style={{ gridTemplateColumns }}
                   >
                     <span className="pl-2">팀명</span>
                     {/* [수정] 0번 인덱스만 '팀대표', 나머지는 모두 '팀원'으로 통일 (숫자 제거) */}
@@ -323,13 +328,14 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                         {i === 0 ? '팀대표' : '팀원'}
                       </span>
                     ))}
+                    {hasStateColumn && <span>상태</span>}
                   </div>
 
                   {tournament.participants?.map((team) => (
                     <div 
                       key={team.name} 
                       className="grid px-4 py-4 gap-2 text-sm text-gray-200"
-                      style={{ gridTemplateColumns: `1.2fr repeat(${maxMembers}, 1fr)` }}
+                      style={{ gridTemplateColumns }}
                     >
                       <div className="pl-2 font-semibold text-white">{team.name}</div>
                       {team.members.map((member, idx) => (
@@ -350,6 +356,24 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                           )}
                         </div>
                       ))}
+                      {/* 멤버 채우기 */}
+                      {team.members.length < maxMembers && Array.from({ length: maxMembers - team.members.length }).map((_, i) => (
+                        <div key={`empty-${i}`}></div>
+                      ))}
+                      {/* 상태 렌더링 */}
+                      {hasStateColumn && (
+                        <div className="flex items-start pt-1">
+                          {team.state && (
+                            <span className={`text-xs px-2 py-1 rounded-md border inline-flex items-center whitespace-nowrap ${
+                              team.state.includes('가능') ? 'text-green-400 border-green-400/50 bg-green-400/10' :
+                              team.state.includes('불가') ? 'text-red-400 border-red-400/50 bg-red-400/10' :
+                              'text-gray-400 border-gray-400/50 bg-gray-400/10'
+                            }`}>
+                              {team.state.replace('가능', ' 가능').replace('불가', ' 불가')}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

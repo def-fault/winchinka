@@ -274,6 +274,156 @@ export const season2Participants = [
   },
 ] as const;
 
+// ==========================================
+// [시즌 3 참가자 명단] - 3인 구성 (팀대표 + 팀원1 + 팀원2)
+// ==========================================
+export const season3Participants = [
+  {
+    name: 'LA 최고의 갱단',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '꽃이필무렵',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '유단자야?',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '세얼간이',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '심연 사랑해',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '이름이뭐에요전화버논뭐에요',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '형제는 용감했다',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '우리빼고 다~~나깡!!',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '시샘블로그많관부',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '우나의 관리자권한',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '어우사',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '왕밤빵짱',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '시진핀',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '우승하게 해주세요',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '갱주들',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '늙고병듦',
+    state: '저격 가능',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+] as const;
+
 
 // ==========================================
 // [대회 정보 통합]
@@ -291,6 +441,7 @@ export const TOURNAMENTS: Tournament[] = [
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('2026-1.pdf'),
     formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdlNyEdx2dqiOdDNUzioETc51qTM6rKY7-W5TTHGZ_kDLEKiw/viewform?usp=dialog",
+    participants: season3Participants,
     sponsors: [
       { name: "우위 (올리브영)" },
       { name: "다겸이 (올리브영)" },
