@@ -24,6 +24,7 @@ export interface Sponsor {
 export interface PreliminaryMatch {
   defenseTeam: string;
   attackTeam: string;
+  winner?: 'defense' | 'attack';
 }
 
 export interface Tournament {

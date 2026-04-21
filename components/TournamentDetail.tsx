@@ -399,10 +399,15 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                       <div className="flex items-stretch">
                         {/* Defense Team Column */}
                         <div className="flex-1 flex flex-col">
-                          <div className="h-1 bg-game-primary"></div>
-                          <div className="p-5 flex-1 bg-gradient-to-br from-slate-900/90 to-transparent">
+                          <div className={`h-1 ${match.winner === 'defense' ? 'bg-game-win' : 'bg-game-primary'}`}></div>
+                          <div className={`p-5 flex-1 bg-gradient-to-br from-slate-900/90 to-transparent transition-colors duration-500 ${match.winner === 'defense' ? 'bg-blue-900/20' : ''}`}>
                             <div className="flex flex-col">
-                              <span className="text-[13px] font-black text-game-primary uppercase tracking-[0.25em] mb-1 opacity-90 font-display">DEFENSE</span>
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="text-[13px] font-black text-game-primary uppercase tracking-[0.25em] opacity-90 font-display">DEFENSE</span>
+                                {match.winner === 'defense' && (
+                                  <span className="px-1.5 py-0.5 bg-game-win text-black text-[10px] font-black rounded-sm shadow-[0_0_10px_rgba(234,179,8,0.5)]">WIN</span>
+                                )}
+                              </div>
                               <span className="text-2xl font-black text-white drop-shadow-md leading-tight font-sans">{match.defenseTeam}</span>
                             </div>
                           </div>
@@ -417,10 +422,15 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
 
                         {/* Attack Team Column */}
                         <div className="flex-1 flex flex-col">
-                          <div className="h-1 bg-game-fire"></div>
-                          <div className="p-5 flex-1 text-right bg-gradient-to-bl from-slate-900/90 to-transparent">
+                          <div className={`h-1 ${match.winner === 'attack' ? 'bg-red-500' : 'bg-game-fire'}`}></div>
+                          <div className={`p-5 flex-1 text-right bg-gradient-to-bl from-slate-900/90 to-transparent transition-colors duration-500 ${match.winner === 'attack' ? 'bg-red-900/40' : ''}`}>
                             <div className="flex flex-col">
-                              <span className="text-[13px] font-black text-game-fire uppercase tracking-[0.25em] mb-1 opacity-90 font-display">ATTACK</span>
+                              <div className="flex items-center justify-end gap-2 mb-1">
+                                {match.winner === 'attack' && (
+                                  <span className="px-1.5 py-0.5 bg-red-600 text-white text-[10px] font-black rounded-sm shadow-[0_0_10px_rgba(220,38,38,0.5)]">WIN</span>
+                                )}
+                                <span className="text-[13px] font-black text-game-fire uppercase tracking-[0.25em] opacity-90 font-display">ATTACK</span>
+                              </div>
                               <span className="text-2xl font-black text-white drop-shadow-md leading-tight font-sans">{match.attackTeam}</span>
                             </div>
                           </div>
