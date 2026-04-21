@@ -280,7 +280,7 @@ export const season2Participants = [
 export const season3Participants = [
   {
     name: 'LA 최고의 갱단',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -446,6 +446,7 @@ export const TOURNAMENTS: Tournament[] = [
       { defenseTeam: '세얼간이', attackTeam: '청설모' },
       { defenseTeam: '이름이뭐에요전화버논뭐에요', attackTeam: '엄머머~' },
       { defenseTeam: '어우사', attackTeam: '심판을 받아라' },
+      { defenseTeam: 'LA 최고의 갱단', attackTeam: '미워도 다시 한번' },
     ],
     sponsors: [
       { name: "우위 (올리브영)" },
