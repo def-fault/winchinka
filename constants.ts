@@ -370,7 +370,7 @@ export const season3Participants = [
   },
   {
     name: '어우사',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -445,6 +445,7 @@ export const TOURNAMENTS: Tournament[] = [
     preliminaryMatches: [
       { defenseTeam: '세얼간이', attackTeam: '청설모' },
       { defenseTeam: '이름이뭐에요전화버논뭐에요', attackTeam: '엄머머~' },
+      { defenseTeam: '어우사', attackTeam: '심판을 받아라' },
     ],
     sponsors: [
       { name: "우위 (올리브영)" },
