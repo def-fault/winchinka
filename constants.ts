@@ -445,8 +445,8 @@ export const TOURNAMENTS: Tournament[] = [
     preliminaryMatches: [
       { defenseTeam: '이름이뭐에요전화버논뭐에요', attackTeam: '엄머머~', winner: 'attack' },
       { defenseTeam: '세얼간이', attackTeam: '청설모' },
-      { defenseTeam: '어우사', attackTeam: '심판을 받아라' },
       { defenseTeam: 'LA 최고의 갱단', attackTeam: '미워도 다시 한번' },
+      { defenseTeam: '어우사', attackTeam: '심판을 받아라' },
     ],
     sponsors: [
       { name: "우위 (올리브영)" },
