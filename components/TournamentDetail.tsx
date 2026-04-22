@@ -399,7 +399,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                       <div className="flex items-stretch">
                         {/* Defense Team Column */}
                         <div className="flex-1 flex flex-col">
-                          <div className={`h-1 ${match.winner === 'defense' ? 'bg-game-win' : 'bg-game-primary'}`}></div>
+                          <div className={`h-1 bg-game-primary`}></div>
                           <div className={`p-5 flex-1 bg-gradient-to-br from-slate-900/90 to-transparent transition-colors duration-500 ${match.winner === 'defense' ? 'bg-blue-900/20' : ''}`}>
                             <div className="flex flex-col">
                               <div className="flex items-center gap-2 mb-1">
