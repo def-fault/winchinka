@@ -405,7 +405,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                               <div className="flex items-center gap-2 mb-1">
                                 <span className="text-[13px] font-black text-game-primary uppercase tracking-[0.25em] opacity-90 font-display">DEFENSE</span>
                                 {match.winner === 'defense' && (
-                                  <span className="px-1.5 py-0.5 bg-game-win text-black text-[10px] font-black rounded-sm shadow-[0_0_10px_rgba(234,179,8,0.5)]">WIN</span>
+                                  <span className="px-1.5 py-0.5 bg-game-primary text-white text-[10px] font-black rounded-sm shadow-[0_0_10px_rgba(59,130,246,0.5)]">WIN</span>
                                 )}
                               </div>
                               <span className="text-2xl font-black text-white drop-shadow-md leading-tight font-sans">{match.defenseTeam}</span>

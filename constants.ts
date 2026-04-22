@@ -289,7 +289,7 @@ export const season3Participants = [
   },
   {
     name: '꽃이필무렵',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -406,7 +406,7 @@ export const season3Participants = [
   },
   {
     name: '갱주들',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -447,6 +447,8 @@ export const TOURNAMENTS: Tournament[] = [
       { defenseTeam: '세얼간이', attackTeam: '청설모', winner: 'attack' },
       { defenseTeam: 'LA 최고의 갱단', attackTeam: '미워도 다시 한번', winner: 'attack' },
       { defenseTeam: '어우사', attackTeam: '심판을 받아라', winner: 'defense' },
+      { defenseTeam: '갱주들', attackTeam: '광탈팀' },
+      { defenseTeam: '꽃이필무렵', attackTeam: '이름없음' },
     ],
     sponsors: [
       { name: "우위 (올리브영)" },
