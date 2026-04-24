@@ -397,7 +397,7 @@ export const season3Participants = [
   },
   {
     name: '우승하게 해주세요',
-    state: '저격 진행중',
+    state: '저격 불가',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -415,7 +415,7 @@ export const season3Participants = [
   },
   {
     name: '늙고병듦',
-    state: '저격 가능',
+    state: '저격 진행중',
     members: [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
@@ -449,9 +449,9 @@ export const TOURNAMENTS: Tournament[] = [
       { defenseTeam: '어우사', attackTeam: '심판을 받아라', winner: 'defense' },
       { defenseTeam: '갱주들', attackTeam: '광탈팀' },
       { defenseTeam: '꽃이필무렵', attackTeam: '이름없음' },
-      { defenseTeam: '우승하게 해주세요', attackTeam: '롤러터' },
+      { defenseTeam: '우승하게 해주세요', attackTeam: '롤러터', winner: 'defense' },
       { defenseTeam: '우나의 관리자권한', attackTeam: '올리브영' },
-      { defenseTeam: '미정', attackTeam: 'Ssiyo' },
+      { defenseTeam: '늙고병듦', attackTeam: 'Ssiyo' },
     ],
     sponsors: [
       { name: "우위 (올리브영)" },
