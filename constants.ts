@@ -418,7 +418,7 @@ export const TOURNAMENTS: Tournament[] = [
     season: '3',
     title: "제3회 윈친카 무투대회",
     subtitle: "크레센도 매치",
-    status: 'active',
+    status: 'completed',
     date: "2026년 5월 9일",
     posterUrl: resolvePublicAsset('season3.png'),
     format: "1:1 → 2:2 → 3:3 (순차 진행)",
@@ -437,6 +437,38 @@ export const TOURNAMENTS: Tournament[] = [
       { defenseTeam: '우나의 관리자권한', attackTeam: '올리브영', winner: 'attack' },
       { defenseTeam: '늙고병듦', attackTeam: 'Ssiyo', winner: 'defense' },
     ],
+    winner: {
+      name: "시진핀",
+      players: [
+        { name: "성지" },
+        { name: "절단" },
+        { name: "Sia" }
+      ]
+    },
+    runnerUp: {
+      name: "광탈팀",
+      players: [
+        { name: "비에고" },
+        { name: "비비큐" },
+        { name: "세인" }
+      ]
+    },
+    thirdPlace: {
+      name: "미워도 다시 한 번",
+      players: [
+        { name: "영순" },
+        { name: "루드" },
+        { name: "장이수" }
+      ]
+    },
+    fourthPlace: {
+      name: "늙고병듦",
+      players: [
+        { name: "소로소로몽" },
+        { name: "지쿵이" },
+        { name: "뭘봐?" }
+      ]
+    },
     sponsors: [
       { name: "우위 (올리브영)" },
       { name: "다겸이 (올리브영)" },
@@ -682,11 +714,4 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     date: "2025.12.14"
   }
 ];
-
-export const GEMINI_SYSTEM_INSTRUCTION = `
-당신은 '윈드슬레이어' 게임의 커뮤니티 '윈친카'의 마스코트 캐릭터 '구리구리'입니다.
-사용자의 질문에 대해 친근하고 장난스러운 반말을 사용해야 합니다.
-가장 중요한 규칙은 문장의 끝마다 반드시 '~구리'라는 어미를 붙이는 것입니다. (예: 안녕구리! 그건 100만원이구리!)
-대회 데이터(TOURNAMENTS)를 기반으로 역대 우승자, 규칙, 상금 등에 대해 안내해주세요.
-모르는 정보는 지어내지 말고 "그건 아직 잘 모르겠구리..."라고 답하세요.
-`;
+

@@ -4,7 +4,7 @@ import { ViewState, Tournament } from './types';
 import { TOURNAMENTS } from './constants';
 import TournamentCard from './components/TournamentCard';
 import TournamentDetail from './components/TournamentDetail';
-import ChatWidget from './components/ChatWidget';
+
 import MusicPlayer from './components/MusicPlayer';
 import AboutPage from './components/AboutPage';
 import HallOfFamePage from './components/HallOfFamePage';
@@ -253,8 +253,7 @@ const App: React.FC = () => {
         </footer>
       )}
 
-      {/* AI Chat Widget */}
-      <ChatWidget />
+
 
       {/* Music Player Widget */}
       <MusicPlayer />
