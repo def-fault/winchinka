@@ -151,8 +151,8 @@ const HallOfFamePage: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {completedTournaments.map((t) => {
-            // 시즌 2인지 확인 (가로 배치를 위해)
-            const isFeatured = t.season === '2';
+            // 시즌 2, 3인지 확인 (가로 배치를 위해)
+            const isFeatured = t.season === '2' || t.season === '3';
 
             return (
               <div
