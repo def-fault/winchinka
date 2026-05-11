@@ -39,8 +39,8 @@ const AboutPage: React.FC = () => {
       <section className="text-center py-12 relative">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-game-accent/20 blur-[100px] rounded-full pointer-events-none" />
         
-        <h1 className="relative text-5xl md:text-6xl font-display font-black text-white mb-8 leading-tight">
-          <span className="block text-2xl md:text-3xl font-bold text-game-primary mb-4 tracking-widest opacity-80">
+        <h1 className="relative text-5xl md:text-6xl font-display font-semibold text-white mb-8 leading-tight">
+          <span className="block text-2xl md:text-3xl font-medium text-game-primary mb-4 tracking-widest opacity-80">
             COMMUNITY PROJECT
           </span>
           유저가 만들어가는<br />
@@ -112,7 +112,7 @@ const AboutPage: React.FC = () => {
         <div className="flex items-center gap-4 mb-8">
            <div className="h-10 w-2 bg-game-primary rounded-full shadow-[0_0_15px_rgba(var(--game-primary-rgb),0.8)]" />
            {/* 타이틀 크기 확대: text-3xl -> text-4xl md:text-5xl */}
-           <h2 className="text-4xl md:text-5xl font-display font-bold text-white">
+           <h2 className="text-4xl md:text-5xl font-display font-semibold text-white">
              자주 묻는 질문
            </h2>
         </div>
