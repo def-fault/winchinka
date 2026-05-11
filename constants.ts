@@ -420,7 +420,7 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "트리플 클래시 (가제)",
     status: 'upcoming',
     date: "미정",
-    posterUrl: resolvePublicAsset('season4.png'),
+    posterUrl: "",
     format: "미정",
     prizePool: "미정",
     sponsors: [],
