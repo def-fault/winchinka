@@ -469,6 +469,9 @@ export const TOURNAMENTS: Tournament[] = [
         { name: "뭘봐?" }
       ]
     },
+    videoUrls: [
+      "https://www.youtube.com/watch?v=7KBKOheDEaM"
+    ],
     sponsors: [
       { name: "우위 (올리브영)" },
       { name: "다겸이 (올리브영)" },
@@ -524,7 +527,12 @@ export const TOURNAMENTS: Tournament[] = [
     },
     videoUrls: [
       "https://www.youtube.com/watch?v=UiQUEeLPNa0",
-      "https://www.youtube.com/watch?v=JrtispzIs6Q"
+      "https://www.youtube.com/watch?v=JrtispzIs6Q",
+      "https://www.youtube.com/shorts/vygalq4gwBk",
+      "https://www.youtube.com/shorts/LVZ86HPeSLE",
+      "https://www.youtube.com/shorts/B6HY01sRTlc",
+      "https://www.youtube.com/shorts/TMGoo5ri21M",
+      "https://www.youtube.com/shorts/bjLOAPFn8Fc"
     ],
     sponsors: [
       { name: "진실 (투신)" },
@@ -728,6 +736,14 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     imageUrl: "art8.png",
     description: "크레센도 매치에 쓰인 커스텀 프로필 모음입니다.",
     date: "2026.05.10"
+  },
+  {
+    id: 'art-9',
+    title: "크레센도 매치 우승 축하함미다",
+    author: "007",
+    imageUrl: "art9.png",
+    description: "후덜덜해보여서 후덜덜하게 했습니다 추카추카합니다~~",
+    date: "2026.05.11"
   }
 ];
 
