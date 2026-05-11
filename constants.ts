@@ -414,6 +414,19 @@ export const season3Participants = [
 // ==========================================
 export const TOURNAMENTS: Tournament[] = [
   {
+    id: 'season-4',
+    season: '4',
+    title: "제4회 윈친카 무투대회",
+    subtitle: "트리플 클래시 (가제)",
+    status: 'upcoming',
+    date: "미정",
+    posterUrl: resolvePublicAsset('season4.png'),
+    format: "미정",
+    prizePool: "미정",
+    sponsors: [],
+    description: "제4회 윈친카 무투대회 '트리플 클래시(가제)'가 곧 찾아옵니다. 많은 기대 부탁드립니다!"
+  },
+  {
     id: 'season-3',
     season: '3',
     title: "제3회 윈친카 무투대회",
@@ -743,6 +756,14 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     author: "007",
     imageUrl: "art9.png",
     description: "후덜덜해보여서 후덜덜하게 했습니다 추카추카합니다~~",
+    date: "2026.05.11"
+  },
+  {
+    id: 'art-11',
+    title: "윈친카 무투대회 후기- 1",
+    author: "핵토파스칼킥",
+    imageUrl: "art11.png",
+    description: "안녕하세요 핵토파스칼킥 입니다.\n무투대회 후기 만화를 그려봤어요! ㅋㅋ 이런 구도 많이 나왔죠?\n답답하셨을 분들도 있을거고 승리를 위해서\n충분히 그럴 수도 있다고 생각하시는 분들도 계시거든요!\n만화를 통해서 해소? 가 좀 되었으면 해서 그려봤습니다.\n이후에 무투대회 썰? 만화가 짧게 1~2편 정도 준비가 되어있으니\n재밌게 봐주시면 감사드리겠습니다!",
     date: "2026.05.11"
   }
 ];

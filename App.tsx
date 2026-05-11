@@ -23,10 +23,7 @@ const App: React.FC = () => {
   const [showIntro, setShowIntro] = useState(() => {
     // URL에 'force_intro=true'가 있으면 무조건 영상 노출냥
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('force_intro') === 'true') return true;
-    
-    // 이미 본 적이 있다면 인트로 생략냥
-    return localStorage.getItem('winchinka_intro_seen') !== 'true';
+    return urlParams.get('force_intro') === 'true';
   });
 
   const handleIntroFinished = () => {
