@@ -29,13 +29,13 @@ const meteorStyle = `
     offset-rotate: auto;
     animation: meteor-orbit 3s linear infinite;
     background: linear-gradient(to right, 
-      rgba(139, 92, 246, 0) 0%, 
-      rgba(139, 92, 246, 0.3) 50%,
-      rgba(167, 139, 250, 0.8) 80%,
+      rgba(249, 115, 22, 0) 0%, 
+      rgba(249, 115, 22, 0.3) 50%,
+      rgba(251, 146, 60, 0.8) 80%,
       #ffffff 100%
     );
     filter: blur(1px);
-    box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.5);
     border-radius: 2px;
   }
   .meteor::after {
@@ -50,8 +50,8 @@ const meteorStyle = `
     border-radius: 50%;
     box-shadow: 
       0 0 10px #fff,
-      0 0 20px rgba(167, 139, 250, 0.8),
-      0 0 30px rgba(139, 92, 246, 0.6);
+      0 0 20px rgba(251, 146, 60, 0.8),
+      0 0 30px rgba(249, 115, 22, 0.6);
   }
   .meteor-2 {
     animation-delay: -1.5s;
@@ -60,7 +60,7 @@ const meteorStyle = `
 
 const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
   const [imgError, setImgError] = useState(false);
-  const isSeason3 = tournament.id === 'season-3';
+  const isSeason4 = tournament.id === 'season-4';
 
   // Determine badge style and text based on status
   const getStatusBadge = () => {
@@ -148,7 +148,7 @@ const TournamentCard: React.FC<Props> = ({ tournament, onClick }) => {
     </div>
   );
 
-  if (!isSeason3) return card;
+  if (!isSeason4) return card;
 
   return (
     <>
