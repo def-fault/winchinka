@@ -142,6 +142,12 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
           {tournament.formUrl && (
             <a 
               href={tournament.formUrl}
+              onClick={(e) => {
+                if (tournament.id === 'season-4') {
+                  e.preventDefault();
+                  alert('신청기간이 아닙니다.');
+                }
+              }}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-2 text-gray-400 hover:text-game-primary transition-colors"
@@ -155,6 +161,12 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
           {tournament.pdfUrl && (
             <a 
               href={tournament.pdfUrl}
+              onClick={(e) => {
+                if (tournament.id === 'season-4') {
+                  e.preventDefault();
+                  alert('신청기간이 아닙니다.');
+                }
+              }}
               download
               target="_blank"
               rel="noopener noreferrer"
@@ -301,7 +313,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
           {(tournament.status === 'upcoming' || tournament.status === 'active') && !hasParticipants && (
             <div className="flex flex-col items-center justify-center py-20 glass-panel rounded-xl border-dashed border-2 border-slate-600">
               <div className="text-6xl mb-4">🚧</div>
-              <h3 className="text-2xl font-bold text-white mb-2">대회 준비 중</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">대회 준비중입니다</h3>
               <p className="text-gray-400">상세 정보가 곧 공개될 예정입니다.</p>
             </div>
           )}

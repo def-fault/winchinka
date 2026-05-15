@@ -417,14 +417,16 @@ export const TOURNAMENTS: Tournament[] = [
     id: 'season-4',
     season: '4',
     title: "제4회 윈친카 무투대회",
-    subtitle: "트리플 클래시 (가제)",
+    subtitle: "트리플 클래시",
     status: 'upcoming',
-    date: "미정",
-    posterUrl: "",
-    format: "미정",
-    prizePool: "미정",
+    date: "2026년 여름 예정",
+    posterUrl: resolvePublicAsset('season4.png'),
+    format: "3:3 팀전",
+    prizePool: "100만원",
+    pdfUrl: resolvePublicAsset('rules_s4.pdf'),
+    formUrl: "https://forms.gle/placeholder",
     sponsors: [],
-    description: "제4회 윈친카 무투대회 '트리플 클래시(가제)'가 곧 찾아옵니다. 많은 기대 부탁드립니다!"
+    description: "제4회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 여름의 전설에 도전하세요."
   },
   {
     id: 'season-3',
@@ -435,7 +437,7 @@ export const TOURNAMENTS: Tournament[] = [
     date: "2026년 5월 9일",
     posterUrl: resolvePublicAsset('season3.png'),
     format: "1:1 → 2:2 → 3:3 (순차 진행)",
-    prizePool: "100만원",
+    prizePool: "100만원 + 경품",
     pdfUrl: resolvePublicAsset('2026-1.pdf'),
     formUrl: "https://docs.google.com/forms/d/e/1FAIpQLSdlNyEdx2dqiOdDNUzioETc51qTM6rKY7-W5TTHGZ_kDLEKiw/viewform?usp=dialog",
     participants: season3Participants,
@@ -570,7 +572,7 @@ export const TOURNAMENTS: Tournament[] = [
     date: "2025년 9월 27일 ~ 2025년 9월 28일",
     posterUrl: resolvePublicAsset('season1-2.png'),
     format: "2:2 듀오 매치",
-    prizePool: "18만원 + 소정의 상품",
+    prizePool: "18만원 + 경품",
     participants: season1_2Participants, // 2인 구성
     winner: {
       name: "아킬레우스 1팀",
@@ -608,7 +610,7 @@ export const TOURNAMENTS: Tournament[] = [
     date: "2025년 9월 20일 ~ 2025년 9월 21일",
     posterUrl: resolvePublicAsset('season1-1.png'),
     format: "2:2 듀오 매치",
-    prizePool: "18만원 + 소정의 상품",
+    prizePool: "18만원 + 경품",
     participants: season1_1Participants, // 2인 구성
     winner: {
       name: "햄토리 1팀",
