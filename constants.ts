@@ -518,6 +518,7 @@ export const TOURNAMENTS: Tournament[] = [
     format: "무작위맵 3:3 팀전",
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('2025-2.pdf'),
+    formUrl: "https://forms.gle/placeholder",
     participants: season2Participants, // 3인 구성
     winner: {
       name: "날먹",
@@ -561,16 +562,16 @@ export const TOURNAMENTS: Tournament[] = [
       "https://www.youtube.com/shorts/bjLOAPFn8Fc"
     ],
     sponsors: [
-      { name: "진실 (투신)", avatarUrl: resolvePublicAsset('jinsil.png') },
-      { name: "세라핀 (투신)", avatarUrl: resolvePublicAsset('seraphine.png') },
-      { name: "효륵사마 (투신)", avatarUrl: resolvePublicAsset('hyoruksama.png') },
-      { name: "거북 (우주)", avatarUrl: resolvePublicAsset('geobuk.png') },
-      { name: "별 (우주)", avatarUrl: resolvePublicAsset('byeol.png') },
-      { name: "카모 (투신)", avatarUrl: resolvePublicAsset('kamo.png') },
-      { name: "틀랩퍼 (투신)", avatarUrl: resolvePublicAsset('tlepper.png') },
-      { name: "원탑 (우주)", avatarUrl: resolvePublicAsset('wontap.png') },
-      { name: "융하 (낭만)", avatarUrl: resolvePublicAsset('yungha.png') },
-      { name: "Sia (투신)", avatarUrl: resolvePublicAsset('sia.png') }
+      { name: "진실 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('jinsil.png') },
+      { name: "세라핀 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('seraphine.png') },
+      { name: "거북 (우주)", amount: "200,000원", avatarUrl: resolvePublicAsset('geobuk.png') },
+      { name: "별 (우주)", amount: "30,000원", avatarUrl: resolvePublicAsset('byeol.png') },
+      { name: "카모 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('kamo.png') },
+      { name: "틀랩퍼 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('tlepper.png') },
+      { name: "원탑 (우주)", amount: "5,000,000 골드", avatarUrl: resolvePublicAsset('wontap.png') },
+      { name: "융하 (낭만)", amount: "5,000,000 골드", avatarUrl: resolvePublicAsset('yungha.png') },
+      { name: "Sia (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('sia.png') },
+      { name: "효륵사마 (투신)", amount: "재능기부", avatarUrl: resolvePublicAsset('hyoruksama.png') }
     ],
     funding: {
       goal: 1000000,
@@ -782,6 +783,14 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     imageUrl: "art11.png",
     description: "안녕하세요 핵토파스칼킥 입니다.\n무투대회 후기 만화를 그려봤어요! ㅋㅋ 이런 구도 많이 나왔죠?\n답답하셨을 분들도 있을거고 승리를 위해서\n충분히 그럴 수도 있다고 생각하시는 분들도 계시거든요!\n만화를 통해서 해소? 가 좀 되었으면 해서 그려봤습니다.\n이후에 무투대회 썰? 만화가 짧게 1~2편 정도 준비가 되어있으니\n재밌게 봐주시면 감사드리겠습니다!",
     date: "2026.05.11"
+  },
+  {
+    id: 'art-12',
+    title: "윈친카 무투대회 후기2",
+    author: "핵토파스칼킥",
+    imageUrl: "art12.png",
+    description: "안녕하세요 핵토파스칼킥 입니다! ㅋㅋ 사실 만화랑은 전혀 다르게 진실님이랑.대쉬님 그리고 루나님이 많은 도움을 주셨답니다? ㅎㅎ 대회 준비하는데 아조씨들끼리 \"이거 어떻게 하는거냐?\" 이러고 있는게 그림이 재밌었거든요! ㅋㅋㅋㅋㅋㅋ 앞으로도 무투대회 많은 사랑 바랍니다! 만화도 재밌게 봐주셔서 항상 감사해요!",
+    date: "2026.05.19"
   }
 ];
 
