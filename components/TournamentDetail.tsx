@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Tournament, Team } from '../types';
 import { ArrowLeftIcon, TrophyIcon, SwordsIcon, CoinsIcon, CrownIcon, VideoIcon, DownloadIcon, LinkIcon } from './Icons';
 
@@ -105,6 +105,7 @@ const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 | 3 | 4 }> = ({ team, rank 
 };
 
 const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
+  const [activeTab, setActiveTab] = useState<'info' | 'sponsors'>('info');
 
   const hasParticipants = Boolean(tournament.participants && tournament.participants.length > 0);
 
@@ -221,7 +222,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
             </div>
           </div>
           
-          {tournament.sponsors.length > 0 && (
+          {!tournament.funding && tournament.sponsors.length > 0 && (
             <div className="glass-panel p-6 rounded-xl">
               <h3 className="text-lg font-bold text-white border-b border-slate-600 pb-2 mb-4 flex items-center gap-2">
                 <CoinsIcon className="w-5 h-5 text-yellow-400" /> 후원자 (Sponsors)
@@ -244,13 +245,33 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
 
         {/* Right Column: Content & Winners */}
         <div className="lg:col-span-8 space-y-8">
-          {/* Description */}
-          <div className="glass-panel p-8 rounded-xl">
-             <h2 className="text-2xl font-display text-white mb-4">대회 개요</h2>
-             <p className="text-gray-300 leading-relaxed whitespace-pre-line">
-               {tournament.description}
-             </p>
-          </div>
+          
+          {(tournament.funding || (tournament.sponsors && tournament.sponsors.length > 0)) && (
+            <div className="flex space-x-2 border-b border-slate-700/50 pb-px">
+              <button
+                onClick={() => setActiveTab('info')}
+                className={`px-6 py-3 font-bold text-sm transition-colors border-b-2 flex items-center gap-2 ${activeTab === 'info' ? 'text-game-primary border-game-primary' : 'text-gray-400 border-transparent hover:text-white hover:border-gray-500'}`}
+              >
+                <SwordsIcon className="w-4 h-4" /> 대회 정보
+              </button>
+              <button
+                onClick={() => setActiveTab('sponsors')}
+                className={`px-6 py-3 font-bold text-sm transition-colors border-b-2 flex items-center gap-2 ${activeTab === 'sponsors' ? 'text-yellow-400 border-yellow-400' : 'text-gray-400 border-transparent hover:text-white hover:border-gray-500'}`}
+              >
+                <CoinsIcon className="w-4 h-4" /> 후원 현황
+              </button>
+            </div>
+          )}
+
+          {activeTab === 'info' && (
+            <div className="space-y-8">
+              {/* Description */}
+              <div className="glass-panel p-8 rounded-xl">
+                 <h2 className="text-2xl font-display text-white mb-4">대회 개요</h2>
+                 <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+                   {tournament.description}
+                 </p>
+              </div>
 
           {/* Winners Section */}
           {tournament.status === 'completed' && tournament.winner && (
@@ -454,6 +475,86 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
               </div>
             </div>
           )}
+          </div>
+          )}
+
+          {activeTab === 'sponsors' && (tournament.funding || (tournament.sponsors && tournament.sponsors.length > 0)) && (
+            <div className="space-y-8 animate-fade-in">
+              {/* Sponsorship Status */}
+              <div className="glass-panel p-8 rounded-xl">
+                <h2 className="text-2xl font-display text-white mb-6 flex items-center gap-3">
+                  <CoinsIcon className="w-8 h-8 text-yellow-400" />
+                  후원 현황
+                </h2>
+                
+                {tournament.funding && (
+                  <div className="mb-10 p-6 bg-slate-900/60 rounded-xl border border-slate-700">
+                    <div className="flex justify-between items-end mb-4">
+                      <div>
+                        <span className="text-gray-400 text-sm block mb-1">현재 모금액</span>
+                        <span className="text-4xl text-white font-black drop-shadow-[0_0_10px_rgba(234,179,8,0.5)] tracking-tight">
+                          {tournament.funding.current.toLocaleString()}
+                          <span className="text-xl text-yellow-500 ml-1">원</span>
+                        </span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-gray-400 text-sm block mb-1">목표 금액</span>
+                        <span className="text-xl text-gray-300 font-bold">
+                          {tournament.funding.goal.toLocaleString()}원
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="relative w-full bg-slate-800 rounded-full h-4 overflow-hidden shadow-inner border border-slate-700/80 mb-2">
+                      <div 
+                        className="absolute top-0 left-0 bottom-0 bg-gradient-to-r from-yellow-600 via-yellow-400 to-yellow-300 rounded-full transition-all duration-1000 ease-out shadow-[0_0_15px_rgba(234,179,8,0.6)]"
+                        style={{ width: `${Math.min(100, (tournament.funding.current / tournament.funding.goal) * 100)}%` }}
+                      >
+                        <div className="absolute top-0 right-0 bottom-0 left-0 bg-[linear-gradient(45deg,rgba(255,255,255,0.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.15)_75%,transparent_75%,transparent)] bg-[length:1.5rem_1.5rem] animate-[progress-bar-stripes_1s_linear_infinite]" />
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-between text-sm font-bold">
+                      <span className="text-gray-500">0%</span>
+                      <span className="text-yellow-400">
+                        {Math.floor((tournament.funding.current / tournament.funding.goal) * 100)}% 달성!
+                      </span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="space-y-6">
+                  <h3 className="text-xl font-bold text-white border-b border-slate-600 pb-3">참여해주신 분들</h3>
+                  
+                  {tournament.sponsors.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {tournament.sponsors.map((sponsor, idx) => (
+                        <div key={idx} className="flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/80 transition-colors p-4 rounded-xl border border-slate-700/50 shadow-lg">
+                          {sponsor.avatarUrl ? (
+                            <img src={sponsor.avatarUrl} alt={sponsor.name} className="w-14 h-14 rounded-full object-cover border-2 border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.2)]" />
+                          ) : (
+                            <div className="w-14 h-14 rounded-full bg-slate-700 border-2 border-slate-600 flex items-center justify-center text-xs text-gray-400 shadow-md">
+                              <CoinsIcon className="w-6 h-6 text-yellow-500/50" />
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <span className="font-bold text-lg text-white block leading-tight mb-1">{sponsor.name}</span>
+                            {sponsor.amount && <span className="text-sm font-bold text-yellow-400 block">{sponsor.amount}</span>}
+                            {sponsor.message && <span className="text-sm text-gray-400 mt-1 block">"{sponsor.message}"</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-10 text-gray-500 bg-slate-900/30 rounded-xl border border-slate-800 border-dashed">
+                      아직 후원자가 없습니다. 첫 번째 후원자가 되어보세요!
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
 

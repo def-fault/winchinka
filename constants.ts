@@ -425,7 +425,14 @@ export const TOURNAMENTS: Tournament[] = [
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('rules_s4.pdf'),
     formUrl: "https://forms.gle/placeholder",
-    sponsors: [],
+    sponsors: [
+      { name: "우위", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
+      { name: "진실", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') }
+    ],
+    funding: {
+      goal: 1000000,
+      current: 200000
+    },
     description: "제4회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 여름의 전설에 도전하세요."
   },
   {
@@ -488,12 +495,16 @@ export const TOURNAMENTS: Tournament[] = [
       "https://www.youtube.com/watch?v=7KBKOheDEaM"
     ],
     sponsors: [
-      { name: "우위 (올리브영)" },
-      { name: "다겸이 (올리브영)" },
-      { name: "미토 (올리브영)" },
-      { name: "소곤소곤 (올리브영)" },
-      { name: "주먹이운다 (올리브영)" }
+      { name: "우위 (올리브영)", amount: "1,000,000원 + 경품", avatarUrl: resolvePublicAsset('uwi.png') },
+      { name: "주먹이운다 (올리브영)", amount: "99s 완드", avatarUrl: resolvePublicAsset('zumuk.png') },
+      { name: "미토 (올리브영)", avatarUrl: resolvePublicAsset('mito.png') },
+      { name: "소곤소곤 (올리브영)", avatarUrl: resolvePublicAsset('sogon.png') },
+      { name: "다겸이 (올리브영)", avatarUrl: resolvePublicAsset('dagy.png') }
     ],
+    funding: {
+      goal: 1000000,
+      current: 1000000
+    },
     description: "점차 강렬해지는 승부! 1:1 개인전으로 시작하여 2:2 듀오, 그리고 3:3 팀전으로 이어지는 '크레센도' 방식의 단계별 서바이벌. 라운드가 거듭될수록 더 큰 전략과 협동심이 요구됩니다."
   },
   {
@@ -550,17 +561,21 @@ export const TOURNAMENTS: Tournament[] = [
       "https://www.youtube.com/shorts/bjLOAPFn8Fc"
     ],
     sponsors: [
-      { name: "진실 (투신)" },
-      { name: "세라핀 (투신)" },
-      { name: "효륵사마 (투신)" },
-      { name: "거북 (우주)" },
-      { name: "별 (우주)" },
-      { name: "카모 (투신)" },
-      { name: "틀랩퍼 (투신)" },
-      { name: "원탑 (우주)" },
-      { name: "융하 (낭만)" },
-      { name: "Sia (투신)" }
+      { name: "진실 (투신)", avatarUrl: resolvePublicAsset('jinsil.png') },
+      { name: "세라핀 (투신)", avatarUrl: resolvePublicAsset('seraphine.png') },
+      { name: "효륵사마 (투신)", avatarUrl: resolvePublicAsset('hyoruksama.png') },
+      { name: "거북 (우주)", avatarUrl: resolvePublicAsset('geobuk.png') },
+      { name: "별 (우주)", avatarUrl: resolvePublicAsset('byeol.png') },
+      { name: "카모 (투신)", avatarUrl: resolvePublicAsset('kamo.png') },
+      { name: "틀랩퍼 (투신)", avatarUrl: resolvePublicAsset('tlepper.png') },
+      { name: "원탑 (우주)", avatarUrl: resolvePublicAsset('wontap.png') },
+      { name: "융하 (낭만)", avatarUrl: resolvePublicAsset('yungha.png') },
+      { name: "Sia (투신)", avatarUrl: resolvePublicAsset('sia.png') }
     ],
+    funding: {
+      goal: 1000000,
+      current: 1000000
+    },
     description: "제2회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 겨울의 전설에 도전하세요.",
   },
   {
@@ -589,9 +604,9 @@ export const TOURNAMENTS: Tournament[] = [
       ]
     },
     sponsors: [
-      { name: "루비 (노바스텔라)" },
-      { name: "DOS (놀이터)" },
-      { name: "우나 (윈친카)" }
+      { name: "루비 (노바스텔라)", avatarUrl: resolvePublicAsset('ruby.png') },
+      { name: "DOS (놀이터)", avatarUrl: resolvePublicAsset('dos.png') },
+      { name: "우나 (윈친카)", avatarUrl: resolvePublicAsset('una.png') }
     ],
     videoUrls: [
       "https://www.youtube.com/watch?v=ypWTx7l2Jvw",
@@ -627,9 +642,9 @@ export const TOURNAMENTS: Tournament[] = [
       ]
     },
     sponsors: [
-      { name: "루비 (노바스텔라)" },
-      { name: "DOS (놀이터)" },
-      { name: "우나 (윈친카)" }
+      { name: "루비 (노바스텔라)", avatarUrl: resolvePublicAsset('ruby.png') },
+      { name: "DOS (놀이터)", avatarUrl: resolvePublicAsset('dos.png') },
+      { name: "우나 (윈친카)", avatarUrl: resolvePublicAsset('una.png') }
     ],
     videoUrls: [
       "https://www.youtube.com/watch?v=ap9paalYr7Y",
@@ -643,38 +658,38 @@ const getAvatarUrl = (name: string) =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=200&font-size=0.4&bold=true`;
 
 export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
-  { name: "루비", title: "노바스텔라", imageUrl: getAvatarUrl("루비") },
-  { name: "우나", title: "윈친카", imageUrl: getAvatarUrl("우나") },
-  { name: "진실", title: "투신", imageUrl: getAvatarUrl("진실") },
-  { name: "Sia", title: "투신", imageUrl: getAvatarUrl("Sia") },
-  { name: "카모", title: "투신", imageUrl: getAvatarUrl("카모") },
-  { name: "틀랩퍼", title: "투신", imageUrl: getAvatarUrl("틀랩") },
-  { name: "세라핀", title: "투신", imageUrl: getAvatarUrl("세라핀") },
-  { name: "효륵사마", title: "투신", imageUrl: getAvatarUrl("효륵") },
-  { name: "거북", title: "우주", imageUrl: getAvatarUrl("거북") },
-  { name: "별", title: "우주", imageUrl: getAvatarUrl("별") },
-  { name: "원탑", title: "우주", imageUrl: getAvatarUrl("원탑") },
-  { name: "융하", title: "F E E L 、", imageUrl: getAvatarUrl("융하") },
-  { name: "우위", title: "올리브영", imageUrl: getAvatarUrl("우위") },
-  { name: "다겸이", title: "올리브영", imageUrl: getAvatarUrl("다겸이") },
-  { name: "미토", title: "올리브영", imageUrl: getAvatarUrl("미토") },
-  { name: "소곤소곤", title: "올리브영", imageUrl: getAvatarUrl("소곤소곤") },
+  { name: "루비", title: "노바스텔라", imageUrl: resolvePublicAsset('ruby.png') },
+  { name: "우나", title: "윈친카", imageUrl: resolvePublicAsset('una.png') },
+  { name: "진실", title: "투신", imageUrl: resolvePublicAsset('jinsil.png') },
+  { name: "Sia", title: "투신", imageUrl: resolvePublicAsset('sia.png') },
+  { name: "카모", title: "투신", imageUrl: resolvePublicAsset('kamo.png') },
+  { name: "틀랩퍼", title: "투신", imageUrl: resolvePublicAsset('tlepper.png') },
+  { name: "세라핀", title: "투신", imageUrl: resolvePublicAsset('seraphine.png') },
+  { name: "효륵사마", title: "투신", imageUrl: resolvePublicAsset('hyoruksama.png') },
+  { name: "거북", title: "우주", imageUrl: resolvePublicAsset('geobuk.png') },
+  { name: "별", title: "우주", imageUrl: resolvePublicAsset('byeol.png') },
+  { name: "원탑", title: "우주", imageUrl: resolvePublicAsset('wontap.png') },
+  { name: "융하", title: "F E E L 、", imageUrl: resolvePublicAsset('yungha.png') },
+  { name: "우위", title: "올리브영", imageUrl: resolvePublicAsset('uwi.png') },
+  { name: "다겸이", title: "올리브영", imageUrl: resolvePublicAsset('dagy.png') },
+  { name: "미토", title: "올리브영", imageUrl: resolvePublicAsset('mito.png') },
+  { name: "소곤소곤", title: "올리브영", imageUrl: resolvePublicAsset('sogon.png') },
   { name: "주먹이운다", title: "올리브영", imageUrl: resolvePublicAsset('zumuk.png') },
-  { name: "DOS", title: "놀이터", imageUrl: getAvatarUrl("DOS") },
+  { name: "DOS", title: "놀이터", imageUrl: resolvePublicAsset('dos.png') },
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
-  { name: "대쉬", role: "총괄 기획 / 기술 담당", imageUrl: getAvatarUrl("대쉬") },
-  { name: "루나", role: "대회 중계 / 방송 담당", imageUrl: getAvatarUrl("루나") },
-  { name: "우나", role: "커뮤니티 매니저 / 운영 지원", imageUrl: getAvatarUrl("우나") },
-  { name: "빡스냥", role: "[최강의 듀오] 1차 해설진", imageUrl: getAvatarUrl("빡스") },
-  { name: "진실", role: "[최강의 듀오] 2차 해설진", imageUrl: getAvatarUrl("진실") },
-  { name: "원탑 ", role: "[트리플 아레나] 해설진", imageUrl: getAvatarUrl("원탑 ") },
-  { name: "핵토파스칼킥", role: "[크레센도 매치] 해설진", imageUrl: getAvatarUrl("핵토") },
-  { name: "복숭아", role: "소통 담당", imageUrl: getAvatarUrl("복숭") },
-  { name: "칠지도", role: "보조 지원", imageUrl: getAvatarUrl("칠지") },
-  { name: "유미캣", role: "보조 지원", imageUrl: getAvatarUrl("유미") },
-  { name: "성녀", role: "보조 지원", imageUrl: getAvatarUrl("성녀") }
+  { name: "대쉬", role: "총괄 기획 / 기술 담당", imageUrl: resolvePublicAsset('dash.png') },
+  { name: "루나", role: "대회 중계 / 방송 담당", imageUrl: resolvePublicAsset('luna.png') },
+  { name: "우나", role: "커뮤니티 매니저 / 운영 지원", imageUrl: resolvePublicAsset('una.png') },
+  { name: "빡스냥", role: "[최강의 듀오] 1차 해설진", imageUrl: resolvePublicAsset('ppaksnyang.png') },
+  { name: "진실", role: "[최강의 듀오] 2차 해설진", imageUrl: resolvePublicAsset('jinsil.png') },
+  { name: "원탑 ", role: "[트리플 아레나] 해설진", imageUrl: resolvePublicAsset('wontap.png') },
+  { name: "핵토파스칼킥", role: "[크레센도 매치] 해설진", imageUrl: resolvePublicAsset('hecto.png') },
+  { name: "복숭아", role: "소통 담당", imageUrl: resolvePublicAsset('boksunga.png') },
+  { name: "칠지도", role: "보조 지원", imageUrl: resolvePublicAsset('chiljido.png') },
+  { name: "유미캣", role: "보조 지원", imageUrl: resolvePublicAsset('yumicat.png') },
+  { name: "성녀", role: "보조 지원", imageUrl: resolvePublicAsset('seongnyeo.png') }
 ];
 
 export const BGM_PLAYLIST: BGMTrack[] = [

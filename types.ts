@@ -19,6 +19,7 @@ export interface Sponsor {
   name: string;
   amount?: string;
   message?: string;
+  avatarUrl?: string;
 }
 
 export interface PreliminaryMatch {
@@ -48,6 +49,10 @@ export interface Tournament {
   videoUrls?: string[];
   pdfUrl?: string;
   formUrl?: string;
+  funding?: {
+    goal: number;
+    current: number;
+  };
 }
 
 export enum ViewState {
