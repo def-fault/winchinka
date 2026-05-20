@@ -420,14 +420,14 @@ export const TOURNAMENTS: Tournament[] = [
     subtitle: "트리플 클래시",
     status: 'upcoming',
     date: "2026년 여름 예정",
-    posterUrl: resolvePublicAsset('season4.png'),
+    posterUrl: resolvePublicAsset('season4.png?v=2'),
     format: "3:3 팀전",
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('rules_s4.pdf'),
     formUrl: "https://forms.gle/placeholder",
     sponsors: [
-      { name: "우위", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
-      { name: "진실", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') }
+      { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
+      { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') }
     ],
     funding: {
       goal: 1000000,
