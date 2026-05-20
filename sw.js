@@ -1,4 +1,4 @@
-const CACHE_NAME = 'winchinka-assets-v2';
+const CACHE_NAME = 'winchinka-assets-v3';
 
 // 캐싱할 파일 확장자들냥
 const ASSET_EXTENSIONS = [
