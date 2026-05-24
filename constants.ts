@@ -427,7 +427,8 @@ export const TOURNAMENTS: Tournament[] = [
     formUrl: "https://forms.gle/placeholder",
     sponsors: [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
-      { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') }
+      { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },
+      { name: "molang (귀신)", amount: "1000만 골드", avatarUrl: resolvePublicAsset('molang.png') }
     ],
     funding: {
       goal: 1000000,
@@ -677,6 +678,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "소곤소곤", title: "올리브영", imageUrl: resolvePublicAsset('sogon.png') },
   { name: "주먹이운다", title: "올리브영", imageUrl: resolvePublicAsset('zumuk.png') },
   { name: "DOS", title: "놀이터", imageUrl: resolvePublicAsset('dos.png') },
+  { name: "molang", title: "귀신", imageUrl: resolvePublicAsset('molang.png') },
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
