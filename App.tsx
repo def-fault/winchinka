@@ -96,13 +96,13 @@ const App: React.FC = () => {
             >
               갤러리
             </button>
-            {/* <button
+            <button
               onClick={() => navigateTo(ViewState.PLAYGROUND)}
               className={`relative transition-colors ${view === ViewState.PLAYGROUND ? 'text-white font-bold' : 'hover:text-white'}`}
             >
               <span className="absolute -top-3 left-1/2 -translate-x-1/2 text-[7px] leading-none bg-red-600 text-white px-0.5 py-0.5 rounded-sm animate-pulse font-bold tracking-tighter">BETA</span>
               플레이그라운드
-            </button> */}
+            </button>
             <a
               href={CAFE_URL}
               target="_blank"
@@ -160,13 +160,13 @@ const App: React.FC = () => {
                 >
                   갤러리
                 </button>
-                {/* <button
+                <button
                   onClick={() => navigateTo(ViewState.PLAYGROUND)}
                   className={`px-4 py-3 text-left relative ${view === ViewState.PLAYGROUND ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
                 >
                   <span className="absolute top-3 right-4 text-[7px] leading-none bg-red-600 text-white px-0.5 py-0.5 rounded-sm animate-pulse font-bold tracking-tighter">BETA</span>
                   플레이그라운드
-                </button> */}
+                </button>
                 <a
                   href={CAFE_URL}
                   target="_blank"
