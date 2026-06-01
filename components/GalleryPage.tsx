@@ -209,7 +209,10 @@ const GalleryPage: React.FC = () => {
         {/* FAN ART Section */}
         <section>
           <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
-            <h2 className="text-3xl font-display font-bold text-white neon-text">FAN ART</h2>
+            <div className="p-3 bg-pink-500/10 rounded-full border border-pink-500/50">
+              <HeartIcon className="w-8 h-8 text-pink-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-white">FAN ART</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {GALLERY_ITEMS.filter((item) => item.type !== 'photo').map(renderGalleryItem)}
@@ -219,7 +222,10 @@ const GalleryPage: React.FC = () => {
         {/* PHOTOS Section */}
         <section>
           <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
-            <h2 className="text-3xl font-display font-bold text-white neon-text">PHOTOS</h2>
+            <div className="p-3 bg-blue-500/10 rounded-full border border-blue-500/50">
+              <ImageIcon className="w-8 h-8 text-blue-400" />
+            </div>
+            <h2 className="text-3xl font-bold text-white">PHOTOS</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {GALLERY_ITEMS.filter((item) => item.type === 'photo').map(renderGalleryItem)}
