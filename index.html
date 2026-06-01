@@ -32,6 +32,7 @@
       html {
         width: 100%;
         overflow-x: hidden;
+        cursor: url('./mouse.png'), auto;
       }
 
       body {
@@ -39,7 +40,15 @@
         color: #ffffff;
         overflow-x: hidden;
         max-width: 100vw;
+        cursor: url('./mouse.png'), auto;
       }
+
+      /* 링크나 버튼 위에 올렸을 때도 커스텀 커서가 필요하다면 아래 주석 해제 후 이미지 경로 수정 */
+      /* 
+      a, button, [role="button"], .cursor-pointer {
+        cursor: url('./mouse-pointer.png'), pointer;
+      } 
+      */
       .glass-panel {
         background: rgba(30, 41, 59, 0.7);
         backdrop-filter: blur(12px);
