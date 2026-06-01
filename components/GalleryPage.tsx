@@ -216,10 +216,10 @@ const GalleryPage: React.FC = () => {
           </div>
         </section>
 
-        {/* COMMEMORATIVE PHOTOS Section */}
+        {/* PHOTOS Section */}
         <section>
           <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
-            <h2 className="text-3xl font-display font-bold text-white neon-text">COMMEMORATIVE PHOTOS</h2>
+            <h2 className="text-3xl font-display font-bold text-white neon-text">PHOTOS</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {GALLERY_ITEMS.filter((item) => item.type === 'photo').map(renderGalleryItem)}
