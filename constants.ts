@@ -430,7 +430,8 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },
       { name: "molang (귀신)", amount: "1000만 골드", avatarUrl: resolvePublicAsset('molang.png') },
       { name: "거북 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('geobuk.png') },
-      { name: "통모짜핫도그 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('hotdog.png') }
+      { name: "통모짜핫도그 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('hotdog.png') },
+      { name: "사과맛크림 (하루)", amount: "100,000원" }
     ],
     funding: {
       goal: 1000000,
