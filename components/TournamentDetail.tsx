@@ -163,10 +163,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
             <a 
               href={tournament.pdfUrl}
               onClick={(e) => {
-                if (tournament.id === 'season-4') {
-                  e.preventDefault();
-                  alert('신청기간이 아닙니다.');
-                }
+                // Removed alert to allow download
               }}
               download
               target="_blank"
