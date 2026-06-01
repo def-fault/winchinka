@@ -733,7 +733,8 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     author: "루나",
     imageUrl: "art3.png",
     description: "윈친카 무투대회 첫 무대의 중계를 맡아 현장의 열기를 전달할 수 있어 뜻깊었습니다. 모두 함께 의미있는 대회를 만들고자 준비하던 과정과, 출전한 선수분들의 열기가 벌써부터 그립습니다. 앞으로의 대회에서도 신뢰받는 중계로 보답하겠습니다. 윈드슬레이어 화이팅! 윈친카 화이팅!",
-    date: "2025.09.30"
+    date: "2025.09.30",
+    type: 'photo'
   },
   {
     id: 'art-4',
@@ -765,7 +766,8 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     author: "대쉬",
     imageUrl: "art7.png",
     description: "크레센도 매치 기념 사진 입니다.",
-    date: "2026.05.10"
+    date: "2026.05.10",
+    type: 'photo'
   },
   {
     id: 'art-8',

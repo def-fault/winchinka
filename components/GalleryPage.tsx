@@ -53,6 +53,45 @@ const GalleryPage: React.FC = () => {
     setZoom(z => clamp(z * factor, 0.5, 5));
   };
 
+  const renderGalleryItem = (item: GalleryItem) => (
+    <div
+      key={item.id}
+      className="glass-panel p-3 rounded-xl group cursor-pointer hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] border border-white/5"
+      onClick={() => setSelectedImage(item)}
+    >
+      <div className="relative aspect-square rounded-lg overflow-hidden bg-slate-800 mb-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-end p-4">
+          <span className="text-white font-bold flex items-center gap-1">
+            <HeartIcon className="w-4 h-4 text-pink-500" />
+            View Details
+          </span>
+        </div>
+
+        {!imgErrors[item.id] ? (
+          <img
+            src={item.imageUrl}
+            alt={item.title}
+            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            onError={() => handleImageError(item.id)}
+          />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
+            <ImageIcon className="w-12 h-12 mb-2" />
+            <span className="text-xs">upload {item.imageUrl.replace('./', '')}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="px-2 pb-2">
+        <h3 className="font-bold text-white truncate">{item.title}</h3>
+        <div className="flex justify-between items-center mt-1">
+          <span className="text-sm text-game-primary truncate">@{item.author}</span>
+          <span className="text-xs text-gray-500">{item.date}</span>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="animate-fade-in max-w-6xl mx-auto pb-20">
       {/* Image Modal */}
@@ -166,46 +205,26 @@ const GalleryPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {GALLERY_ITEMS.map((item) => (
-          <div
-            key={item.id}
-            className="glass-panel p-3 rounded-xl group cursor-pointer hover:-translate-y-2 transition-all duration-300 hover:shadow-[0_0_20px_rgba(139,92,246,0.4)] border border-white/5"
-            onClick={() => setSelectedImage(item)}
-          >
-            <div className="relative aspect-square rounded-lg overflow-hidden bg-slate-800 mb-4">
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10 flex flex-col justify-end p-4">
-                <span className="text-white font-bold flex items-center gap-1">
-                  <HeartIcon className="w-4 h-4 text-pink-500" />
-                  View Details
-                </span>
-              </div>
-
-              {!imgErrors[item.id] ? (
-                <img
-                  src={item.imageUrl}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  onError={() => handleImageError(item.id)}
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center text-gray-500">
-                  <ImageIcon className="w-12 h-12 mb-2" />
-                  <span className="text-xs">upload {item.imageUrl.replace('./', '')}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="px-2 pb-2">
-              <h3 className="font-bold text-white truncate">{item.title}</h3>
-              <div className="flex justify-between items-center mt-1">
-                <span className="text-sm text-game-primary truncate">@{item.author}</span>
-                <span className="text-xs text-gray-500">{item.date}</span>
-              </div>
-            </div>
+      <div className="space-y-16">
+        {/* FAN ART Section */}
+        <section>
+          <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
+            <h2 className="text-3xl font-display font-bold text-white neon-text">FAN ART</h2>
           </div>
-        ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {GALLERY_ITEMS.filter((item) => item.type !== 'photo').map(renderGalleryItem)}
+          </div>
+        </section>
+
+        {/* COMMEMORATIVE PHOTOS Section */}
+        <section>
+          <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
+            <h2 className="text-3xl font-display font-bold text-white neon-text">COMMEMORATIVE PHOTOS</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {GALLERY_ITEMS.filter((item) => item.type === 'photo').map(renderGalleryItem)}
+          </div>
+        </section>
       </div>
 
       {/* Upload Call to Action */}

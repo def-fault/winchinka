@@ -88,4 +88,5 @@ export interface GalleryItem {
   imageUrl: string;
   description?: string;
   date?: string;
+  type?: 'fanart' | 'photo';
 }
