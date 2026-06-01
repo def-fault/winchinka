@@ -106,6 +106,37 @@ const WinnerCard: React.FC<{ team: Team; rank: 1 | 2 | 3 | 4 }> = ({ team, rank 
 
 const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'sponsors'>('info');
+  const [hoverState, setHoverState] = useState<{
+    name: string;
+    imageUrl: string;
+    role?: string;
+    x: number;
+    y: number;
+  } | null>(null);
+
+  const handleMouseEnter = (e: React.MouseEvent, name: string, imageUrl: string, role?: string) => {
+    setHoverState({
+      name,
+      imageUrl,
+      role,
+      x: e.clientX,
+      y: e.clientY
+    });
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (hoverState) {
+      setHoverState(prev => prev ? ({
+        ...prev,
+        x: e.clientX,
+        y: e.clientY
+      }) : null);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setHoverState(null);
+  };
 
   const hasParticipants = Boolean(tournament.participants && tournament.participants.length > 0);
 
@@ -126,7 +157,40 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
   };
 
   return (
-    <div className="animate-fade-in w-full">
+    <div className="animate-fade-in w-full relative">
+      {/* Floating Profile Card */}
+      {hoverState && (
+        <div
+          className="fixed pointer-events-none z-50 transition-opacity duration-200"
+          style={{
+            left: `${hoverState.x + 20}px`,
+            top: `${hoverState.y + 20}px`
+          }}
+        >
+          <div className="glass-panel bg-slate-900/90 p-4 rounded-2xl border-2 border-yellow-500/50 shadow-[0_0_24px_rgba(234,179,8,0.4)] flex flex-col items-center gap-3 min-w-[190px]">
+            <div className="w-32 h-32 md:w-40 md:h-40 rounded-xl overflow-hidden border-2 border-white/40 bg-slate-800">
+              {hoverState.imageUrl && (
+                <img
+                  src={hoverState.imageUrl}
+                  alt={hoverState.name}
+                  className="w-full h-full object-cover"
+                />
+              )}
+            </div>
+            <div className="text-center">
+              <div className="font-display font-bold text-white text-lg md:text-xl">
+                {hoverState.name}
+              </div>
+              {hoverState.role && (
+                <div className="text-xs md:text-sm text-yellow-400 font-bold mt-1">
+                  {hoverState.role}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header Navigation */}
       <div className="flex justify-between items-center mb-6">
         <button 
@@ -526,7 +590,17 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                   {tournament.sponsors.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {tournament.sponsors.map((sponsor, idx) => (
-                        <div key={idx} className="relative group flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/80 transition-colors p-4 rounded-xl border border-slate-700/50 shadow-lg">
+                        <div 
+                          key={idx} 
+                          className="flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/80 transition-colors p-4 rounded-xl border border-slate-700/50 shadow-lg cursor-help"
+                          onMouseEnter={(e) => {
+                            if (sponsor.avatarUrl) {
+                              handleMouseEnter(e, sponsor.name, sponsor.avatarUrl, sponsor.amount);
+                            }
+                          }}
+                          onMouseMove={handleMouseMove}
+                          onMouseLeave={handleMouseLeave}
+                        >
                           {sponsor.avatarUrl ? (
                             <img src={sponsor.avatarUrl} alt={sponsor.name} className="w-14 h-14 rounded-full object-cover border-2 border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.2)]" />
                           ) : (
@@ -539,20 +613,6 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                             {sponsor.amount && <span className="text-sm font-bold text-yellow-400 block">{sponsor.amount}</span>}
                             {sponsor.message && <span className="text-sm text-gray-400 mt-1 block">"{sponsor.message}"</span>}
                           </div>
-                          
-                          {/* Hover Popup */}
-                          {sponsor.avatarUrl && (
-                            <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 p-3 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col items-center gap-3">
-                              <img src={sponsor.avatarUrl} alt={sponsor.name} className="w-full h-auto aspect-square object-cover rounded-xl border border-slate-700/50 shadow-inner" />
-                              <div className="text-center w-full pb-1">
-                                <span className="font-bold text-lg text-white block drop-shadow-md">{sponsor.name}</span>
-                                {sponsor.amount && <span className="text-sm font-bold text-yellow-400 block">{sponsor.amount}</span>}
-                                {sponsor.message && <span className="text-xs text-gray-400 mt-2 block break-keep">"{sponsor.message}"</span>}
-                              </div>
-                              {/* Arrow pointing down */}
-                              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900 border-b border-r border-slate-700 rotate-45"></div>
-                            </div>
-                          )}
                         </div>
                       ))}
                     </div>
