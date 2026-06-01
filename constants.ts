@@ -429,11 +429,12 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
       { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },
       { name: "molang (귀신)", amount: "1000만 골드", avatarUrl: resolvePublicAsset('molang.png') },
-      { name: "거북 (우주)", amount: "200,000원", avatarUrl: resolvePublicAsset('geobuk.png') }
+      { name: "거북 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('geobuk.png') },
+      { name: "통모짜핫도그 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('hotdog.png') }
     ],
     funding: {
       goal: 1000000,
-      current: 400000
+      current: 600000
     },
     description: "제4회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 여름의 전설에 도전하세요."
   },
@@ -669,7 +670,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "틀랩퍼", title: "투신", imageUrl: resolvePublicAsset('tlepper.png') },
   { name: "세라핀", title: "투신", imageUrl: resolvePublicAsset('seraphine.png') },
   { name: "효륵사마", title: "투신", imageUrl: resolvePublicAsset('hyoruksama.png') },
-  { name: "거북", title: "우주", imageUrl: resolvePublicAsset('geobuk.png') },
+  { name: "거북", title: "투신", imageUrl: resolvePublicAsset('geobuk.png') },
   { name: "별", title: "우주", imageUrl: resolvePublicAsset('byeol.png') },
   { name: "원탑", title: "우주", imageUrl: resolvePublicAsset('wontap.png') },
   { name: "융하", title: "F E E L 、", imageUrl: resolvePublicAsset('yungha.png') },
@@ -680,6 +681,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "주먹이운다", title: "올리브영", imageUrl: resolvePublicAsset('zumuk.png') },
   { name: "DOS", title: "놀이터", imageUrl: resolvePublicAsset('dos.png') },
   { name: "molang", title: "귀신", imageUrl: resolvePublicAsset('molang.png') },
+  { name: "통모짜핫도그", title: "투신", imageUrl: resolvePublicAsset('hotdog.png') },
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
