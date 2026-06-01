@@ -526,7 +526,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                   {tournament.sponsors.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {tournament.sponsors.map((sponsor, idx) => (
-                        <div key={idx} className="flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/80 transition-colors p-4 rounded-xl border border-slate-700/50 shadow-lg">
+                        <div key={idx} className="relative group flex items-center gap-4 bg-slate-800/40 hover:bg-slate-800/80 transition-colors p-4 rounded-xl border border-slate-700/50 shadow-lg">
                           {sponsor.avatarUrl ? (
                             <img src={sponsor.avatarUrl} alt={sponsor.name} className="w-14 h-14 rounded-full object-cover border-2 border-yellow-500/50 shadow-[0_0_10px_rgba(234,179,8,0.2)]" />
                           ) : (
@@ -539,6 +539,20 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
                             {sponsor.amount && <span className="text-sm font-bold text-yellow-400 block">{sponsor.amount}</span>}
                             {sponsor.message && <span className="text-sm text-gray-400 mt-1 block">"{sponsor.message}"</span>}
                           </div>
+                          
+                          {/* Hover Popup */}
+                          {sponsor.avatarUrl && (
+                            <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-4 w-64 p-3 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none flex flex-col items-center gap-3">
+                              <img src={sponsor.avatarUrl} alt={sponsor.name} className="w-full h-auto aspect-square object-cover rounded-xl border border-slate-700/50 shadow-inner" />
+                              <div className="text-center w-full pb-1">
+                                <span className="font-bold text-lg text-white block drop-shadow-md">{sponsor.name}</span>
+                                {sponsor.amount && <span className="text-sm font-bold text-yellow-400 block">{sponsor.amount}</span>}
+                                {sponsor.message && <span className="text-xs text-gray-400 mt-2 block break-keep">"{sponsor.message}"</span>}
+                              </div>
+                              {/* Arrow pointing down */}
+                              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-slate-900 border-b border-r border-slate-700 rotate-45"></div>
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>
