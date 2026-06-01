@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { GALLERY_ITEMS } from '../constants';
 import { GalleryItem } from '../types';
-import { ImageIcon, XIcon, HeartIcon } from './Icons';
+import { ImageIcon, XIcon, HeartIcon, BrushIcon, CameraIcon } from './Icons';
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
@@ -210,7 +210,7 @@ const GalleryPage: React.FC = () => {
         <section>
           <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
             <div className="p-3 bg-pink-500/10 rounded-full border border-pink-500/50">
-              <HeartIcon className="w-8 h-8 text-pink-400" />
+              <BrushIcon className="w-8 h-8 text-pink-400" />
             </div>
             <h2 className="text-3xl font-bold text-white">FAN ART</h2>
           </div>
@@ -223,7 +223,7 @@ const GalleryPage: React.FC = () => {
         <section>
           <div className="flex items-center gap-3 mb-8 justify-center md:justify-start">
             <div className="p-3 bg-blue-500/10 rounded-full border border-blue-500/50">
-              <ImageIcon className="w-8 h-8 text-blue-400" />
+              <CameraIcon className="w-8 h-8 text-blue-400" />
             </div>
             <h2 className="text-3xl font-bold text-white">PHOTOS</h2>
           </div>
