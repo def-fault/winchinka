@@ -435,7 +435,7 @@ export const TOURNAMENTS: Tournament[] = [
     ],
     funding: {
       goal: 1000000,
-      current: 600000
+      current: 700000
     },
     description: "제4회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 여름의 전설에 도전하세요."
   },
