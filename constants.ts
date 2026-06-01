@@ -431,7 +431,7 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "molang (귀신)", amount: "1000만 골드", avatarUrl: resolvePublicAsset('molang.png') },
       { name: "거북 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('geobuk.png') },
       { name: "통모짜핫도그 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('hotdog.png') },
-      { name: "사과맛크림 (하루)", amount: "100,000원", avatarUrl: resolvePublicAsset('applecream.jpg') }
+      { name: "사과맛크림 (하루)", amount: "100,000원", avatarUrl: resolvePublicAsset('applecream.png') }
     ],
     funding: {
       goal: 1000000,
@@ -683,7 +683,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "DOS", title: "놀이터", imageUrl: resolvePublicAsset('dos.png') },
   { name: "molang", title: "귀신", imageUrl: resolvePublicAsset('molang.png') },
   { name: "통모짜핫도그", title: "투신", imageUrl: resolvePublicAsset('hotdog.png') },
-  { name: "사과맛크림", title: "하루", imageUrl: resolvePublicAsset('applecream.jpg') },
+  { name: "사과맛크림", title: "하루", imageUrl: resolvePublicAsset('applecream.png') },
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
