@@ -215,7 +215,9 @@ const GalleryPage: React.FC = () => {
             <h2 className="text-3xl font-bold text-white">FAN ART</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {GALLERY_ITEMS.filter((item) => item.type !== 'photo').map(renderGalleryItem)}
+            {GALLERY_ITEMS.filter((item) => item.type !== 'photo')
+              .sort((a, b) => b.date.localeCompare(a.date))
+              .map(renderGalleryItem)}
           </div>
         </section>
 
@@ -228,7 +230,9 @@ const GalleryPage: React.FC = () => {
             <h2 className="text-3xl font-bold text-white">PHOTOS</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {GALLERY_ITEMS.filter((item) => item.type === 'photo').map(renderGalleryItem)}
+            {GALLERY_ITEMS.filter((item) => item.type === 'photo')
+              .sort((a, b) => b.date.localeCompare(a.date))
+              .map(renderGalleryItem)}
           </div>
         </section>
       </div>

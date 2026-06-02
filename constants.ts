@@ -737,6 +737,15 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     type: 'photo'
   },
   {
+    id: 'art-14',
+    title: "트리플 아레나 기념사진",
+    author: "대쉬",
+    imageUrl: "art14.png",
+    description: "트리플 아레나 기념 사진 입니다.",
+    date: "2025.11.30",
+    type: 'photo'
+  },
+  {
     id: 'art-4',
     title: "트리플 아레나 우승 축전",
     author: "효륵사마",
