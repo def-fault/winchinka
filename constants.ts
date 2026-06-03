@@ -431,11 +431,12 @@ export const TOURNAMENTS: Tournament[] = [
       { name: "molang (귀신)", amount: "1000만 골드", avatarUrl: resolvePublicAsset('molang.png') },
       { name: "거북 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('geobuk.png') },
       { name: "통모짜핫도그 (투신)", amount: "200,000원", avatarUrl: resolvePublicAsset('hotdog.png') },
-      { name: "사과맛크림 (하루)", amount: "100,000원", avatarUrl: resolvePublicAsset('applecream.png') }
+      { name: "사과맛크림 (하루)", amount: "100,000원", avatarUrl: resolvePublicAsset('applecream.png') },
+      { name: "코쿠시보 (한국)", amount: "100,000원", avatarUrl: resolvePublicAsset('kokusibo.png') }
     ],
     funding: {
       goal: 1000000,
-      current: 700000
+      current: 800000
     },
     description: "제4회 윈친카 무투대회는 3:3 팀전으로 진행됩니다. 무작위 맵에서의 치열한 전투와 전략이 빛날 이번 시즌! 총 상금 100만원을 걸고 펼쳐지는 여름의 전설에 도전하세요."
   },
@@ -684,6 +685,7 @@ export const HALL_OF_FAME_SUPPORTERS: HallOfFameSponsor[] = [
   { name: "molang", title: "귀신", imageUrl: resolvePublicAsset('molang.png') },
   { name: "통모짜핫도그", title: "투신", imageUrl: resolvePublicAsset('hotdog.png') },
   { name: "사과맛크림", title: "하루", imageUrl: resolvePublicAsset('applecream.png') },
+  { name: "코쿠시보", title: "한국", imageUrl: resolvePublicAsset('kokusibo.png') },
 ];
 
 export const STAFF_MEMBERS: StaffMember[] = [
