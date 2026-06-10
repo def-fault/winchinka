@@ -424,7 +424,7 @@ export const TOURNAMENTS: Tournament[] = [
     format: "3:3 팀전",
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('2026-2.pdf'),
-    formUrl: "https://forms.gle/placeholder",
+    formUrl: "https://forms.gle/5WcsPNkoKbjnXXCy7",
     sponsors: [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
       { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },

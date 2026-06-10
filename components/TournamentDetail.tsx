@@ -208,7 +208,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
             <a 
               href={tournament.formUrl}
               onClick={(e) => {
-                if (['season-4', 'season-3', 'season-2'].includes(tournament.id)) {
+                if (['season-3', 'season-2'].includes(tournament.id)) {
                   e.preventDefault();
                   alert('신청 기간이 아닙니다.');
                 }
