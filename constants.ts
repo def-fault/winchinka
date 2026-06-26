@@ -408,6 +408,44 @@ export const season3Participants = [
   },
 ] as const;
 
+// ==========================================
+// [시즌 4 참가자 명단] - 3인 구성 (팀대표 + 팀원1 + 팀원2) - 저격예선전으로 인한 비공개 처리
+// ==========================================
+export const season4Participants = [
+  {
+    name: '진씨의 거북탕',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '비매야',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '귀농업고튀어',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '떡만듓국챱챱',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  }
+] as const;
+
 
 // ==========================================
 // [대회 정보 통합]
@@ -425,6 +463,7 @@ export const TOURNAMENTS: Tournament[] = [
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('2026-2.pdf'),
     formUrl: "https://forms.gle/5WcsPNkoKbjnXXCy7",
+    participants: season4Participants,
     sponsors: [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
       { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },

@@ -101,6 +101,17 @@
       .animate-fade-in-up {
         animation: fade-in-up 0.5s ease-out forwards;
       }
+      @keyframes neon-glow {
+        0%, 100% {
+          box-shadow: 0 0 8px rgba(59, 130, 246, 0.4), 0 0 16px rgba(139, 92, 246, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 16px rgba(59, 130, 246, 0.7), 0 0 28px rgba(139, 92, 246, 0.5);
+        }
+      }
+      .animate-glow {
+        animation: neon-glow 3s infinite ease-in-out;
+      }
     </style>
   <script type="importmap">
 {
