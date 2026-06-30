@@ -415,65 +415,65 @@ export const season4Participants = [
   {
     name: '진씨의 거북탕',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '바슈라', class: '다크프리스트' },
+      { name: '루드', class: '파이터' },
+      { name: '쯔야', class: '비스트마스터' },
     ],
   },
   {
     name: '비매야',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '비에고', class: '버서커' },
+      { name: '100원에당한대', class: '파이터' },
+      { name: '소로소로몽', class: '다크프리스트' },
     ],
   },
   {
     name: '귀농업고튀어',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '졸망이', class: '버서커' },
+      { name: '봉쌔신', class: '어쌔신' },
+      { name: '이리오너라!!', class: '파이터' },
     ],
   },
   {
     name: '떡만듓국챱챱',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '뭉이', class: '어쌔신' },
+      { name: '돼지만듀', class: '파이터' },
+      { name: '말랑콩떡', class: '엘리멘탈리스트' },
     ],
   },
   {
     name: '이런 슥박!',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '우주인', class: '다크프리스트' },
+      { name: '슥빡', class: '파이터' },
+      { name: '묵룡', class: '카운터' },
     ],
   },
   {
     name: '잘못된 만남',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '좌우', class: '엘리멘탈리스트' },
+      { name: '치포', class: '트랩퍼' },
+      { name: '으라차차', class: '파이터' },
     ],
   },
   {
     name: '도서꿈나무',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: '무인도', class: '어쌔신' },
+      { name: '베니마루', class: '파이터' },
+      { name: '비몽', class: '다크프리스트' },
     ],
   },
   {
     name: '씨요맞고 끼끼',
     members: [
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
-      { name: '비공개', class: '비공개' },
+      { name: 'JvckiWai', class: '어쌔신' },
+      { name: '씨요킬러닼프양', class: '다크프리스트' },
+      { name: '빔끼끼', class: '파이터' },
     ],
   }
 ] as const;
