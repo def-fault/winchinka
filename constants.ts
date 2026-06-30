@@ -443,6 +443,38 @@ export const season4Participants = [
       { name: '비공개', class: '비공개' },
       { name: '비공개', class: '비공개' },
     ],
+  },
+  {
+    name: '이런 슥박!',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '잘못된 만남',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '도서꿈나무',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
+  },
+  {
+    name: '씨요맞고 끼끼',
+    members: [
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+      { name: '비공개', class: '비공개' },
+    ],
   }
 ] as const;
 
