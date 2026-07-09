@@ -495,6 +495,7 @@ export const TOURNAMENTS: Tournament[] = [
     prizePool: "100만원",
     pdfUrl: resolvePublicAsset('2026-2.pdf'),
     formUrl: "https://forms.gle/5WcsPNkoKbjnXXCy7",
+    registrationClosed: true,
     participants: season4Participants,
     sponsors: [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },

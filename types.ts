@@ -49,6 +49,7 @@ export interface Tournament {
   videoUrls?: string[];
   pdfUrl?: string;
   formUrl?: string;
+  registrationClosed?: boolean;
   funding?: {
     goal: number;
     current: number;

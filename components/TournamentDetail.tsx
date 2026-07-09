@@ -205,7 +205,7 @@ const TournamentDetail: React.FC<Props> = ({ tournament, onBack }) => {
 
         <div className="flex items-center gap-4">
           {tournament.formUrl && (
-            tournament.status === 'completed' ? (
+            (tournament.status === 'completed' || tournament.registrationClosed) ? (
               <a 
                 href={tournament.formUrl}
                 onClick={(e) => {
