@@ -488,8 +488,8 @@ export const TOURNAMENTS: Tournament[] = [
     season: '4',
     title: "제4회 윈친카 무투대회",
     subtitle: "트리플 클래시",
-    status: 'upcoming',
-    date: "2026년 여름 예정",
+    status: 'completed',
+    date: "2026년 7월 11일",
     posterUrl: resolvePublicAsset('season4.png?v=2'),
     format: "3:3 팀전",
     prizePool: "100만원",
@@ -497,6 +497,22 @@ export const TOURNAMENTS: Tournament[] = [
     formUrl: "https://forms.gle/5WcsPNkoKbjnXXCy7",
     registrationClosed: true,
     participants: season4Participants,
+    winner: {
+      name: "씨요맞고 끼끼",
+      players: [
+        { name: "JvckiWai", class: "어쌔신" },
+        { name: "씨요킬러닼프양", class: "다크프리스트" },
+        { name: "빔끼끼", class: "파이터" }
+      ]
+    },
+    runnerUp: {
+      name: "진씨의 거북탕",
+      players: [
+        { name: "바슈라", class: "다크프리스트" },
+        { name: "루드", class: "파이터" },
+        { name: "쯔야", class: "비스트마스터" }
+      ]
+    },
     sponsors: [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
       { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },
