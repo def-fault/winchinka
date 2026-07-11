@@ -500,17 +500,33 @@ export const TOURNAMENTS: Tournament[] = [
     winner: {
       name: "씨요맞고 끼끼",
       players: [
-        { name: "JvckiWai", class: "어쌔신" },
-        { name: "씨요킬러닼프양", class: "다크프리스트" },
-        { name: "빔끼끼", class: "파이터" }
+        { name: "JvckiWai" },
+        { name: "씨요킬러닼프양" },
+        { name: "빔끼끼" }
       ]
     },
     runnerUp: {
       name: "진씨의 거북탕",
       players: [
-        { name: "바슈라", class: "다크프리스트" },
-        { name: "루드", class: "파이터" },
-        { name: "쯔야", class: "비스트마스터" }
+        { name: "바슈라" },
+        { name: "루드" },
+        { name: "쯔야" }
+      ]
+    },
+    thirdPlace: {
+      name: "비매야",
+      players: [
+        { name: "비에고" },
+        { name: "100원에당한대" },
+        { name: "소로소로몽" }
+      ]
+    },
+    fourthPlace: {
+      name: "귀농업고튀어",
+      players: [
+        { name: "졸망이" },
+        { name: "봉쌔신" },
+        { name: "이리오너라!!" }
       ]
     },
     sponsors: [
