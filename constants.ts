@@ -448,7 +448,7 @@ export const season4Participants = [
     name: '이런 슥박!',
     members: [
       { name: '우주인', class: '다크프리스트' },
-      { name: '슥빡', class: '파이터' },
+      { name: '921', class: '파이터' },
       { name: '묵룡', class: '카운터' },
     ],
   },
