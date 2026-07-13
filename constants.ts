@@ -529,6 +529,9 @@ export const TOURNAMENTS: Tournament[] = [
         { name: "이리오너라!!" }
       ]
     },
+    videoUrls: [
+      "https://www.youtube.com/watch?v=8E_pFeV-u3A"
+    ],
     sponsors: [
       { name: "우위 (올리브영)", amount: "100,000원", avatarUrl: resolvePublicAsset('uwi.png') },
       { name: "진실 (투신)", amount: "100,000원", avatarUrl: resolvePublicAsset('jinsil.png') },
