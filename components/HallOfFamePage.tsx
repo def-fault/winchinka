@@ -23,6 +23,7 @@ const PROFILE_IMAGE_OVERRIDES: Record<string, string> = {
   '진실': 'jinsil.png',
   '원탑': 'wontap.png',
   '핵토파스칼킥': 'hecto.png',
+  '장은돌': 'jang.png',
   '복숭아': 'boksunga.png',
   '칠지도': 'chiljido.png',
   '유미캣': 'yumicat.png',

@@ -803,6 +803,7 @@ export const STAFF_MEMBERS: StaffMember[] = [
   { name: "진실", role: "[최강의 듀오] 2차 해설진", imageUrl: resolvePublicAsset('jinsil.png') },
   { name: "원탑 ", role: "[트리플 아레나] 해설진", imageUrl: resolvePublicAsset('wontap.png') },
   { name: "핵토파스칼킥", role: "[크레센도 매치] 해설진", imageUrl: resolvePublicAsset('hecto.png') },
+  { name: "장은돌", role: "[트리플 클래시] 해설진", imageUrl: resolvePublicAsset('jang.png') },
   { name: "복숭아", role: "소통 담당", imageUrl: resolvePublicAsset('boksunga.png') },
   { name: "칠지도", role: "보조 지원", imageUrl: resolvePublicAsset('chiljido.png') },
   { name: "유미캣", role: "보조 지원", imageUrl: resolvePublicAsset('yumicat.png') },
