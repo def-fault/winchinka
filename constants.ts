@@ -927,6 +927,14 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     imageUrl: "art13.png",
     description: "어느덧 3회네욥!!!!!! 늘 멋진 경기 보여주신 선수분들 너무 감사합니다. 우승 너무 축하드립니다!!!",
     date: "2026.05.19"
+  },
+  {
+    id: 'art-15',
+    title: "트리플 클래시 커스텀 프로필 모음",
+    author: "대쉬",
+    imageUrl: "art15.png",
+    description: "트리플 클래시에 쓰인 커스텀 프로필 모음입니다.",
+    date: "2026.07.11"
   }
 ];
 
