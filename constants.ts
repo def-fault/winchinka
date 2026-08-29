@@ -935,6 +935,15 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     imageUrl: "art15.png",
     description: "트리플 클래시에 쓰인 커스텀 프로필 모음입니다.",
     date: "2026.07.11"
+  },
+  {
+    id: 'art-16',
+    title: "트리플 클래시 기념 사진",
+    author: "대쉬",
+    imageUrl: "art16.png",
+    description: "트리플 클래시 기념 사진 입니다.",
+    date: "2026.07.11",
+    type: 'photo'
   }
 ];
 
