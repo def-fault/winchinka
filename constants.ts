@@ -604,7 +604,12 @@ export const TOURNAMENTS: Tournament[] = [
       ]
     },
     videoUrls: [
-      "https://www.youtube.com/watch?v=7KBKOheDEaM"
+      "https://www.youtube.com/watch?v=7KBKOheDEaM",
+      "https://www.youtube.com/shorts/cIqmdwYP52U",
+      "https://www.youtube.com/shorts/VnS8adwWLG8",
+      "https://www.youtube.com/shorts/sBWhT0cs_CE",
+      "https://www.youtube.com/shorts/L-CAhV44NvU",
+      "https://www.youtube.com/shorts/OaY474gEvY0"
     ],
     sponsors: [
       { name: "우위 (올리브영)", amount: "1,000,000원 + 경품", avatarUrl: resolvePublicAsset('uwi.png') },
