@@ -12,7 +12,10 @@ import {
   orderBy,
   limit,
   serverTimestamp,
-  deleteDoc
+  deleteDoc,
+  deleteField,
+  where,
+  getDocs
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -39,5 +42,8 @@ export {
   orderBy,
   limit,
   serverTimestamp,
-  deleteDoc
+  deleteDoc,
+  deleteField,
+  where,
+  getDocs
 };
