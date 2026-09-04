@@ -1,7 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { GUILD_TEAMS } from '../constants';
-import { HeartIcon, TrophyIcon, CameraIcon } from './Icons';
-import { db, doc, onSnapshot, setDoc, increment } from '../services/firebase';
+import { HeartIcon, TrophyIcon, CameraIcon, MessageCircleIcon, SendIcon, TrashIcon } from './Icons';
+import {
+  db,
+  doc,
+  onSnapshot,
+  setDoc,
+  increment,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  deleteDoc
+} from '../services/firebase';
 
 const BASE_PATH = import.meta.env.BASE_URL || '/';
 
@@ -15,10 +27,15 @@ const resolvePublicAsset = (path: string) => {
   return new URL(normalizedPath, baseUrl).href;
 };
 
+const ADMIN_PASSWORD = 'dash';
+const DEVICE_ID_KEY = 'winchinka_chat_device_id';
+const MY_SHOUTS_KEY = 'winchinka_my_shout_ids';
+const NICKNAME_KEY = 'winchinka_chat_nickname';
+
 // Initial cheer counts all start at 0
 const DEFAULT_CHEERS: Record<string, number> = {
   'guild-1': 0, // 청도복숭아
-  'guild-2': 0, // 윈슬사랑해
+  'guild-2': 0, // 윈슬사령해
   'guild-3': 0, // 무례하긴, 순애야
   'guild-4': 0, // 에고머니나
   'guild-5': 0, // 투신은사냥길드
@@ -27,11 +44,33 @@ const DEFAULT_CHEERS: Record<string, number> = {
   'guild-8': 0, // 픽키와 친구들
 };
 
+export interface GuildShout {
+  id: string;
+  nickname: string;
+  message: string;
+  teamName?: string;
+  createdAt: number;
+  authorId?: string;
+}
+
 interface Particle {
   id: number;
   x: number;
   y: number;
 }
+
+// Format relative time helper
+const formatRelativeTime = (timestamp: number) => {
+  const diff = Date.now() - timestamp;
+  const seconds = Math.floor(diff / 1000);
+  if (seconds < 60) return '방금 전';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}분 전`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}시간 전`;
+  const days = Math.floor(hours / 24);
+  return `${days}일 전`;
+};
 
 // Helper to compress uploaded image into a compact Base64 webp/jpeg string for Firestore storage
 const compressImage = (file: File, maxDimension = 320, quality = 0.85): Promise<string> => {
@@ -79,9 +118,47 @@ const compressImage = (file: File, maxDimension = 320, quality = 0.85): Promise<
 const GuildMatchPage: React.FC = () => {
   const [cheerCounts, setCheerCounts] = useState<Record<string, number>>(DEFAULT_CHEERS);
   const [teamImages, setTeamImages] = useState<Record<string, string>>({});
+  const [shouts, setShouts] = useState<GuildShout[]>([]);
+
   const [uploadingTeamId, setUploadingTeamId] = useState<string | null>(null);
   const [clickedTeamId, setClickedTeamId] = useState<string | null>(null);
   const [particles, setParticles] = useState<Record<string, Particle[]>>({});
+
+  // Device ID for author identification
+  const [deviceId] = useState(() => {
+    try {
+      let id = localStorage.getItem(DEVICE_ID_KEY);
+      if (!id) {
+        id = 'dev-' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+        localStorage.setItem(DEVICE_ID_KEY, id);
+      }
+      return id;
+    } catch {
+      return 'dev-' + Date.now();
+    }
+  });
+
+  // Locally stored sent shout IDs
+  const [myShoutIds, setMyShoutIds] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem(MY_SHOUTS_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  // Chat inputs
+  const [nickname, setNickname] = useState(() => {
+    try {
+      return localStorage.getItem(NICKNAME_KEY) || '';
+    } catch {
+      return '';
+    }
+  });
+  const [message, setMessage] = useState('');
+  const [selectedTeamTag, setSelectedTeamTag] = useState<string>('전체');
+  const [isSending, setIsSending] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const selectedTeamForUploadRef = useRef<string | null>(null);
@@ -123,9 +200,42 @@ const GuildMatchPage: React.FC = () => {
       }
     );
 
+    // Real-time synchronization for live shouts / chat
+    const shoutsQuery = query(
+      collection(db, 'guild_shouts'),
+      orderBy('createdAt', 'desc'),
+      limit(30)
+    );
+    const unsubscribeShouts = onSnapshot(
+      shoutsQuery,
+      (snapshot) => {
+        if (!snapshot.empty) {
+          const loadedShouts: GuildShout[] = [];
+          snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            loadedShouts.push({
+              id: docSnap.id,
+              nickname: data.nickname || '익명',
+              message: data.message || '',
+              teamName: data.teamName || '전체',
+              createdAt: data.createdAt || Date.now(),
+              authorId: data.authorId,
+            });
+          });
+          setShouts(loadedShouts);
+        } else {
+          setShouts([]);
+        }
+      },
+      (error) => {
+        console.warn('Firestore realtime sync error (shouts):', error);
+      }
+    );
+
     return () => {
       unsubscribeCheers();
       unsubscribeImages();
+      unsubscribeShouts();
     };
   }, []);
 
@@ -218,6 +328,93 @@ const GuildMatchPage: React.FC = () => {
     }
   };
 
+  const handleSendShout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedMsg = message.trim();
+    if (!trimmedMsg || isSending) return;
+
+    const finalNickname = nickname.trim() || '익명의모험가';
+
+    try {
+      localStorage.setItem(NICKNAME_KEY, finalNickname);
+    } catch {
+      // ignore
+    }
+
+    setIsSending(true);
+
+    const tempId = `local-${Date.now()}`;
+    const newShout: GuildShout = {
+      id: tempId,
+      nickname: finalNickname,
+      message: trimmedMsg,
+      teamName: selectedTeamTag,
+      createdAt: Date.now(),
+      authorId: deviceId,
+    };
+
+    // Optimistic local update
+    setShouts((prev) => [newShout, ...prev.slice(0, 29)]);
+    setMessage('');
+
+    try {
+      const docRef = await addDoc(collection(db, 'guild_shouts'), {
+        nickname: finalNickname,
+        message: trimmedMsg,
+        teamName: selectedTeamTag,
+        createdAt: Date.now(),
+        authorId: deviceId,
+      });
+
+      // Save to myShoutIds
+      setMyShoutIds((prev) => {
+        const updated = [...prev, docRef.id];
+        try {
+          localStorage.setItem(MY_SHOUTS_KEY, JSON.stringify(updated));
+        } catch {
+          // ignore
+        }
+        return updated;
+      });
+    } catch (err) {
+      console.warn('Failed to send shout to Firebase (check Firestore setup):', err);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleDeleteShout = async (shout: GuildShout) => {
+    const isAuthor = shout.authorId === deviceId || myShoutIds.includes(shout.id);
+
+    if (isAuthor) {
+      if (!window.confirm('내가 작성한 이 응원 메시지를 삭제할까요냥?')) {
+        return;
+      }
+    } else {
+      const inputPw = window.prompt('관리자 비밀번호를 입력해주세요:');
+      if (!inputPw) return;
+      if (inputPw !== ADMIN_PASSWORD) {
+        alert('관리자 비밀번호가 일치하지 않는다냥!');
+        return;
+      }
+    }
+
+    // Optimistic UI removal
+    setShouts((prev) => prev.filter((s) => s.id !== shout.id));
+
+    try {
+      if (!shout.id.startsWith('local-')) {
+        await deleteDoc(doc(db, 'guild_shouts', shout.id));
+      }
+    } catch (err) {
+      console.error('Failed to delete shout from Firebase:', err);
+      alert('메시지 삭제 처리에 실패했다냥!');
+    }
+  };
+
+  // Repeated shouts list for seamless continuous ticker loop
+  const marqueeShouts = shouts.length > 0 ? [...shouts, ...shouts] : [];
+
   return (
     <div className="animate-fade-in max-w-7xl mx-auto space-y-12 pb-16">
       {/* Hidden file input for team image upload */}
@@ -245,6 +442,51 @@ const GuildMatchPage: React.FC = () => {
           당신의 팀을 응원해주세요!
         </p>
       </section>
+
+      {/* ─── LIVE LED Marquee Billboard (실시간 응원 메시지가 있을 때만 노출) ─── */}
+      {shouts.length > 0 && (
+        <section className="relative">
+          <div className="glass-panel relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-3 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex items-center gap-4">
+            {/* LED Grid subtle pattern overlay */}
+            <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
+
+            {/* Marquee Header Badge */}
+            <div className="relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold whitespace-nowrap shadow-sm">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              <span>LIVE 전광판</span>
+            </div>
+
+            {/* Scrolling Ticker Track */}
+            <div className="relative z-10 overflow-hidden flex-grow marquee-container">
+              <div className="marquee-track flex items-center gap-10">
+                {marqueeShouts.map((shout, idx) => (
+                  <div
+                    key={`${shout.id}-${idx}`}
+                    className="inline-flex items-center gap-2.5 text-sm md:text-base whitespace-nowrap"
+                  >
+                    {shout.teamName && shout.teamName !== '전체' && (
+                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">
+                        {shout.teamName}
+                      </span>
+                    )}
+                    <span className="text-emerald-400 font-bold tracking-wide">
+                      {shout.nickname}
+                    </span>
+                    <span className="text-gray-400">:</span>
+                    <span className="text-white font-medium drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
+                      {shout.message}
+                    </span>
+                    <span className="text-emerald-500/40 ml-4 font-bold">•</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 4x2 Matrix Grid of 8 Teams */}
       <section>
@@ -355,7 +597,153 @@ const GuildMatchPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Inline styles for custom floating particle animation */}
+      {/* ─── LIVE CHAT / SHOUTOUT SECTION ───────────────────────────────── */}
+      <section className="space-y-6 pt-4">
+        <div className="flex items-center gap-3">
+          <div className="w-1.5 h-6 bg-gradient-to-b from-cyan-400 to-emerald-500 rounded-full" />
+          <div className="flex items-center gap-2">
+            <MessageCircleIcon className="w-6 h-6 text-cyan-400" />
+            <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
+              실시간 응원 채팅
+            </h2>
+          </div>
+          <span className="text-xs text-gray-400 ml-2">
+            전송된 응원은 상단 전광판에 즉시 흘러나옵니다!
+          </span>
+        </div>
+
+        <div className="glass-panel relative rounded-2xl border border-white/10 bg-slate-900/70 p-6 space-y-6 shadow-xl backdrop-blur-md">
+          {/* Shout Input Form */}
+          <form onSubmit={handleSendShout} className="space-y-4">
+            {/* Team Tag Selection Bar */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-gray-400">응원할 팀 선택 (선택 사항)</label>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedTeamTag('전체')}
+                  className={`px-3 py-1 text-xs rounded-full font-medium transition-all ${
+                    selectedTeamTag === '전체'
+                      ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/30'
+                      : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  전체 응원
+                </button>
+                {GUILD_TEAMS.map((team) => (
+                  <button
+                    key={team.id}
+                    type="button"
+                    onClick={() => setSelectedTeamTag(team.name)}
+                    className={`px-3 py-1 text-xs rounded-full font-medium transition-all ${
+                      selectedTeamTag === team.name
+                        ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-md shadow-emerald-500/30 font-bold'
+                        : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
+                    }`}
+                  >
+                    {team.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Inputs: Nickname & Message */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="닉네임 (기본: 익명의모험가)"
+                maxLength={15}
+                className="sm:w-48 px-4 py-2.5 rounded-xl bg-slate-950/80 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+              />
+
+              <div className="flex-grow flex gap-2">
+                <input
+                  type="text"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="응원의 한마디를 남겨보세요! (최대 80자)"
+                  maxLength={80}
+                  className="flex-grow px-4 py-2.5 rounded-xl bg-slate-950/80 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                />
+
+                <button
+                  type="submit"
+                  disabled={!message.trim() || isSending}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/25 transition-all active:scale-95 whitespace-nowrap"
+                >
+                  <SendIcon className="w-4 h-4" />
+                  <span>전송</span>
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Chat Message List Feed */}
+          <div className="border-t border-white/10 pt-4">
+            <div className="flex items-center justify-between mb-3 text-xs text-gray-400">
+              <span>최신 응원 메시지</span>
+              <span>실시간 동기화 중 🟢</span>
+            </div>
+
+            <div className="max-h-80 overflow-y-auto space-y-2.5 pr-2 custom-scrollbar">
+              {shouts.length === 0 ? (
+                <div className="text-center py-8 text-gray-500 text-sm">
+                  등록된 응원 메시지가 없습니다.
+                </div>
+              ) : (
+                shouts.map((shout) => {
+                  const isAuthor = shout.authorId === deviceId || myShoutIds.includes(shout.id);
+
+                  return (
+                    <div
+                      key={shout.id}
+                      className="p-3 rounded-xl bg-slate-950/60 border border-white/5 hover:border-emerald-500/30 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-sm group/msg"
+                    >
+                      <div className="flex items-center gap-2.5 flex-wrap">
+                        {shout.teamName && shout.teamName !== '전체' && (
+                          <span className="text-[10px] px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-semibold">
+                            {shout.teamName}
+                          </span>
+                        )}
+                        <span className="font-bold text-emerald-400 text-xs sm:text-sm">
+                          {shout.nickname}
+                        </span>
+                        <span className="text-gray-200">
+                          {shout.message}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2.5 self-end sm:self-center">
+                        <span className="text-[11px] text-gray-500 whitespace-nowrap">
+                          {formatRelativeTime(shout.createdAt)}
+                        </span>
+
+                        {/* Delete Button */}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteShout(shout)}
+                          title={isAuthor ? '내 메시지 삭제' : '메시지 삭제 (관리자)'}
+                          className={`p-1 rounded-md transition-all ${
+                            isAuthor
+                              ? 'text-red-400/60 hover:text-red-400 hover:bg-red-500/10'
+                              : 'text-gray-600 hover:text-red-400 hover:bg-red-500/10 opacity-0 group-hover/msg:opacity-100'
+                          }`}
+                        >
+                          <TrashIcon className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Inline styles for custom floating particle animation and Marquee */}
       <style>{`
         @keyframes floatUp {
           0% {
@@ -366,6 +754,45 @@ const GuildMatchPage: React.FC = () => {
             opacity: 0;
             transform: translateY(-40px) scale(1.3);
           }
+        }
+
+        @keyframes marqueeScroll {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+
+        .marquee-container {
+          mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+          -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
+        }
+
+        .marquee-track {
+          display: flex;
+          width: max-content;
+          animation: marqueeScroll 40s linear infinite;
+        }
+
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(16, 185, 129, 0.3);
+          border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(16, 185, 129, 0.6);
         }
       `}</style>
     </div>

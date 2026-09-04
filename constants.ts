@@ -954,7 +954,7 @@ export const GALLERY_ITEMS: GalleryItem[] = [
 
 export const GUILD_TEAMS: GuildTeam[] = [
   { id: 'guild-1', name: '청도복숭아' },
-  { id: 'guild-2', name: '윈슬사랑해' },
+  { id: 'guild-2', name: '윈슬사령해' },
   { id: 'guild-3', name: '무례하긴, 순애야' },
   { id: 'guild-4', name: '에고머니나' },
   { id: 'guild-5', name: '투신은사냥길드' },
