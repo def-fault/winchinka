@@ -17,7 +17,7 @@ import VideoIntro from './components/VideoIntro';
 const CAFE_URL = "https://cafe.naver.com/windslayerschin";
 
 const App: React.FC = () => {
-  const [view, setView] = useState<ViewState>(ViewState.LIST);
+  const [view, setView] = useState<ViewState>(ViewState.GUILD_MATCH);
   const [selectedTournament, setSelectedTournament] = useState<Tournament | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
