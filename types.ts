@@ -63,7 +63,14 @@ export enum ViewState {
   HALL_OF_FAME = 'HALL_OF_FAME',
   GALLERY = 'GALLERY',
   PLAYGROUND = 'PLAYGROUND',
+  GUILD_MATCH = 'GUILD_MATCH',
 }
+
+export interface GuildTeam {
+  id: string;
+  name: string;
+}
+
 
 export interface HallOfFameSponsor {
   name: string;

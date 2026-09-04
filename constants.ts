@@ -1,4 +1,4 @@
-import { Tournament, HallOfFameSponsor, StaffMember, BGMTrack, GalleryItem } from './types';
+import { Tournament, HallOfFameSponsor, StaffMember, BGMTrack, GalleryItem, GuildTeam } from './types';
 
 const BASE_PATH = import.meta.env.BASE_URL || '/';
 
@@ -951,4 +951,16 @@ export const GALLERY_ITEMS: GalleryItem[] = [
     type: 'photo'
   }
 ];
+
+export const GUILD_TEAMS: GuildTeam[] = [
+  { id: 'guild-1', name: '청도복숭아' },
+  { id: 'guild-2', name: '윈슬사랑해' },
+  { id: 'guild-3', name: '무례하긴, 순애야' },
+  { id: 'guild-4', name: '에고머니나' },
+  { id: 'guild-5', name: '투신은사냥길드' },
+  { id: 'guild-6', name: '그냥해설만할게요' },
+  { id: 'guild-7', name: '숙주야 사랑해' },
+  { id: 'guild-8', name: '픽키와 친구들' },
+];
+
 

@@ -10,6 +10,7 @@ import AboutPage from './components/AboutPage';
 import HallOfFamePage from './components/HallOfFamePage';
 import GalleryPage from './components/GalleryPage';
 import PlaygroundPage from './components/PlaygroundPage';
+import GuildMatchPage from './components/GuildMatchPage';
 import { TrophyIcon } from './components/Icons';
 import VideoIntro from './components/VideoIntro';
 
@@ -85,6 +86,12 @@ const App: React.FC = () => {
               대회 소개
             </button>
             <button
+              onClick={() => navigateTo(ViewState.GUILD_MATCH)}
+              className={`transition-colors ${view === ViewState.GUILD_MATCH ? 'text-white font-bold' : 'hover:text-white'}`}
+            >
+              길드 친선전
+            </button>
+            <button
               onClick={() => navigateTo(ViewState.HALL_OF_FAME)}
               className={`transition-colors ${view === ViewState.HALL_OF_FAME ? 'text-white font-bold' : 'hover:text-white'}`}
             >
@@ -147,6 +154,12 @@ const App: React.FC = () => {
                   className={`px-4 py-3 text-left ${view === ViewState.ABOUT ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
                 >
                   대회 소개
+                </button>
+                <button
+                  onClick={() => navigateTo(ViewState.GUILD_MATCH)}
+                  className={`px-4 py-3 text-left ${view === ViewState.GUILD_MATCH ? 'text-white font-bold bg-white/5' : 'hover:bg-white/5'}`}
+                >
+                  길드 친선전
                 </button>
                 <button
                   onClick={() => navigateTo(ViewState.HALL_OF_FAME)}
@@ -228,6 +241,8 @@ const App: React.FC = () => {
         )}
 
         {view === ViewState.ABOUT && <AboutPage />}
+
+        {view === ViewState.GUILD_MATCH && <GuildMatchPage />}
 
         {view === ViewState.HALL_OF_FAME && <HallOfFamePage />}
 

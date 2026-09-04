@@ -1,0 +1,375 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { GUILD_TEAMS } from '../constants';
+import { HeartIcon, TrophyIcon, CameraIcon } from './Icons';
+import { db, doc, onSnapshot, setDoc, increment } from '../services/firebase';
+
+const BASE_PATH = import.meta.env.BASE_URL || '/';
+
+const resolvePublicAsset = (path: string) => {
+  const normalizedPath = path.startsWith('/') ? path.slice(1) : path;
+
+  const baseUrl = typeof document !== 'undefined'
+    ? new URL(BASE_PATH, document.baseURI)
+    : new URL(BASE_PATH, 'http://localhost/');
+
+  return new URL(normalizedPath, baseUrl).href;
+};
+
+// Initial cheer counts all start at 0
+const DEFAULT_CHEERS: Record<string, number> = {
+  'guild-1': 0, // 청도복숭아
+  'guild-2': 0, // 윈슬사랑해
+  'guild-3': 0, // 무례하긴, 순애야
+  'guild-4': 0, // 에고머니나
+  'guild-5': 0, // 투신은사냥길드
+  'guild-6': 0, // 그냥해설만할게요
+  'guild-7': 0, // 숙주야 사랑해
+  'guild-8': 0, // 픽키와 친구들
+};
+
+interface Particle {
+  id: number;
+  x: number;
+  y: number;
+}
+
+// Helper to compress uploaded image into a compact Base64 webp/jpeg string for Firestore storage
+const compressImage = (file: File, maxDimension = 320, quality = 0.85): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxDimension) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          }
+        } else {
+          if (height > maxDimension) {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas context not available'));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL('image/webp', quality);
+        resolve(dataUrl);
+      };
+      img.onerror = reject;
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
+
+const GuildMatchPage: React.FC = () => {
+  const [cheerCounts, setCheerCounts] = useState<Record<string, number>>(DEFAULT_CHEERS);
+  const [teamImages, setTeamImages] = useState<Record<string, string>>({});
+  const [uploadingTeamId, setUploadingTeamId] = useState<string | null>(null);
+  const [clickedTeamId, setClickedTeamId] = useState<string | null>(null);
+  const [particles, setParticles] = useState<Record<string, Particle[]>>({});
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const selectedTeamForUploadRef = useRef<string | null>(null);
+
+  // Real-time synchronization for cheer counts
+  useEffect(() => {
+    const cheersDocRef = doc(db, 'guild_matches', 'cheers');
+    const unsubscribeCheers = onSnapshot(
+      cheersDocRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setCheerCounts((prev) => ({
+            ...prev,
+            ...data,
+          }));
+        } else {
+          setDoc(cheersDocRef, DEFAULT_CHEERS, { merge: true }).catch((err) => {
+            console.warn('Firestore initial set error:', err);
+          });
+        }
+      },
+      (error) => {
+        console.warn('Firestore realtime sync error (cheers):', error);
+      }
+    );
+
+    // Real-time synchronization for team images
+    const imagesDocRef = doc(db, 'guild_matches', 'team_images');
+    const unsubscribeImages = onSnapshot(
+      imagesDocRef,
+      (snapshot) => {
+        if (snapshot.exists()) {
+          setTeamImages(snapshot.data() as Record<string, string>);
+        }
+      },
+      (error) => {
+        console.warn('Firestore realtime sync error (images):', error);
+      }
+    );
+
+    return () => {
+      unsubscribeCheers();
+      unsubscribeImages();
+    };
+  }, []);
+
+  const triggerImageUpload = (teamId: string) => {
+    selectedTeamForUploadRef.current = teamId;
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const teamId = selectedTeamForUploadRef.current;
+    if (!file || !teamId) return;
+
+    setUploadingTeamId(teamId);
+
+    try {
+      const compressedDataUrl = await compressImage(file, 320, 0.85);
+
+      // Optimistic UI update
+      setTeamImages((prev) => ({
+        ...prev,
+        [teamId]: compressedDataUrl,
+      }));
+
+      // Realtime Firestore save
+      const imagesDocRef = doc(db, 'guild_matches', 'team_images');
+      await setDoc(
+        imagesDocRef,
+        {
+          [teamId]: compressedDataUrl,
+        },
+        { merge: true }
+      );
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      alert('이미지 업로드에 실패했다냥!');
+    } finally {
+      setUploadingTeamId(null);
+      selectedTeamForUploadRef.current = null;
+    }
+  };
+
+  const handleCheer = async (teamId: string, e: React.MouseEvent<HTMLButtonElement>) => {
+    // 1. Optimistic UI update
+    setCheerCounts((prev) => ({
+      ...prev,
+      [teamId]: (prev[teamId] || 0) + 1,
+    }));
+
+    setClickedTeamId(teamId);
+    setTimeout(() => setClickedTeamId(null), 300);
+
+    // 2. Floating particle animation
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    const newParticle: Particle = {
+      id: Date.now() + Math.random(),
+      x: clickX,
+      y: clickY,
+    };
+
+    setParticles((prev) => ({
+      ...prev,
+      [teamId]: [...(prev[teamId] || []).slice(-4), newParticle],
+    }));
+
+    setTimeout(() => {
+      setParticles((prev) => ({
+        ...prev,
+        [teamId]: (prev[teamId] || []).filter((p) => p.id !== newParticle.id),
+      }));
+    }, 1000);
+
+    // 3. Realtime Firestore update with atomic increment
+    try {
+      const cheersDocRef = doc(db, 'guild_matches', 'cheers');
+      await setDoc(
+        cheersDocRef,
+        {
+          [teamId]: increment(1),
+        },
+        { merge: true }
+      );
+    } catch (err) {
+      console.warn('Failed to update cheer count in Firebase:', err);
+    }
+  };
+
+  return (
+    <div className="animate-fade-in max-w-7xl mx-auto space-y-12 pb-16">
+      {/* Hidden file input for team image upload */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        className="hidden"
+      />
+
+      {/* Title Header Section */}
+      <section className="text-center relative pt-4">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-emerald-600/20 via-teal-600/20 to-cyan-600/20 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="relative inline-block mb-4">
+          <img
+            src={resolvePublicAsset('guild_title.png')}
+            alt="길드 친선전"
+            className="h-28 sm:h-36 md:h-48 w-auto mx-auto object-contain drop-shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:scale-105 transition-transform duration-300"
+          />
+        </div>
+
+        <p className="text-sm md:text-base text-gray-300 mt-2 font-medium">
+          당신의 팀을 응원해주세요!
+        </p>
+      </section>
+
+      {/* 4x2 Matrix Grid of 8 Teams */}
+      <section>
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-1.5 h-6 bg-gradient-to-b from-emerald-400 to-cyan-500 rounded-full" />
+            <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
+              참가 팀 목록
+            </h2>
+          </div>
+          <span className="text-xs md:text-sm text-gray-400">
+            총 <span className="text-emerald-400 font-bold">{GUILD_TEAMS.length}</span>개 팀
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {GUILD_TEAMS.map((team) => {
+            const count = cheerCounts[team.id] || 0;
+            const isPulsing = clickedTeamId === team.id;
+            const teamParticles = particles[team.id] || [];
+            const customImage = teamImages[team.id];
+            const isUploading = uploadingTeamId === team.id;
+
+            return (
+              <div
+                key={team.id}
+                className="glass-panel relative bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/10 hover:border-emerald-400/50 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.25)] hover:-translate-y-1 group"
+              >
+                {/* Background glow on hover */}
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
+
+                {/* Cheer Count Badge */}
+                <div className="flex items-center justify-end mb-2 relative z-10">
+                  <div className="flex items-center gap-1.5 text-emerald-400 text-sm font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <HeartIcon className="w-4 h-4 fill-emerald-500/20 text-emerald-400" />
+                    <span className="tabular-nums">{count.toLocaleString()}</span>
+                  </div>
+                </div>
+
+                {/* Team Name and Clickable Picture/Trophy Container */}
+                <div className="my-6 text-center relative z-10 flex-grow flex flex-col items-center justify-center">
+                  <div
+                    onClick={() => triggerImageUpload(team.id)}
+                    title="클릭하여 팀 사진 변경하기"
+                    className="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 rounded-3xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-2 border-emerald-500/30 flex items-center justify-center cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.15)] group/avatar hover:scale-105 hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300"
+                  >
+                    {customImage ? (
+                      <img
+                        src={customImage}
+                        alt={team.name}
+                        className="w-full h-full object-cover rounded-3xl transition-transform duration-300 group-hover/avatar:scale-110"
+                      />
+                    ) : (
+                      <TrophyIcon className="w-10 h-10 md:w-12 md:h-12 text-emerald-400 group-hover:text-cyan-300 transition-colors drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
+                    )}
+
+                    {/* Hover Upload Overlay */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-3xl flex flex-col items-center justify-center text-white text-[11px] font-medium gap-1 backdrop-blur-[2px]">
+                      <CameraIcon className="w-5 h-5 text-emerald-300" />
+                      <span>{customImage ? '사진 변경' : '사진 등록'}</span>
+                    </div>
+
+                    {/* Upload Spinner */}
+                    {isUploading && (
+                      <div className="absolute inset-0 bg-black/75 rounded-3xl flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 className="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors tracking-tight">
+                    {team.name}
+                  </h3>
+                </div>
+
+                {/* Cheer Button with Particles */}
+                <div className="relative z-10 mt-auto pt-2">
+                  <button
+                    onClick={(e) => handleCheer(team.id, e)}
+                    className={`w-full relative overflow-hidden py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-white transition-all duration-200 ${
+                      isPulsing
+                        ? 'scale-95 bg-emerald-600 shadow-[0_0_20px_rgba(16,185,129,0.8)]'
+                        : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-700 shadow-lg shadow-emerald-500/25 hover:shadow-cyan-500/40 active:scale-95'
+                    }`}
+                  >
+                    <HeartIcon className={`w-5 h-5 transition-transform ${isPulsing ? 'scale-125 fill-white' : 'fill-white/80'}`} />
+                    <span>응원하기</span>
+                  </button>
+
+                  {/* Floating Particles */}
+                  {teamParticles.map((p) => (
+                    <span
+                      key={p.id}
+                      className="absolute pointer-events-none text-emerald-400 font-extrabold text-sm"
+                      style={{
+                        left: `${p.x}px`,
+                        top: `${p.y - 30}px`,
+                        animation: 'floatUp 0.8s ease-out forwards',
+                      }}
+                    >
+                      +1 💚
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Inline styles for custom floating particle animation */}
+      <style>{`
+        @keyframes floatUp {
+          0% {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-40px) scale(1.3);
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default GuildMatchPage;
