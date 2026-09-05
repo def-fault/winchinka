@@ -8,7 +8,11 @@ import {
   SendIcon,
   TrashIcon,
   ShieldIcon,
-  UsersIcon
+  UsersIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  XIcon,
+  ImageIcon
 } from './Icons';
 import {
   db,
@@ -138,6 +142,22 @@ const GuildMatchPage: React.FC = () => {
   const [uploadingTeamId, setUploadingTeamId] = useState<string | null>(null);
   const [clickedTeamId, setClickedTeamId] = useState<string | null>(null);
   const [particles, setParticles] = useState<Record<string, Particle[]>>({});
+  const [expandedMembers, setExpandedMembers] = useState<Record<string, boolean>>({});
+  // 기본적으로 0팀 사진을 보여주도록 초기값 'guild-0' 설정
+  const [selectedScreenshotTeamId, setSelectedScreenshotTeamId] = useState<string>('guild-0');
+  const [imageErrorTeamId, setImageErrorTeamId] = useState<string | null>(null);
+
+  const toggleMembers = (teamId: string) => {
+    setExpandedMembers((prev) => ({
+      ...prev,
+      [teamId]: !prev[teamId],
+    }));
+  };
+
+  const toggleScreenshot = (teamId: string) => {
+    setImageErrorTeamId(null);
+    setSelectedScreenshotTeamId((prev) => (prev === teamId ? 'guild-0' : teamId));
+  };
 
   // Device ID for author identification and banning
   const [deviceId] = useState(() => {
@@ -597,9 +617,6 @@ const GuildMatchPage: React.FC = () => {
   // Filter out any shouts from banned users
   const visibleShouts = shouts.filter((s) => !s.authorId || !bannedUsers[s.authorId]);
 
-  // Repeated shouts list for seamless continuous ticker loop
-  const marqueeShouts = visibleShouts.length > 0 ? [...visibleShouts, ...visibleShouts] : [];
-
   return (
     <div className="animate-fade-in max-w-7xl mx-auto space-y-12 pb-16">
       {/* Hidden file input for team image upload */}
@@ -632,54 +649,9 @@ const GuildMatchPage: React.FC = () => {
         </div>
 
         <p className="text-sm md:text-base text-gray-300 mt-2 font-medium">
-          당신의 팀을 응원해주세요!
+          각 팀의 카드를 클릭하여 스크린샷을 확인하고, 덧글로 소통해보세요!
         </p>
       </section>
-
-      {/* ─── LIVE LED Marquee Billboard (실시간 응원 메시지가 있을 때만 노출) ─── */}
-      {visibleShouts.length > 0 && (
-        <section className="relative">
-          <div className="glass-panel relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-slate-950/90 p-3 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex items-center gap-4">
-            {/* LED Grid subtle pattern overlay */}
-            <div className="absolute inset-0 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:16px_16px] opacity-10 pointer-events-none" />
-
-            {/* Marquee Header Badge */}
-            <div className="relative z-10 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-bold whitespace-nowrap shadow-sm">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-              </span>
-              <span>LIVE 전광판</span>
-            </div>
-
-            {/* Scrolling Ticker Track */}
-            <div className="relative z-10 overflow-hidden flex-grow marquee-container">
-              <div className="marquee-track flex items-center gap-10">
-                {marqueeShouts.map((shout, idx) => (
-                  <div
-                    key={`${shout.id}-${idx}`}
-                    className="inline-flex items-center gap-2.5 text-sm md:text-base whitespace-nowrap"
-                  >
-                    {shout.teamName && shout.teamName !== '전체' && (
-                      <span className="text-[11px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">
-                        {shout.teamName}
-                      </span>
-                    )}
-                    <span className="text-emerald-400 font-bold tracking-wide">
-                      {shout.nickname}
-                    </span>
-                    <span className="text-gray-400">:</span>
-                    <span className="text-white font-medium drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
-                      {shout.message}
-                    </span>
-                    <span className="text-emerald-500/40 ml-4 font-bold">•</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* 4x2 Matrix Grid of 8 Teams */}
       <section>
@@ -695,28 +667,37 @@ const GuildMatchPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {GUILD_TEAMS.map((team) => {
+        {/* Helper function to render team card in 4-column row */}
+        {(() => {
+          const renderTeamCard = (team: typeof GUILD_TEAMS[0]) => {
             const count = cheerCounts[team.id] || 0;
-            const isPulsing = clickedTeamId === team.id;
-            const teamParticles = particles[team.id] || [];
             const customImage = teamImages[team.id];
             const isUploading = uploadingTeamId === team.id;
+            const isExpanded = Boolean(expandedMembers[team.id]);
+            const isScreenshotSelected = selectedScreenshotTeamId === team.id;
 
             return (
               <div
                 key={team.id}
-                className="glass-panel relative bg-gradient-to-b from-slate-900/85 to-slate-950/95 border border-white/10 hover:border-emerald-400/50 rounded-2xl p-5 md:p-6 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:-translate-y-1 group flex flex-col justify-between"
+                onClick={() => toggleScreenshot(team.id)}
+                className={`glass-panel relative bg-gradient-to-b from-slate-900/85 to-slate-950/95 border rounded-2xl p-5 flex flex-col justify-between transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.25)] hover:-translate-y-1 cursor-pointer select-none group ${
+                  isScreenshotSelected
+                    ? 'border-emerald-400 ring-2 ring-emerald-500/50 shadow-[0_0_25px_rgba(16,185,129,0.3)] bg-slate-900/95'
+                    : 'border-white/10 hover:border-emerald-400/50'
+                }`}
               >
                 {/* Background glow on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
 
                 {/* Top Header: Reset Button (Admin) & Cheer Count Badge */}
-                <div className="flex items-center justify-between mb-4 relative z-10">
+                <div className="flex items-center justify-between mb-3 relative z-10">
                   {customImage ? (
                     <button
                       type="button"
-                      onClick={() => handleResetTeamImageAndBan(team.id, team.name)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleResetTeamImageAndBan(team.id, team.name);
+                      }}
                       title="관리자: 사진 초기화 및 업로더 차단"
                       className="text-[11px] text-gray-500 hover:text-gray-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity py-0.5 px-1.5 rounded bg-white/5 hover:bg-white/10"
                     >
@@ -727,129 +708,230 @@ const GuildMatchPage: React.FC = () => {
                     <div />
                   )}
 
-                  <div className="flex items-center gap-1.5 text-emerald-400 text-sm font-semibold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
-                    <HeartIcon className="w-4 h-4 fill-emerald-500/20 text-emerald-400" />
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCheer(team.id, e);
+                    }}
+                    title="클릭하여 좋아요/응원"
+                    className="flex items-center gap-1.5 text-emerald-400 text-xs sm:text-sm font-semibold bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-full border border-emerald-500/20 transition-colors cursor-pointer active:scale-95"
+                  >
+                    <HeartIcon className="w-3.5 h-3.5 fill-emerald-500/20 text-emerald-400" />
                     <span className="tabular-nums">{count.toLocaleString()}</span>
                   </div>
                 </div>
 
-                {/* Main Content Area: Left (Image & Name) + Right (Team Members) */}
-                <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-stretch gap-5 my-auto">
-                  {/* Left Column: Team Avatar and Name */}
-                  <div className="flex flex-col items-center justify-center sm:w-44 flex-shrink-0 text-center">
-                    <div
-                      onClick={() => triggerImageUpload(team.id)}
-                      title="클릭하여 팀 사진 변경하기"
-                      className="relative w-24 h-24 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-2 border-emerald-500/30 flex items-center justify-center cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.15)] group/avatar hover:scale-105 hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300"
-                    >
-                      {customImage ? (
-                        <img
-                          src={customImage}
-                          alt={team.name}
-                          className="w-full h-full object-cover rounded-2xl transition-transform duration-300 group-hover/avatar:scale-110"
-                        />
-                      ) : (
-                        <TrophyIcon className="w-12 h-12 text-emerald-400 group-hover:text-cyan-300 transition-colors drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
-                      )}
-
-                      {/* Hover Upload Overlay */}
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-2xl flex flex-col items-center justify-center text-white text-[11px] font-medium gap-1 backdrop-blur-[2px]">
-                        <CameraIcon className="w-5 h-5 text-emerald-300" />
-                        <span>{customImage ? '사진 변경' : '사진 등록'}</span>
-                      </div>
-
-                      {/* Upload Spinner */}
-                      {isUploading && (
-                        <div className="absolute inset-0 bg-black/75 rounded-2xl flex items-center justify-center">
-                          <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                        </div>
-                      )}
-                    </div>
-
-                    <h3 className="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors tracking-tight">
-                      {team.name}
-                    </h3>
-                  </div>
-
-                  {/* Right Column: Team Members Roster */}
-                  <div className="flex-grow w-full rounded-2xl bg-slate-950/60 border border-white/5 p-3.5 flex flex-col justify-center">
-                    <div className="flex items-center gap-2 mb-2.5 pb-1.5 border-b border-white/5 text-xs font-semibold text-gray-400">
-                      <UsersIcon className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>팀원 목록</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                      {team.members?.map((memberName, idx) => (
-                        <div
-                          key={`${team.id}-member-${idx}`}
-                          className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-white/5 text-xs text-gray-200 font-medium text-center truncate transition-colors"
-                        >
-                          {memberName}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bottom: Cheer Button with Particles */}
-                <div className="relative z-10 mt-5 pt-3 border-t border-white/5">
-                  <button
-                    onClick={(e) => handleCheer(team.id, e)}
-                    disabled={isBanned}
-                    className={`w-full relative overflow-hidden py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-white transition-all duration-200 ${
-                      isBanned
-                        ? 'bg-gray-700 opacity-50 cursor-not-allowed'
-                        : isPulsing
-                        ? 'scale-95 bg-emerald-600 shadow-[0_0_20px_rgba(16,185,129,0.8)]'
-                        : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-700 shadow-lg shadow-emerald-500/25 hover:shadow-cyan-500/40 active:scale-95'
-                    }`}
+                {/* Center: Team Picture, Name, and Member Toggle */}
+                <div className="my-2 text-center relative z-10 flex flex-col items-center justify-center flex-grow">
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      triggerImageUpload(team.id);
+                    }}
+                    title="클릭하여 팀 대표 사진 변경"
+                    className="relative w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-2 border-emerald-500/30 flex items-center justify-center cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.15)] group/avatar hover:scale-105 hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300"
                   >
-                    <HeartIcon className={`w-4 h-4 transition-transform ${isPulsing ? 'scale-125 fill-white' : 'fill-white/80'}`} />
-                    <span>응원하기</span>
-                  </button>
+                    {customImage ? (
+                      <img
+                        src={customImage}
+                        alt={team.name}
+                        className="w-full h-full object-cover rounded-2xl transition-transform duration-300 group-hover/avatar:scale-110"
+                      />
+                    ) : (
+                      <TrophyIcon className="w-10 h-10 sm:w-12 sm:h-12 text-emerald-400 group-hover:text-cyan-300 transition-colors drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
+                    )}
 
-                  {/* Floating Particles */}
-                  {teamParticles.map((p) => (
-                    <span
-                      key={p.id}
-                      className="absolute pointer-events-none text-emerald-400 font-extrabold text-sm"
-                      style={{
-                        left: `${p.x}px`,
-                        top: `${p.y - 30}px`,
-                        animation: 'floatUp 0.8s ease-out forwards',
-                      }}
-                    >
-                      +1 💚
-                    </span>
-                  ))}
+                    {/* Hover Upload Overlay */}
+                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-2xl flex flex-col items-center justify-center text-white text-[11px] font-medium gap-1 backdrop-blur-[2px]">
+                      <CameraIcon className="w-5 h-5 text-emerald-300" />
+                      <span>{customImage ? '사진 변경' : '사진 등록'}</span>
+                    </div>
+
+                    {/* Upload Spinner */}
+                    {isUploading && (
+                      <div className="absolute inset-0 bg-black/75 rounded-2xl flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                      </div>
+                    )}
+                  </div>
+
+                  <h3 className="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors tracking-tight">
+                    {team.name}
+                  </h3>
+
+                  {/* Team Member Toggle */}
+                  {team.members && team.members.length > 0 && (
+                    <div className="mt-3 w-full">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleMembers(team.id);
+                        }}
+                        className={`mx-auto px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 transition-all ${
+                          isExpanded
+                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                            : 'bg-white/5 hover:bg-white/10 text-gray-400 hover:text-gray-200 border border-white/10'
+                        }`}
+                        title="팀원 목록 접기/펼치기"
+                      >
+                        <UsersIcon className="w-3.5 h-3.5" />
+                        <span>팀원 ({team.members.length}명)</span>
+                        {isExpanded ? (
+                          <ChevronUpIcon className="w-3 h-3" />
+                        ) : (
+                          <ChevronDownIcon className="w-3 h-3" />
+                        )}
+                      </button>
+
+                      {/* Expandable Team Members List (Clean list without numbers) */}
+                      {isExpanded && (
+                        <div
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-full mt-2.5 p-2 rounded-xl bg-slate-950/80 border border-white/10 grid grid-cols-2 gap-1.5 text-center animate-fadeIn"
+                        >
+                          {team.members.map((memberName, idx) => (
+                            <div
+                              key={`${team.id}-member-${idx}`}
+                              className="px-2 py-1 rounded-lg bg-white/5 hover:bg-emerald-500/10 border border-white/5 text-xs text-gray-200 font-medium truncate"
+                            >
+                              {memberName}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             );
-          })}
-        </div>
+          };
+
+          const selectedTeam = GUILD_TEAMS.find((t) => t.id === selectedScreenshotTeamId);
+          const topRowTeams = GUILD_TEAMS.slice(0, 4);
+          const bottomRowTeams = GUILD_TEAMS.slice(4, 8);
+
+          // If a team is selected and has screenshot, show it. Otherwise show default 0팀.jpg
+          const currentScreenshotSrc = selectedTeam?.screenshot
+            ? resolvePublicAsset(selectedTeam.screenshot)
+            : resolvePublicAsset('0팀.jpg');
+
+          const currentScreenshotTitle = selectedTeam ? `${selectedTeam.name} 스크린샷` : '대회 전체 현황 (0팀)';
+          const currentScreenshotSubtitle = selectedTeam
+            ? `${selectedTeam.name} 팀의 공식 스크린샷입니다.`
+            : '팀 카드를 클릭하면 해당 팀의 스크린샷으로 전환됩니다.';
+
+          return (
+            <div className="space-y-8">
+              {/* Row 1: Teams 1 ~ 4 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {topRowTeams.map((team) => renderTeamCard(team))}
+              </div>
+
+              {/* ─── Large Center Screenshot Viewer (Between 4x2 Rows) ─── */}
+              <div className="relative glass-panel rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-b from-slate-900/95 via-slate-950/95 to-slate-950 p-5 md:p-8 shadow-[0_0_50px_rgba(16,185,129,0.25)] animate-fadeIn">
+                {/* Decorative background glow */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-emerald-500/10 blur-[100px] pointer-events-none rounded-full" />
+
+                {/* Screenshot Header Bar */}
+                <div className="relative z-10 flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400">
+                      <ImageIcon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-lg md:text-xl font-bold text-white">
+                          {currentScreenshotTitle}
+                        </h3>
+                        <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">
+                          {selectedTeam ? '선택된 팀' : '기본 현황'}
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {currentScreenshotSubtitle}
+                      </p>
+                    </div>
+                  </div>
+
+                  {selectedTeam && (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedScreenshotTeamId('guild-0')}
+                      title="기본 화면(0팀)으로 복귀"
+                      className="px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10 text-xs flex items-center gap-1.5 transition-colors"
+                    >
+                      <XIcon className="w-4 h-4" />
+                      <span>기본 사진으로</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Screenshot Image Container */}
+                <div className="relative z-10 w-full overflow-hidden rounded-2xl bg-black/80 border border-white/10 flex items-center justify-center shadow-inner min-h-[260px] md:min-h-[420px] p-2">
+                  {imageErrorTeamId === (selectedTeam ? selectedTeam.id : 'guild-0') ? (
+                    <div className="py-20 text-center text-gray-400 flex flex-col items-center justify-center gap-3">
+                      <ImageIcon className="w-10 h-10 text-gray-600" />
+                      <div>
+                        <p className="text-base font-semibold text-gray-300">
+                          {currentScreenshotTitle} 이미지를 준비 중입니다.
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          스크린샷 파일이 추가되면 자동으로 표시됩니다.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => toggleScreenshot('guild-0')}
+                        className="mt-2 px-3.5 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-emerald-400 transition-colors"
+                      >
+                        기본 화면(0팀)으로 돌아가기
+                      </button>
+                    </div>
+                  ) : (
+                    <img
+                      key={currentScreenshotSrc}
+                      src={currentScreenshotSrc}
+                      alt={currentScreenshotTitle}
+                      className="w-full h-auto max-h-[700px] object-contain rounded-2xl shadow-2xl transition-transform duration-300 hover:scale-[1.01]"
+                      onError={() => {
+                        setImageErrorTeamId(selectedTeam ? selectedTeam.id : 'guild-0');
+                      }}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* Row 2: Teams 5 ~ 8 */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                {bottomRowTeams.map((team) => renderTeamCard(team))}
+              </div>
+            </div>
+          );
+        })()}
       </section>
 
-      {/* ─── LIVE CHAT / SHOUTOUT SECTION ───────────────────────────────── */}
+      {/* ─── COMMENTS / FEED SECTION ───────────────────────────────── */}
       <section className="space-y-6 pt-4">
         <div className="flex items-center gap-3">
           <div className="w-1.5 h-6 bg-gradient-to-b from-cyan-400 to-emerald-500 rounded-full" />
           <div className="flex items-center gap-2">
             <MessageCircleIcon className="w-6 h-6 text-cyan-400" />
             <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-              실시간 응원 채팅
+              실시간 덧글
             </h2>
           </div>
           <span className="text-xs text-gray-400 ml-2">
-            전송된 응원은 상단 전광판에 즉시 흘러나옵니다!
+            길드 친선전에 대한 소감이나 덧글을 자유롭게 남겨보세요!
           </span>
         </div>
 
         <div className="glass-panel relative rounded-2xl border border-white/10 bg-slate-900/70 p-6 space-y-6 shadow-xl backdrop-blur-md">
-          {/* Shout Input Form */}
+          {/* Comment Input Form */}
           <form onSubmit={handleSendShout} className="space-y-4">
             {/* Team Tag Selection Bar */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-gray-400">응원할 팀 선택 (선택 사항)</label>
+              <label className="text-xs font-semibold text-gray-400">팀 태그 선택 (선택 사항)</label>
               <div className="flex flex-wrap gap-2">
                 <button
                   type="button"
@@ -860,7 +942,7 @@ const GuildMatchPage: React.FC = () => {
                       : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
                   }`}
                 >
-                  전체 응원
+                  전체
                 </button>
                 {GUILD_TEAMS.map((team) => (
                   <button
@@ -900,7 +982,7 @@ const GuildMatchPage: React.FC = () => {
                   placeholder={
                     isBanned
                       ? '관리자에 의해 활동이 차단되었습니다.'
-                      : '응원의 한마디를 남겨보세요! (최대 80자)'
+                      : '덧글을 남겨보세요! (최대 80자)'
                   }
                   maxLength={80}
                   className="flex-grow px-4 py-2.5 rounded-xl bg-slate-950/80 border border-white/10 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
@@ -912,23 +994,23 @@ const GuildMatchPage: React.FC = () => {
                   className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:to-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-emerald-500/25 transition-all active:scale-95 whitespace-nowrap"
                 >
                   <SendIcon className="w-4 h-4" />
-                  <span>전송</span>
+                  <span>등록</span>
                 </button>
               </div>
             </div>
           </form>
 
-          {/* Chat Message List Feed */}
+          {/* Comment Message List Feed */}
           <div className="border-t border-white/10 pt-4">
             <div className="flex items-center justify-between mb-3 text-xs text-gray-400">
-              <span>최신 응원 메시지</span>
+              <span>최신 덧글 목록</span>
               <span>실시간 동기화 중 🟢</span>
             </div>
 
             <div className="max-h-80 overflow-y-auto space-y-2.5 pr-2 custom-scrollbar">
               {visibleShouts.length === 0 ? (
                 <div className="text-center py-8 text-gray-500 text-sm">
-                  등록된 응원 메시지가 없습니다.
+                  등록된 덧글이 없습니다.
                 </div>
               ) : (
                 visibleShouts.map((shout) => {
@@ -1002,30 +1084,6 @@ const GuildMatchPage: React.FC = () => {
             opacity: 0;
             transform: translateY(-40px) scale(1.3);
           }
-        }
-
-        @keyframes marqueeScroll {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .marquee-container {
-          mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
-          -webkit-mask-image: linear-gradient(to right, transparent, black 4%, black 96%, transparent);
-        }
-
-        .marquee-track {
-          display: flex;
-          width: max-content;
-          animation: marqueeScroll 40s linear infinite;
-        }
-
-        .marquee-track:hover {
-          animation-play-state: paused;
         }
 
         .custom-scrollbar::-webkit-scrollbar {

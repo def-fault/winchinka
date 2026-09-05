@@ -70,6 +70,7 @@ export interface GuildTeam {
   id: string;
   name: string;
   members?: string[];
+  screenshot?: string;
 }
 
 
