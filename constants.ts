@@ -956,7 +956,7 @@ export const GUILD_TEAMS: GuildTeam[] = [
   {
     id: 'guild-1',
     name: '청도복숭아',
-    members: ['청도', '매료', '이건꿈이야', '세라핀', '태양', '사랑스럽개'],
+    members: ['청도', '매료', '대쉬', '세라핀', '태양', '사랑스럽개'],
     screenshot: '1팀.jpg',
   },
   {
