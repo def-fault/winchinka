@@ -647,10 +647,6 @@ const GuildMatchPage: React.FC = () => {
             className="h-28 sm:h-36 md:h-48 w-auto mx-auto object-contain drop-shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:scale-105 transition-transform duration-300"
           />
         </div>
-
-        <p className="text-sm md:text-base text-gray-300 mt-2 font-medium">
-          각 팀의 카드를 클릭하여 스크린샷을 확인하고, 덧글로 소통해보세요!
-        </p>
       </section>
 
       {/* 4x2 Matrix Grid of 8 Teams */}
