@@ -7,7 +7,8 @@ import {
   MessageCircleIcon,
   SendIcon,
   TrashIcon,
-  ShieldIcon
+  ShieldIcon,
+  UsersIcon
 } from './Icons';
 import {
   db,
@@ -694,7 +695,7 @@ const GuildMatchPage: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {GUILD_TEAMS.map((team) => {
             const count = cheerCounts[team.id] || 0;
             const isPulsing = clickedTeamId === team.id;
@@ -705,13 +706,13 @@ const GuildMatchPage: React.FC = () => {
             return (
               <div
                 key={team.id}
-                className="glass-panel relative bg-gradient-to-b from-slate-900/80 to-slate-950/90 border border-white/10 hover:border-emerald-400/50 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.25)] hover:-translate-y-1 group"
+                className="glass-panel relative bg-gradient-to-b from-slate-900/85 to-slate-950/95 border border-white/10 hover:border-emerald-400/50 rounded-2xl p-5 md:p-6 transition-all duration-300 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)] hover:-translate-y-1 group flex flex-col justify-between"
               >
                 {/* Background glow on hover */}
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none rounded-2xl" />
 
-                {/* Card Header: Reset/Ban Button (Admin) & Cheer Count Badge */}
-                <div className="flex items-center justify-between mb-2 relative z-10">
+                {/* Top Header: Reset Button (Admin) & Cheer Count Badge */}
+                <div className="flex items-center justify-between mb-4 relative z-10">
                   {customImage ? (
                     <button
                       type="button"
@@ -732,48 +733,70 @@ const GuildMatchPage: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Team Name and Clickable Picture/Trophy Container */}
-                <div className="my-6 text-center relative z-10 flex-grow flex flex-col items-center justify-center">
-                  <div
-                    onClick={() => triggerImageUpload(team.id)}
-                    title="클릭하여 팀 사진 변경하기"
-                    className="relative w-20 h-20 md:w-24 md:h-24 mx-auto mb-4 rounded-3xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-2 border-emerald-500/30 flex items-center justify-center cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.15)] group/avatar hover:scale-105 hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300"
-                  >
-                    {customImage ? (
-                      <img
-                        src={customImage}
-                        alt={team.name}
-                        className="w-full h-full object-cover rounded-3xl transition-transform duration-300 group-hover/avatar:scale-110"
-                      />
-                    ) : (
-                      <TrophyIcon className="w-10 h-10 md:w-12 md:h-12 text-emerald-400 group-hover:text-cyan-300 transition-colors drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
-                    )}
+                {/* Main Content Area: Left (Image & Name) + Right (Team Members) */}
+                <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-stretch gap-5 my-auto">
+                  {/* Left Column: Team Avatar and Name */}
+                  <div className="flex flex-col items-center justify-center sm:w-44 flex-shrink-0 text-center">
+                    <div
+                      onClick={() => triggerImageUpload(team.id)}
+                      title="클릭하여 팀 사진 변경하기"
+                      className="relative w-24 h-24 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-emerald-500/20 via-teal-500/20 to-cyan-500/20 border-2 border-emerald-500/30 flex items-center justify-center cursor-pointer overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.15)] group/avatar hover:scale-105 hover:border-emerald-400 hover:shadow-[0_0_30px_rgba(16,185,129,0.4)] transition-all duration-300"
+                    >
+                      {customImage ? (
+                        <img
+                          src={customImage}
+                          alt={team.name}
+                          className="w-full h-full object-cover rounded-2xl transition-transform duration-300 group-hover/avatar:scale-110"
+                        />
+                      ) : (
+                        <TrophyIcon className="w-12 h-12 text-emerald-400 group-hover:text-cyan-300 transition-colors drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]" />
+                      )}
 
-                    {/* Hover Upload Overlay */}
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-3xl flex flex-col items-center justify-center text-white text-[11px] font-medium gap-1 backdrop-blur-[2px]">
-                      <CameraIcon className="w-5 h-5 text-emerald-300" />
-                      <span>{customImage ? '사진 변경' : '사진 등록'}</span>
+                      {/* Hover Upload Overlay */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity rounded-2xl flex flex-col items-center justify-center text-white text-[11px] font-medium gap-1 backdrop-blur-[2px]">
+                        <CameraIcon className="w-5 h-5 text-emerald-300" />
+                        <span>{customImage ? '사진 변경' : '사진 등록'}</span>
+                      </div>
+
+                      {/* Upload Spinner */}
+                      {isUploading && (
+                        <div className="absolute inset-0 bg-black/75 rounded-2xl flex items-center justify-center">
+                          <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
                     </div>
 
-                    {/* Upload Spinner */}
-                    {isUploading && (
-                      <div className="absolute inset-0 bg-black/75 rounded-3xl flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    )}
+                    <h3 className="text-lg font-bold text-white group-hover:text-emerald-300 transition-colors tracking-tight">
+                      {team.name}
+                    </h3>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white group-hover:text-emerald-300 transition-colors tracking-tight">
-                    {team.name}
-                  </h3>
+                  {/* Right Column: Team Members Roster */}
+                  <div className="flex-grow w-full rounded-2xl bg-slate-950/60 border border-white/5 p-3.5 flex flex-col justify-center">
+                    <div className="flex items-center gap-2 mb-2.5 pb-1.5 border-b border-white/5 text-xs font-semibold text-gray-400">
+                      <UsersIcon className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>팀원 목록</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {team.members?.map((memberName, idx) => (
+                        <div
+                          key={`${team.id}-member-${idx}`}
+                          className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-emerald-500/10 hover:border-emerald-500/30 border border-white/5 text-xs text-gray-200 font-medium text-center truncate transition-colors"
+                        >
+                          {memberName}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Cheer Button with Particles */}
-                <div className="relative z-10 mt-auto pt-2">
+                {/* Bottom: Cheer Button with Particles */}
+                <div className="relative z-10 mt-5 pt-3 border-t border-white/5">
                   <button
                     onClick={(e) => handleCheer(team.id, e)}
                     disabled={isBanned}
-                    className={`w-full relative overflow-hidden py-3 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-white transition-all duration-200 ${
+                    className={`w-full relative overflow-hidden py-2.5 px-4 rounded-xl font-bold flex items-center justify-center gap-2 text-white transition-all duration-200 ${
                       isBanned
                         ? 'bg-gray-700 opacity-50 cursor-not-allowed'
                         : isPulsing
@@ -781,7 +804,7 @@ const GuildMatchPage: React.FC = () => {
                         : 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-700 shadow-lg shadow-emerald-500/25 hover:shadow-cyan-500/40 active:scale-95'
                     }`}
                   >
-                    <HeartIcon className={`w-5 h-5 transition-transform ${isPulsing ? 'scale-125 fill-white' : 'fill-white/80'}`} />
+                    <HeartIcon className={`w-4 h-4 transition-transform ${isPulsing ? 'scale-125 fill-white' : 'fill-white/80'}`} />
                     <span>응원하기</span>
                   </button>
 

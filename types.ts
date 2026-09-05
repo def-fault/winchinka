@@ -69,6 +69,7 @@ export enum ViewState {
 export interface GuildTeam {
   id: string;
   name: string;
+  members?: string[];
 }
 
 

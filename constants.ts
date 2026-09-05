@@ -953,14 +953,46 @@ export const GALLERY_ITEMS: GalleryItem[] = [
 ];
 
 export const GUILD_TEAMS: GuildTeam[] = [
-  { id: 'guild-1', name: '청도복숭아' },
-  { id: 'guild-2', name: '윈슬사령해' },
-  { id: 'guild-3', name: '무례하긴, 순애야' },
-  { id: 'guild-4', name: '에고머니나' },
-  { id: 'guild-5', name: '투신은사냥길드' },
-  { id: 'guild-6', name: '그냥해설만할게요' },
-  { id: 'guild-7', name: '숙주야 사랑해' },
-  { id: 'guild-8', name: '픽키와 친구들' },
+  {
+    id: 'guild-1',
+    name: '청도복숭아',
+    members: ['청도', '매료', '이건꿈이야', '세라핀', '태양', '사랑스럽개'],
+  },
+  {
+    id: 'guild-2',
+    name: '윈슬사령해',
+    members: ['사령관', '빈자리', '노스텔지어', '키위', '왕초', '혜성'],
+  },
+  {
+    id: 'guild-3',
+    name: '무례하긴,순애야',
+    members: ['순애킬러금태양', '봉식의 노래', '종이', '미소', '향기', '구스'],
+  },
+  {
+    id: 'guild-4',
+    name: '에고머니나',
+    members: ['비에고', '지팡e', '코쿠시보', '스냅', '거북', '빵식이'],
+  },
+  {
+    id: 'guild-5',
+    name: '투신은사냥길드',
+    members: ['틀랩퍼', '수궁', '우주', '승빵', 'Dell', '카게'],
+  },
+  {
+    id: 'guild-6',
+    name: '그냥해설만할게요',
+    members: ['원탑', '귀농할래요', '목성', '따봉', '묵룡', '숙주'],
+  },
+  {
+    id: 'guild-7',
+    name: '숙주야사랑해',
+    members: ['세인', 'Sia', '토니', '화수', '씨앗', '수직'],
+  },
+  {
+    id: 'guild-8',
+    name: '픽키와친구들',
+    members: ['픽키', '남우', '마귀할멈', '장이수', '휴식', '뀨잉'],
+  },
 ];
 
 
